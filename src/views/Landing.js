@@ -12,7 +12,11 @@ export default function Landing() {
 	const [nfts, setNFTs] = useState([])
 
 	useEffect(() => {
-		getNFTs({}).then(res => setNFTs(res))
+		const fetchData = async () => {
+			const res = await getNFTs({})
+			setNFTs(res)
+		}
+		fetchData()
 	}, [])
 
 	const settings = {
