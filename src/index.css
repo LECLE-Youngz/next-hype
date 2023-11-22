@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Habibi&display=swap");
+
+@layer components {
+	.twinkle-text {
+		animation: twinkle 1s linear infinite;
+		background: linear-gradient(to right, #f32170, #ff6b08, #cf23cf, #eedd44);
+		background-size: 200% 100%;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		-webkit-animation: shine 8s linear infinite;
+	}
+
+	.twinkle-fill {
+		animation: twinkle 1s linear infinite;
+		fill: linear-gradient(to right, #f32170, #ff6b08, #cf23cf, #eedd44);
+		background-size: 200% 100%;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		-webkit-animation: shine 8s linear infinite;
+	}
+}
+::-moz-selection {
+	color: white;
+	background: rgb(17 24 39);
+}
+
+::selection {
+	color: white;
+	background: rgb(17 24 39);
+}
+html {
+	scroll-behavior: smooth;
+}
