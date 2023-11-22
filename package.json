@@ -2,7 +2,7 @@
 	"name": "next-hype",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "https://next-hype.vercel.app/",
+	"homepage": ".",
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^6.4.2",
 		"@react-oauth/google": "^0.11.1",
@@ -10,7 +10,6 @@
 		"bigdecimal.js": "^1.3.0",
 		"bip84": "^0.2.7",
 		"bn.js": "^5.2.1",
-		"elliptic": "^6.5.4",
 		"ethers": "^6.7.1",
 		"js-big-decimal": "^2.0.4",
 		"json-stable-stringify": "^1.0.2",
@@ -57,17 +56,6 @@
 		]
 	},
 	"devDependencies": {
-		"@babel/preset-react": "^7.18.6",
-		"@types/numeral": "^2.0.2",
-		"assert": "^2.0.0",
-		"babel-eslint": "^10.1.0",
-		"buffer": "^6.0.3",
-		"husky": "^8.0.0",
-		"os-browserify": "^0.3.0",
-		"prettier": "^2.8.8",
-		"pretty-quick": "^3.1.3",
-		"process": "^0.11.10",
-		"tailwindcss": "^3.3.3",
-		"url": "^0.11.0"
+		"tailwindcss": "^3.3.3"
 	}
 }
