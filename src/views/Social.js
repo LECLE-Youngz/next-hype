@@ -14,20 +14,25 @@ export default function Social({ chosenTag }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (chosenTag) {
-                const posts = await getPostsByTag()
-                setPosts(posts)
-            } else {
-                const posts = await getPosts()
-                setPosts(posts)
-            }
-
             const tags = await getTags()
             setTags(tags)
         }
 
         fetchData()
     }, [])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (chosenTag) {
+                const posts = await getPostsByTag(chosenTag)
+                setPosts(posts)
+            } else {
+                const posts = await getPosts()
+                setPosts(posts)
+            }
+        }
+        fetchData()
+    }, [chosenTag])
 
     if (tags === null || posts === null) {
         return (

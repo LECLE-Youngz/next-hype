@@ -41,7 +41,7 @@ const Post = ({ postId }) => {
 	}
 
 	const send = async (index, commentId) => {
-		if (index) {
+		if (index !== undefined) {
 			setOnReply(commentId)
 
 			await createComment(postId, commentId, replies[index])

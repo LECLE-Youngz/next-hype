@@ -95,6 +95,9 @@ export const createComment = async (postId, commentId, text) => {
         data = { ...data, commentId }
     }
 
+    console.log(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ''}`,
+        data)
+
     await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ''}`,
         data,
