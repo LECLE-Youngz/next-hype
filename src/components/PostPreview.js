@@ -72,15 +72,15 @@ function PostPreview({ postId }) {
 					<div className='place-self-end flex space-x-5 text-lg text-gray-600'>
 						{
 							!likeUpdating ?
-								post.listLike.includes(account.id) ?
+								post.likes.includes(account.id) ?
 									<div className='cursor-pointer w-8 space-x-1 flex items-center hover:text-red-400 text-red-600' onClick={() => toggleLike()}>
 										<BiSolidUpvote className='' />
-										<p className='text-sm'>{post.listLike.length}</p>
+										<p className='text-sm'>{post.likes.length}</p>
 									</div>
 									:
 									<div className='cursor-pointer w-8 space-x-1 flex items-center hover:text-red-400' onClick={() => toggleLike()}>
 										<BiUpvote className='' />
-										<p className='text-sm'>{post.listLike.length}</p>
+										<p className='text-sm'>{post.likes.length}</p>
 									</div>
 								:
 								<div className='flex w-8 justify-center'>

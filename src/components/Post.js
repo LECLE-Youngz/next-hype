@@ -3,8 +3,9 @@ import { BiUpvote, BiComment, BiBookmark, BiSolidUpvote, BiSolidComment, BiSolid
 import { useEffect, useState } from 'react';
 import { parseTime } from '../libs/time';
 import { getInfoUser } from '../storage/local';
-import { createComment, getPosts, toggleLikePost } from '../helpers/social';
+import { createComment, getPosts, toggleLikeComment, toggleLikePost } from '../helpers/social';
 import { IoSend } from "react-icons/io5";
+import { IoMdClose, IoMdReturnLeft } from "react-icons/io";
 
 const Post = ({ postId }) => {
 	const [account, setAccount] = useState(null)
@@ -12,6 +13,8 @@ const Post = ({ postId }) => {
 	const [replies, setReplies] = useState([])
 	const [postComment, setPostComment] = useState('')
 	const [onComment, setOnComment] = useState(false)
+	const [onReply, setOnReply] = useState(null)
+	const [likeCommentLoading, setLikeCommentLoading] = useState(null)
 
 	const [likeUpdating, setLikeUpdating] = useState(false)
 	const [bookmarkUpdating, setBookmarkUpdating] = useState(false)
@@ -38,9 +41,28 @@ const Post = ({ postId }) => {
 	}
 
 	const send = async (index, commentId) => {
-		setOnComment(true)
-		await createComment(postId, commentId, commentId ? replies[index] : postComment)
-		setOnComment(false)
+		if (index) {
+			setOnReply(commentId)
+
+			await createComment(postId, commentId, replies[index])
+
+			const newReplies = [...replies]
+			newReplies[index] = null
+			setReplies(newReplies)
+
+			const newShowReplies = [...showReplies]
+			newShowReplies[index] = true
+			setShowReplies(newShowReplies)
+
+			setOnReply(null)
+		} else {
+			setOnComment(true)
+
+			await createComment(postId, null, postComment)
+			setPostComment('')
+
+			setOnComment(false)
+		}
 	}
 
 	useEffect(() => {
@@ -51,17 +73,30 @@ const Post = ({ postId }) => {
 			setShowReplies(Array(post.listComment.length).fill(false))
 		}
 		fetchData()
-	}, [likeUpdating, bookmarkUpdating])
+	}, [])
 
-	const toggleLike = async () => {
-		setLikeUpdating(true)
-		await toggleLikePost(postId)
-		setLikeUpdating(false)
+	useEffect(() => {
+		const fetchData = async () => {
+			const post = await getPosts(postId)
+			setPost(post)
+		}
+		fetchData()
+	}, [likeUpdating, bookmarkUpdating, likeCommentLoading, onComment, onReply])
+
+	const toggleLike = async (id) => {
+		if (id) {
+			setLikeCommentLoading(id)
+			await toggleLikeComment(id)
+			setLikeCommentLoading(null)
+		} else {
+			setLikeUpdating(true)
+			await toggleLikePost(postId)
+			setLikeUpdating(false)
+		}
 	}
 
 	const navigate = useNavigate()
 
-	console.log(post)
 
 	if (post === null) {
 		return (
@@ -140,15 +175,15 @@ const Post = ({ postId }) => {
 							<div className="flex justify-between text-2xl text-gray-600">
 								{
 									!likeUpdating ?
-										post.listLike.includes(account.id) ?
+										post.likes.includes(account.id) ?
 											<div className='w-10 flex items-center space-x-1 group cursor-pointer hover:text-red-400 text-red-600' onClick={() => toggleLike()}>
 												<BiSolidUpvote className='' />
-												<p className='text-lg'>{post.listLike.length}</p>
+												<p className='text-lg'>{post.likes.length}</p>
 											</div>
 											:
 											<div className='w-10 flex items-center space-x-1 group cursor-pointer hover:text-red-400' onClick={() => toggleLike()}>
 												<BiUpvote className='' />
-												<p className='text-lg'>{post.listLike.length}</p>
+												<p className='text-lg'>{post.likes.length}</p>
 											</div>
 										:
 										<div className='flex w-10 justify-center'>
@@ -161,7 +196,7 @@ const Post = ({ postId }) => {
 								</a>
 								{
 									!bookmarkUpdating ?
-										post.bookmark.includes(account?.id) ?
+										post.bookmark.includes(account.id) ?
 											<div className='flex w-10 items-center space-x-1 group cursor-pointer hover:text-blue-400 text-blue-600'>
 												<BiSolidBookmark className='' />
 												<p className='text-lg'>{post.bookmark.length}</p>
@@ -198,65 +233,114 @@ const Post = ({ postId }) => {
 												<p className="text-gray-600 text-sm">{parseTime(comment.timestamp)}</p>
 											</div>
 											<p className='text-gray-600 mt-3'>{comment.text}</p>
-											{
-												replies[index] === null ?
-													<p className='self-end text-right font-medium cursor-pointer hover:underline'
-														onClick={() => handleReply(index, '')}
-													>reply</p>
-													:
-													<p className='self-end text-right font-medium cursor-pointer hover:underline'
-														onClick={() => handleReply(index, null)}
-													>cancel</p>
-											}
-										</div>
-										{
-											<div className={`${showReplies[index] ? 'block' : 'hidden'} pl-10 container bg-gray-100 p-3 transition-all duration-500 ease-in-out space-y-5`}>
-												{comment.listReplyComment.map((reply) => (
-													<div className='text-sm'>
-														<div className='flex justify-between items-center'>
-															<Link
-																to={"/profile/" + reply.ownerComment.id}
-																className="flex items-center space-x-3"
-															>
-																<img
-																	src={reply.ownerComment.picture}
-																	className="h-6"
-																	alt="profile"
-																/>
-																<span className="font-light group-hover:text-gray-500 text-gray-900">
-																	{reply.ownerComment.name}
-																</span>
-															</Link>
-															<p className="text-gray-600 text-xs">{parseTime(reply.timestamp)}</p>
+											<div className='flex justify-end space-x-3'>
+												{
+													likeCommentLoading !== comment.id ?
+														comment.likes.includes(account.id) ?
+															<>
+																<div className='flex items-center space-x-1 group cursor-pointer hover:text-red-400 text-red-600' onClick={() => toggleLike(comment.id)}>
+																	<BiSolidUpvote className='' />
+																	<p className='text-sm'>{comment.likes.length}</p>
+																</div>
+															</>
+															:
+															<div className='flex items-center space-x-1 group cursor-pointer hover:text-red-400' onClick={() => toggleLike(comment.id)}>
+																<BiUpvote className='' />
+																<p className='text-sm'>{comment.likes.length}</p>
+															</div>
+														:
+														<div className='flex w-10 justify-center'>
+															<div className='self-center animate-spin rounded-full w-5 h-5 border-b-2 border-gray-500'></div>
 														</div>
-														<p className='text-gray-600 mt-2'>{reply.text}</p>
-													</div>
-												))}
+												}
+												{
+													replies[index] === null ?
+														<div className='flex items-center space-x-1 group cursor-pointer hover:text-gray-400' onClick={() => handleReply(index, '')}>
+															<IoMdReturnLeft className='' />
+															<p className='text-sm'>{comment.listReplyComment.length}</p>
+														</div>
+														:
+														<div className='flex items-center space-x-1 group cursor-pointer hover:text-gray-400' onClick={() => handleReply(index, null)}>
+															<p className='text-sm invisible'>{comment.listReplyComment.length}</p>
+															<IoMdClose className='' />
+														</div>
+												}
 											</div>
-										}
+										</div>
+										<div className={`${showReplies[index] ? 'block' : 'hidden'} pl-10 container bg-gray-100 p-3 transition-all duration-500 ease-in-out space-y-5`}>
+											{comment.listReplyComment.map((reply) => (
+												<div className='text-sm'>
+													<div div className='flex justify-between items-center' >
+														<Link
+															to={"/profile/" + reply.ownerComment.id}
+															className="flex items-center space-x-3"
+														>
+															<img
+																src={reply.ownerComment.picture}
+																className="h-6"
+																alt="profile"
+															/>
+															<span className="font-light group-hover:text-gray-500 text-gray-900">
+																{reply.ownerComment.name}
+															</span>
+														</Link>
+														<p className="text-gray-600 text-xs">{parseTime(reply.timestamp)}</p>
+													</div>
+													<div className='flex justify-between space-x-3'>
+														<p className='text-gray-600 mt-2'>{reply.text}</p>
+														{
+															likeCommentLoading !== reply.id ?
+																reply.likes.includes(account.id) ?
+																	<>
+																		<div className='flex items-center space-x-1 group cursor-pointer hover:text-red-400 text-red-600' onClick={() => toggleLike(reply.id)}>
+																			<BiSolidUpvote className='' />
+																			<p className='text-xs'>{reply.likes.length}</p>
+																		</div>
+																	</>
+																	:
+																	<div className='flex items-center space-x-1 group cursor-pointer hover:text-red-400' onClick={() => toggleLike(reply.id)}>
+																		<BiUpvote className='' />
+																		<p className='text-xs'>{reply.likes.length}</p>
+																	</div>
+																:
+																<div className='flex w-10 justify-center'>
+																	<div className='self-center animate-spin rounded-full w-4 h-4 border-b-2 border-gray-500'></div>
+																</div>
+														}
+													</div>
+												</div>
+											))}
+										</div>
 										{
 											replies[index] !== null &&
 											<div className='relative bg-gray-100 p-3 pl-10'>
 												<textarea id='reply' onChange={(e) => handleReply(index, e.target.value)} className="w-full h-24 p-3 border cursor-text focus:outline-black flex items-center justify-center" type="text" placeholder="write a reply..." />
-												<div className='absolute bottom-6 right-6'>
-													<IoSend className={`${replies[index] !== '' ? "" : "hidden"} w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-800`}
-														onClick={() => send(index, comment.id)}>post</IoSend>
-												</div>
+												{
+													onReply === comment.id ?
+														<div className='absolute top-0 left-0 w-full h-full bg-gray-100 bg-opacity-50 flex justify-center items-center'>
+															<div className='animate-spin rounded-full w-10 h-10 border-b-2 border-gray-500'></div>
+														</div>
+														:
+														<div className='absolute bottom-6 right-6'>
+															<IoSend className={`${replies[index] !== '' ? "" : "hidden"} w-5 h-5 cursor-pointer text-gray-400 hover:text-gray-800`}
+																onClick={() => send(index, comment.id)}>post</IoSend>
+														</div>
+												}
 											</div>
 										}
-										<div className='my-5 border-[0.5px] border-gray-200'></div>
+										<div div className='my-5 border-[0.5px] border-gray-200' ></div>
 										{
-											comment.numberOfReplies > 0 &&
+											comment.listReplyComment.length > 0 &&
 											<div className='w-full flex justify-center'>
 												<p className='-translate-y-8 bg-white px-3 text-gray-600 hover:text-gray-900 hover:font-medium cursor-pointer'
 													onClick={() => handleShow(index)}
-												>{showReplies[index] ? 'hide' : 'show'} {comment.numberOfReplies} replies</p>
+												>{showReplies[index] ? 'hide' : 'show'} {comment.listReplyComment.length} replies</p>
 											</div>
 										}
 									</div>
 								))}
 								<div className='relative mt-3'>
-									<textarea id='comment' onChange={(e) => setPostComment(e.target.value)} className="w-full h-24 p-3 border cursor-text focus:outline-black flex items-center justify-center" type="text" placeholder="write a comment..." />
+									<textarea id='comment' onChange={(e) => setPostComment(e.target.value)} className="w-full h-24 p-3 border cursor-text focus:outline-black flex items-center justify-center" type="text" placeholder="write a comment..." defaultValue={postComment} />
 									{
 										onComment ?
 											<div className='absolute top-0 left-0 w-full h-full bg-gray-100 bg-opacity-50 flex justify-center items-center'>
@@ -264,7 +348,7 @@ const Post = ({ postId }) => {
 											</div>
 											:
 											<div className='absolute bottom-3 right-3'>
-												<IoSend className={`${postComment !== '' ? "" : "hidden"} w-6 h-6 cursor-pointer text-gray-400 hover:text-gray-800`} onClick={() => send()}>post</IoSend>
+												<IoSend className={`${postComment !== '' ? "" : "hidden"} w-6 h-6 cursor-pointer text-gray-400 hover:text-gray-800`} onClick={() => send()}></IoSend>
 											</div>
 									}
 								</div>
