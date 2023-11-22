@@ -1,35 +1,40 @@
 import axios from "axios";
 import { getInfoUser } from "../storage/local";
 
-export const getRanking = async (id) => {
-    let ranking
-
-    await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/users/${id ?? ''}`)
-        .then(res => { ranking = res.data })
-        .catch(error => console.log(error));
-
-    return ranking
-}
-
-export const updateRanking = async (data, idUserSold) => {
-    const access_token = getInfoUser().tokens.access_token;
-
-    axios.put(
-        `${process.env.REACT_APP_API_ENDPOINT}/rankings`,
-        { ...data, idUserSold },
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-            }
-        }
-    )
-}
-
 export const getPosts = async (id) => {
     let posts
 
     await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id ?? ''}`)
+        .then(res => { posts = res.data })
+        .catch(error => { posts = [] })
+
+    return posts
+}
+
+export const getTags = async () => {
+    let tags
+
+    await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/tags`)
+        .then(res => { tags = res.data })
+        .catch(error => { tags = [] })
+
+    return tags
+}
+
+export const getPostsByUser = async (id) => {
+    let posts
+
+    await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/user/${id}`)
+        .then(res => { posts = res.data })
+        .catch(error => { posts = [] })
+
+    return posts
+}
+
+export const getPostsByTag = async (tag) => {
+    let posts
+
+    await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/tags/${tag}`)
         .then(res => { posts = res.data })
         .catch(error => { posts = [] })
 
@@ -81,12 +86,18 @@ export const toggleFollow = async (id) => {
     )
 }
 
-export const createComment = async (id, text) => {
+export const createComment = async (postId, commentId, text) => {
     const access_token = getInfoUser().tokens.access_token;
 
+    let data = { text }
+
+    if (commentId) {
+        data = { ...data, commentId }
+    }
+
     await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/comment`,
-        { text },
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ''}`,
+        data,
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -95,3 +106,4 @@ export const createComment = async (id, text) => {
         }
     )
 }
+

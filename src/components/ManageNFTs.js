@@ -3,7 +3,6 @@ import EditNFTPrice from './EditNFTPrice'
 import EditNFTDataPrice from './EditNFTDataPrice'
 import Withdraw from './Withdraw'
 import Transfer from './Transfer'
-import { } from '../scripts'
 import { getUsers } from '../helpers/user'
 
 function ManageNFTs({ userId, setManageNFTsPopup }) {
@@ -24,6 +23,8 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 
 		fetchData()
 	}, [userId])
+
+	console.log(nfts)
 
 	const toggleSelect = (index) => {
 		if (index === -1) {
@@ -60,7 +61,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 
 			<div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
 				<div className="bg-white shadow-xl w-full px-16 py-5 relative">
-					<h3 className="font-extrabold text-4xl text-gray-800 text-center mt-4 mb-10">Manage NFTs</h3>
+					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># Manage NFTs</h3>
 					<div className='flex absolute top-24 right-16 gap-x-3'>
 						<button className='rounded-full bg-blue-600 flex items-center justify-center hover:bg-blue-700 cursor-pointer px-5 py-2 disabled:pointer-events-none disabled:bg-opacity-50' onClick={() => setEditPricePopup(true)} disabled={!selected.includes(true)}>
 							<p className='text-white text-sm font-semibold'>Edit NFT Price</p>
@@ -77,7 +78,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 					</div>
 					<div className="mt-20 container mx-auto">
 						{onQuery ?
-							<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-500"></div>
+							<div className="animate-spin rounded-full text-center mx-auto h-16 w-16 border-b-2 border-gray-500"></div>
 							: nfts.length === 0 ?
 								<div className="text-center">
 									<p className="pt-5 text-2xl font-semibold leading-normal mb-2 text-gray-500">
@@ -86,53 +87,48 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 								</div>
 								:
 								<div className="overflow-y-scroll mt-5 max-h-[26rem]">
-									<div className="flex items-center px-5 py-2 bg-gray-100 text-gray-600 rounded-lg shadow-md">
-										<div className="w-1/12">
+									<div className="flex items-center px-5 py-2 bg-gray-100 text-gray-600 shadow-md">
+										<div className="w-[10%]">
 											<div className='mx-auto w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center checked:bg-gray-500 cursor-pointer' onClick={() => toggleSelect(-1)} checked={selected.includes(true)}>
 												{selected.includes(true) && <div className='check w-3 h-3 rounded-full bg-gray-500'></div>}
 											</div>
 										</div>
-										<span className="text-center w-1/4">
+										<span className="text-center w-[10%]">
 											<span className="text-xs text-gray-600 font-bold">Thumbnail</span>
 										</span>
-										<span className="text-center w-1/5">
+										<span className="text-center w-[10%]">
 											<span className="text-xs text-gray-600 font-bold">ID</span>
 										</span>
-										<span className="text-center w-1/2">
+										<span className="text-center w-[30%]">
 											<span className="text-xs text-gray-600 font-bold">Name</span>
 										</span>
-										<span className="text-center w-1/5">
+										<span className="text-center w-[20%]">
 											<span className="text-xs text-gray-600 font-bold">Price</span>
 										</span>
-										<span className="text-center w-1/5">
+										<span className="text-center w-[20%]">
 											<span className="text-xs text-gray-600 font-bold">Data Price</span>
-										</span>
-										<span className="text-center w-1/5">
-											<span className="text-xs text-gray-600 font-bold">Chain</span>
 										</span>
 									</div>
 									{
 										nfts.map((nft, index) => (
-											<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-5 rounded-lg" onClick={() => toggleSelect(index)}>
-												<div className="w-1/12">
+											<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-3 " onClick={() => toggleSelect(index)}>
+												<div className="w-[10%]">
 													<div className='mx-auto w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center checked:bg-gray-500' onClick={() => toggleSelect(index)} checked={selected[index]}>
 														{selected[index] && <div className='w-3 h-3 rounded-full bg-gray-500'></div>}
 													</div>
 												</div>
-												<div className="text-center w-1/5">
-													<span className="text-sm text-gray-800">{nft.nftId.length > 10 ? nft.nftId.slice(0, 10) + "..." : nft.nftId}</span>
+												<img className="w-[10%] h-auto p-2" src={nft.thumbnail} alt="thumbnail" />
+												<div className="text-center w-[10%]">
+													<span className="text-sm text-gray-800">{nft.id}</span>
 												</div>
-												<div className="text-center w-1/2">
+												<div className="text-center w-[30%]">
 													<span className="text-sm text-gray-600">{nft.name}</span>
 												</div>
-												<div className="text-center w-1/5">
+												<div className="text-center w-[20%]">
 													<span className="text-gray-600 text-sm">{nft.price == 0 ? "Not for sale" : nft.price}</span>
 												</div>
-												<div className="text-center w-1/5">
+												<div className="text-center w-[20%]">
 													<span className="text-gray-600 text-sm">{nft.promptPrice == 0 ? "Public data" : nft.promptPrice}</span>
-												</div>
-												<div className="text-center w-1/5">
-													<span className="text-gray-600 text-sm">{nft.isRootStock ? "RootStock" : "Ordinals"}</span>
 												</div>
 											</div>
 										))
@@ -140,9 +136,11 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 								</div>
 						}
 					</div>
-					<div className="py-10 space-y-2 text-gray-600 text-center sm:-mb-8">
-						<p className="text-xs">Actions to your owned NFTs is accessed from here.</p>
-						<p className="text-xs">Any action will all need to send a transaction to the blockchain.</p>
+					<div className="py-10 space-y-2 text-gray-600 sm:-mb-8">
+						<p className="text-xs">{'<!-- '}Actions to your owned NFTs is accessed from here.{' -->'}</p>
+						<p className="text-xs">
+							{'<!-- '}Any action will all need to send a transaction to the blockchain.{' -->'}
+						</p>
 					</div>
 				</div>
 			</div>

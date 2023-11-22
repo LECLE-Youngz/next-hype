@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Login from "./Login";
-import { btcLogo, logo, rskLogo } from "../data";
+import { btcLogo, logo } from "../data";
 import { getInfoUser, storeInfoUser } from "../storage/local";
 import Advanced from "./Advanced";
 import ManageNFTs from "./ManageNFTs";

@@ -37,7 +37,7 @@ function Login({ setLoginPopup, setGoogleData }) {
         <div className="bg-white shadow-xl w-full px-16 py-5">
           <div className='flex items-center mb-10 mt-4 gap-5'>
             <img src={logo} loading="lazy" className="w-10" />
-            <h2 className="font-semibold text-xl text-gray-800">Sign in to unlock the best of NFTify.</h2>
+            <h2 className="font-semibold text-xl text-gray-800"># Sign in to unlock the best of NEXT HYPE.</h2>
           </div>
           <div class="container mx-auto">
             <div className='grid gap-2'>
@@ -71,11 +71,11 @@ function Login({ setLoginPopup, setGoogleData }) {
             </div>
           </div>
           <div className="py-10 space-y-2 text-gray-600 sm:-mb-8">
-            <p className="text-xs">// your account is authorized by{' '}
+            <p className="text-xs">{'<!-- '} your account is authorized by{' '}
               <a href="https://medium.com/toruslabs/what-distributed-key-generation-is-866adc79620" target="_blank" rel="noreferrer"
                 className="text-blue-700 hover:text-blue-800 hover:underline">Distributed Key Management</a>
-              {' '}technology, we are responsible to your data privacy and protection.</p>
-            <p className="text-xs">// account will be in local storage after logging in, make sure you are not using public device or being hacked.</p>
+              {' '}technology, we are responsible to your data privacy and protection{' -->'}</p>
+            <p className="text-xs">{'<!-- '}account will be in local storage after logging in, make sure you are not using public device or being hacked{' -->'}</p>
           </div>
         </div>
       </div>

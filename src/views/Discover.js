@@ -36,6 +36,13 @@ export default function Discover() {
 		fetchData();
 	}, [queryParams, search]);
 
+	if (onQuery) {
+		return (
+			<div className='h-screen w-full flex justify-center'>
+				<div className='animate-spin self-center rounded-full w-10 h-10 border-b-2 border-gray-500'></div>
+			</div>
+		)
+	}
 
 	return (
 		<div className="flex flex-col justify-between">
@@ -52,18 +59,16 @@ export default function Discover() {
 			</div>
 			<div className="flex flex-wrap gap-y-6 justify-center">
 				{
-					onQuery ?
-						<div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-500"></div>
-						: nfts.length === 0 ?
-							<div className="grid h-96">
-								<p className="text-2xl font-light self-center leading-normal my-2 text-gray-500">
-									no nfts found
-								</p>
-							</div>
-							:
-							nfts.map((nft) => (
-								<NFT {...nft} />
-							))
+					nfts.length === 0 ?
+						<div className="grid h-96">
+							<p className="text-2xl font-light self-center leading-normal my-2 text-gray-500">
+								no nfts found
+							</p>
+						</div>
+						:
+						nfts.map((nft) => (
+							<NFT {...nft} />
+						))
 				}
 			</div>
 		</div>

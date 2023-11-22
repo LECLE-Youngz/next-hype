@@ -10,7 +10,9 @@ import Wrapper from './components/Wrapper';
 import LeaderBoard from './views/Leaderboard';
 import Social from './views/Social';
 import { getUsers } from './helpers/user';
-import { getPosts } from './helpers/social';
+import { getPosts, getTags } from './helpers/social';
+import CreatePost from './components/CreatePost';
+import Post from './components/Post';
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -21,10 +23,10 @@ function App() {
     const fetchData = async () => {
       const posts = await getPosts();
       const users = await getUsers();
-
+      const tags = await getTags();
       setPosts(posts);
       setUsers(users);
-      setTags([...new Set(posts.map(post => post.tags).flat())])
+      setTags(tags);
     };
     fetchData();
   }, []);
@@ -52,26 +54,29 @@ function App() {
             <Wrapper children={<Profile />} />
           } />
           {
-            users.map((user) => (
-              <Route path={`/profile/${user.id}`} element={
-                <Wrapper children={<Profile user={user} />} />
+            users.map((userId) => (
+              <Route path={`/profile/${userId}`} element={
+                <Wrapper children={<Profile userId={userId} />} />
               } />
             ))
           }
           {
-            posts.map((post) => (
-              <Route path={`/social/${post.postId}`} element={
-                <Wrapper children={<Social chosenPost={post} />} />
+            posts.map((postId) => (
+              <Route path={`/social/${postId}`} element={
+                <Wrapper children={<Post postId={postId} />} />
               } />
             ))
           }
           {
             tags.map((tag) => (
-              <Route path={`/social/${tag}`} element={
-                <Wrapper children={<Social chosenTag={tag} />} />
+              <Route path={`/social/tag/${tag?.tag}`} element={
+                <Wrapper children={<Social chosenTag={tag?.tag} />} />
               } />
             ))
           }
+          <Route path={`/social/create`} element={
+            <Wrapper children={<CreatePost />} />
+          } />
           <Route path="/assets/*" />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

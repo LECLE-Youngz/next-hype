@@ -1,46 +1,53 @@
 import { useEffect, useState } from "react";
-import { getPosts } from "../helpers/social";
+import { getPosts, getPostsByTag, getTags } from "../helpers/social";
 import PostPreview from "../components/PostPreview";
 import Post from "../components/Post";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Social({ chosenPost, chosenTag }) {
+export default function Social({ chosenTag }) {
     const [search, setSearch] = useState("")
-    const [posts, setPosts] = useState([])
-    const [tags, setTags] = useState({})
+    const [posts, setPosts] = useState(null)
+    const [tags, setTags] = useState(null)
+    const [chosenPost, setChosenPost] = useState(null)
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchData = async () => {
-            const posts = await getPosts()
-
             if (chosenTag) {
-                setPosts(posts.filter(post => post.tags.includes(chosenTag)))
+                const posts = await getPostsByTag()
+                setPosts(posts)
             } else {
+                const posts = await getPosts()
                 setPosts(posts)
             }
 
-            setTags({})
-            posts.forEach(post => {
-                post.tags.forEach(tag => {
-                    if (!tags[tag]) {
-                        tags[tag] = 1
-                    } else {
-                        tags[tag] += 1
-                    }
-                })
-            })
+            const tags = await getTags()
             setTags(tags)
         }
 
         fetchData()
-    })
+    }, [])
+
+    if (tags === null || posts === null) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col justify-between">
-            <h1 className="text-4xl text-gray-900"># Join the{' '}
-                <span className="twinkle-text">
-                    community
-                </span>{' '}</h1>
+            <div className="flex justify-between">
+                <h1 className="text-4xl text-gray-900"># Join the{' '}
+                    <span className="twinkle-text">
+                        community
+                    </span>{' '}</h1>
+                <button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" onClick={() => navigate("/social/create")}>
+                    Create post
+                </button>
+            </div>
             <div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
                 {chosenPost ?
                     <>
@@ -68,54 +75,36 @@ export default function Social({ chosenPost, chosenTag }) {
                 }
             </div>
             <div className="grid grid-cols-4 mx-10 gap-10">
-                {
-                    chosenPost ?
-                        <>
-                            <div className="flex flex-col">
-                                <img className="w-full h-fit" src={chosenPost.nft.thumbnail} alt="post" />
-                            </div>
-                            <div className="flex col-span-3">
-                                <Post {...chosenPost} />
-                            </div>
-                        </>
-                        :
-                        <>
-                            <div className="flex flex-wrap gap-3 h-min">
+                <div className="flex flex-wrap gap-3 h-min">
+                    {
+                        tags.map(tag =>
+                            <Link className={`${chosenTag === tag.tag ? "bg-gray-900 text-gray-100" : "text-gray-900 hover:text-gray-100 hover:bg-gray-900 "} group cursor-pointer border border-gray-900 py-2 px-4 h-min`}
+                                to={`/social/${chosenTag === tag.tag ? "" : "tag/" + tag.tag}`}
+                            >
                                 {
-                                    Object.keys(tags).map(tag =>
-                                        <Link className={`${chosenTag === tag ? "bg-gray-900 text-gray-100" : "text-gray-900 hover:text-gray-100 hover:bg-gray-900 "} group cursor-pointer border border-gray-900 py-2 px-4 h-min`}
-                                            to={`/social/${chosenTag === tag ? "" : tag}`}
-                                        >
-                                            {
-                                                chosenTag === tag ?
-                                                    <div className="btn-group relative w-full">
-                                                        <span className="group-hover:invisible visible">{tag} &nbsp;|&nbsp; {tags[tag]}</span>
-                                                        <span className="group-hover:block hidden absolute top-0 w-full">{tag} &nbsp;|&nbsp; x</span>
-                                                    </div>
-                                                    :
-                                                    <span className="">{tag} &nbsp;|&nbsp; {tags[tag]}</span>
-                                            }
-                                        </Link>
-                                    )
-                                }
-                            </div>
-                            <div className="col-span-3 flex flex-wrap gap-y-6 justify-between">
-                                {
-                                    posts.filter(post =>
-                                        post.header.toLowerCase().includes(search.toLowerCase()) ||
-                                        post.description.toLowerCase().includes(search.toLowerCase()) ||
-                                        post.text.toLowerCase().includes(search.toLowerCase())
-                                    ).map(post =>
-                                        <div
-                                            className="grid border w-[49%] border-gray-200 hover:border-gray-900">
-                                            <PostPreview {...post} />
+                                    chosenTag === tag.tag ?
+                                        <div className="btn-group relative w-full">
+                                            <span className="group-hover:invisible visible">{tag.tag} &nbsp;|&nbsp; {tag.count}</span>
+                                            <span className="group-hover:block hidden absolute top-0 w-full">{tag.tag} &nbsp;|&nbsp; x</span>
                                         </div>
-                                    )
+                                        :
+                                        <span className="">{tag.tag} &nbsp;|&nbsp; {tag.count}</span>
                                 }
+                            </Link>
+                        )
+                    }
+                </div>
+                <div className="col-span-3 flex flex-wrap gap-y-6 justify-between">
+                    {
+                        posts.map(post =>
+                            <div
+                                className="grid border w-[49%] h-56 border-gray-200 hover:border-gray-900">
+                                <PostPreview postId={post} />
                             </div>
-                        </>
-                }
+                        )
+                    }
+                </div>
             </div>
-        </div>
+        </div >
     );
 }

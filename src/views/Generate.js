@@ -186,7 +186,7 @@ export default function Generate() {
 					</div>
 				</div>
 				<div className="flex flex-col items-center mt-10">
-					<div className={`${previewSizeClass(generateParams.height / generateParams.width)} ${inputClass[typeof response !== "object" || response == null]} border border-dashed grid self-center`}>
+					<div className={`${previewSizeClass(generateParams.height / generateParams.width)} ${inputClass[typeof response !== "object" || response == null]}  border-gray-400  border-[1.5px] border-dashed grid self-center`}>
 						{
 							typeof response === "object" && response !== null ? (
 								<div className="relative">

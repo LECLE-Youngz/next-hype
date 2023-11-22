@@ -3,21 +3,22 @@ import NFT from '../components/NFT';
 import { MdOutlineLanguage } from 'react-icons/md';
 import { HiOutlineMail } from 'react-icons/hi'
 import { Link, useNavigate } from 'react-router-dom';
-import { emailToWallet } from '../helpers/user';
-import { getPosts } from '../helpers/social';
+import { emailToWallet, getUsers } from '../helpers/user';
+import { getPosts, getPostsByUser } from '../helpers/social';
 import PostPreview from '../components/PostPreview';
 import { getInfoUser } from '../storage/local';
 
-function Profile({ user }) {
+function Profile({ userId, userInfo }) {
 	const regionNames = new Intl.DisplayNames(['en'], {
 		type: 'language'
 	});
 
+	const [user, setUser] = useState(null)
 	const [emailSearch, setEmailSearch] = useState("")
 	const [nftSearch, setNFTSearch] = useState("")
 	const [postSearch, setPostSearch] = useState("")
 	const navigate = useNavigate()
-	const [posts, setPosts] = useState([])
+	const [posts, setPosts] = useState(null)
 	const [wallet, setWallet] = useState(false)
 	const [account, setAccount] = useState(null)
 
@@ -31,16 +32,26 @@ function Profile({ user }) {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			let user = getInfoUser().user
-			setAccount(user)
+			let account = getInfoUser().user
+			setAccount(account)
 
-			let allPosts = await getPosts()
-			allPosts = allPosts.filter(post => post.postOwner.id === user.id)
-			setPosts(allPosts)
+			let user = userInfo ?? await getUsers(userId)
+			setUser(user)
+
+			let posts = await getPostsByUser(user.id)
+			setPosts(posts)
 		};
 
 		fetchData();
 	}, []);
+
+	if (user === null || posts === null) {
+		return (
+			<div className='h-screen w-full flex justify-center'>
+				<div className='animate-spin self-center rounded-full w-10 h-10 border-b-2 border-gray-500'></div>
+			</div>
+		)
+	}
 
 	return (
 		<div className="flex flex-col justify-between">
@@ -58,13 +69,13 @@ function Profile({ user }) {
 				</p>
 			</div>
 			<div className="flex mt-10 mx-10 justify-between">
-				<div className='flex justify-evenly w-3/5'>
-					<img src={user.picture} className=" self-center shadow-xl h-40" alt="..." />
+				<div className='flex w-3/5'>
+					<img src={user.picture} className="mr-10 self-center shadow-xl h-40" alt="..." />
 					<div className="self-center text-center space-y-2">
 						<p className='flex text-4xl font-light text-gray-900'>{user.name}
 							{
-								account?.id !== user.id && (
-									user.socialUser.followers.includes(account?.id) ?
+								account.id !== user.id && (
+									user.socialUser.followers.includes(account.id) ?
 										<span className='ml-5 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 px-6 text-xl self-center w-min'>unfollow</span>
 										:
 										<span className='ml-5 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 px-6 text-xl self-center w-min'>follow</span>
@@ -78,7 +89,7 @@ function Profile({ user }) {
 							</div>
 							<div className="gap-2 flex items-center">
 								<MdOutlineLanguage className="font-bold text-xl text-gray-500" />
-								{regionNames.of(user.locale)}
+								{user.locale ? regionNames.of(user.locale) : '_'}
 							</div>
 						</div>
 						<div className="text-center leading-8">
@@ -94,22 +105,22 @@ function Profile({ user }) {
 					</div>
 				</div>
 				<div className='w-2/5 grid place-items-center'>
-					<div className="text-right leading-8">
-						<p className='text-2xl font-light text-gray-900'>## fun fact</p>
+					<div className="text-right text-sm leading-8 italic">
+						<p className='text-2xl font-light text-gray-900 not-italic'>## fun fact</p>
 						{' '}there are{' '}
-						<span className='font-medium text-2xl text-gray-800'>
+						<span className='font-medium text-xl text-gray-800'>
 							{user.socialUser.numNFTSold}
 						</span>
 						{' '}nfts have been sold and{' '}
-						<span className='font-medium text-2xl text-gray-800'>
+						<span className='font-medium text-xl text-gray-800'>
 							{user.socialUser.numNFTPurchased}
 						</span>
 						{' '}nfts have been purchased. Also, there are{' '}
-						<span className='font-medium text-2xl text-gray-800'>
+						<span className='font-medium text-xl text-gray-800'>
 							{user.socialUser.numPromptSold}
 						</span>
 						{' '}prompts have been sold and{' '}
-						<span className='font-medium text-2xl text-gray-800'>
+						<span className='font-medium text-xl text-gray-800'>
 							{user.socialUser.numPromptPurchased}
 						</span>
 						{' '}prompts have been purchased by {user.name}.
@@ -128,22 +139,32 @@ function Profile({ user }) {
 			<div className='flex mx-10 h-min'>
 				<div className="flex w-3/5 flex-wrap justify-center">
 					{
-						user.nft.filter(nft => nft.name.toLowerCase().includes(nftSearch.toLowerCase())).map((nft) => (
-							<NFT owner={user} {...nft} />
-						))
+						user.nft.length === 0 ?
+							<div className='w-full flex justify-center h-96'>
+								<p className='text-4xl font-light self-center text-gray-500'>no nfts found</p>
+							</div>
+							:
+							user.nft.filter(nft => nft.name.toLowerCase().includes(nftSearch.toLowerCase())).map((nft) => (
+								<NFT owner={user} {...nft} />
+							))
 					}
 				</div>
 				<div className='w-2/5 grid h-min mt-3 space-y-6'>
 					{
-						posts.filter(post =>
-							post.header.toLowerCase().includes(postSearch.toLowerCase()) ||
-							post.description.toLowerCase().includes(postSearch.toLowerCase()) ||
-							post.text.toLowerCase().includes(postSearch.toLowerCase())
-						).map(post =>
-							<div className="h-min grid border w-full border-gray-200 hover:border-gray-900 cursor-pointer">
-								<PostPreview {...post} />
+						posts.length === 0 ?
+							<div className='w-full flex justify-center h-80 pt-10'>
+								<p className='text-4xl font-light self-center text-gray-500'>no posts found</p>
 							</div>
-						)
+							:
+							posts.filter(post =>
+								post.header.toLowerCase().includes(postSearch.toLowerCase()) ||
+								post.description.toLowerCase().includes(postSearch.toLowerCase()) ||
+								post.text.toLowerCase().includes(postSearch.toLowerCase())
+							).map(post =>
+								<div className="h-56 grid border w-full border-gray-200 hover:border-gray-900 cursor-pointer">
+									<PostPreview {...post} />
+								</div>
+							)
 					}
 				</div>
 			</div>

@@ -10,10 +10,7 @@ export const buyNFT = async (id, price, idUserSold) => {
 
     if (success) {
         const buyerId = getInfoUser().data.id;
-        let buyerRanking = await getRanking(buyerId);
-        buyerRanking.numPurchased += 1;
 
-        await updateRanking(buyerRanking, idUserSold).catch(e => { success = false })
     }
     return success
 }
@@ -25,10 +22,6 @@ export const buyNFTPrompt = async (id, promptPrice, idUserSold) => {
 
     if (success) {
         const buyerId = getInfoUser().data.id;
-        let buyerRanking = await getRanking(buyerId);
-        buyerRanking.numPromptPurchased += 1;
-
-        await updateRanking(buyerRanking, idUserSold).catch(e => { success = false })
     }
     return success
 }
@@ -125,6 +118,24 @@ export const mintNFT = async (data, metadata) => {
     }
 
     return success
+}
+
+export const getPrompts = async () => {
+    let prompts
+    const access_token = getInfoUser().tokens.access_token;
+    await axios.get(
+        `${process.env.REACT_APP_API_ENDPOINT}/data/owner`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`,
+            }
+        }
+    )
+        .then(res => { prompts = res.data })
+        .catch(error => { prompts = [] })
+
+    return prompts
 }
 
 export const getPromptById = async (id) => {
