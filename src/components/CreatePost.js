@@ -6,7 +6,7 @@ import GenerationData from './GenerationData';
 import { createPost } from '../helpers/social';
 import { useNavigate } from 'react-router-dom';
 
-const CreatePost = () => {
+const CreatePost = ({ force }) => {
     const [account, setAccount] = useState(null)
 
     const [postParams, setPostParams] = useState({
@@ -15,7 +15,9 @@ const CreatePost = () => {
         text: "",
         nft: null,
         data: null,
-        tags: []
+        nsfwContent: false,
+        exclusiveContent: false,
+        tags: null,
     })
 
     const [nftSelectorPopup, setNFTSelectorPopup] = useState(false)
@@ -31,12 +33,14 @@ const CreatePost = () => {
         setPostParams({ ...postParams, nft, data })
     }
 
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const post = async () => {
         setCreating(true)
-        await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id)
-        setCreating(false)
+        const tags = postParams.tags !== null ? postParams.tags.split(" ") : []
+        const id = await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id, tags)
+        force()
+        navigate(`/post/${id}`)
     }
 
     const inputClass = {
@@ -45,6 +49,16 @@ const CreatePost = () => {
     }
 
     const previewSizeClass = (ratio) => ratio === 1 || isNaN(ratio) ? "w-[20rem] h-[20rem]" : ratio > 1 ? "w-[20rem] h-[32rem]" : "w-[32rem] h-[20rem]"
+
+    if (creating) {
+        return (
+            <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
+                <div className='h-full w-full flex items-center justify-center'>
+                    <div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col justify-between">
@@ -61,7 +75,7 @@ const CreatePost = () => {
                     <span className="twinkle-text">
                         community
                     </span>{' '}</h1>
-                <button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" >
+                <button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" onClick={post}>
                     Summit
                 </button>
             </div>
@@ -105,6 +119,29 @@ const CreatePost = () => {
                                 view generate data
                             </div>
                         }
+                    </div>
+                    <div className='flex flex-col'>
+                        <input onChange={(e) => setPostParams({ ...postParams, tags: e.target.value })} className={`${inputClass[postParams.tags === null]} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" defaultValue={postParams.tags} placeholder='### tags' />
+                        <div className="w-full flex">
+                            <button onClick={() => setPostParams({ ...postParams, nsfwContent: true })}
+                                className={`${inputClass[!postParams.nsfwContent]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
+                                <p className="text-center w-full">### nsfw</p>
+                            </button>
+                            <button onClick={() => setPostParams({ ...postParams, nsfwContent: false })}
+                                className={`${inputClass[postParams.nsfwContent]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
+                                <p className="text-center w-full">### safe</p>
+                            </button>
+                        </div>
+                        <div className="w-full flex">
+                            <button onClick={() => setPostParams({ ...postParams, exclusiveContent: true })}
+                                className={`${inputClass[!postParams.exclusiveContent]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
+                                <p className="text-center w-full">### exclusive</p>
+                            </button>
+                            <button onClick={() => setPostParams({ ...postParams, exclusiveContent: false })}
+                                className={`${inputClass[postParams.exclusiveContent]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
+                                <p className="text-center w-full">### public</p>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
+import Markdown from 'react-markdown'
+import rehypeRaw from "rehype-raw";
 import { BiUpvote, BiComment, BiBookmark, BiSolidUpvote, BiSolidComment, BiSolidBookmark } from "react-icons/bi";
 import { useEffect, useState } from 'react';
 import { parseTime } from '../libs/time';
@@ -127,14 +129,11 @@ const Post = ({ postId }) => {
 				<p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight">## demo</p>
 				<p className="truncate w-min border-gray-900 text-2xl font-extralight">/</p>
 				<p className="truncate border-b w-1/2 border-gray-900 text-2xl font-extralight text-right flex">
-					<p className="text-center px-5 appearance-none rounded-full flex-1 outline-none text-gray-600 w-full">## post view</p>
+					<p className="text-center appearance-none rounded-full flex-1 outline-none text-gray-600 w-full">## post view</p>
 				</p>
 				<p className="truncate w-min border-gray-900 text-2xl font-extralight">/</p>
 				<p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight text-right flex">
-					<p className="text-right px-5 appearance-none rounded-full flex-1 outline-none text-gray-600 w-full">## post detail</p>
-					<Link type="submit" className="bg-white border-t border-x border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-3 text-xl" aria-label="search" to={`/social`}>
-						back
-					</Link>
+					<p className="text-right appearance-none rounded-full flex-1 outline-none text-gray-600 w-full">## post detail</p>
 				</p>
 			</div>
 			<div className="grid grid-cols-4 mx-10 gap-10">
@@ -150,7 +149,9 @@ const Post = ({ postId }) => {
 							<div className='-translate-y-4 flex justify-end'>
 								<p className='pl-5 bg-white w-fit'>{parseTime(post.timestamp)}</p>
 							</div>
-							<p className="text-gray-600 ml-5">{post.text}</p>
+							<article className="text-gray-600 ml-5 prose">
+								<Markdown rehypePlugins={[rehypeRaw]}>{post.text}</Markdown>
+							</article>
 							<div className="flex gap-2 mt-5 justify-end">
 								{post.tags.map((tag) => (
 									<Link to={`/social/tag/${tag}`}
