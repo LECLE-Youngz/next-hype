@@ -82,7 +82,6 @@ export const getBookmarks = async (id) => {
 }
 
 export const toggleFollowUser = async (id) => {
-    console.log(id)
     const access_token = getInfoUser().tokens.access_token;
 
     await axios.put(
@@ -133,15 +132,6 @@ export const toggleBookmarkPost = async (id) => {
 
 export const createPost = async (header, description, text, nftId, tags) => {
     const access_token = getInfoUser().tokens.access_token;
-
-    console.log(`${process.env.REACT_APP_API_ENDPOINT}/socials/post`,
-        {
-            header,
-            description,
-            text,
-            nftId,
-            tags
-        },)
 
     const res = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/socials/post`,

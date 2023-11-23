@@ -3,10 +3,10 @@ import { getInfoUser } from '../storage/local';
 import NFTSelector from './NFTSelector';
 import { LiaUndoAltSolid } from "react-icons/lia";
 import GenerationData from './GenerationData';
-import { createPost } from '../helpers/social';
+import { createPost, getPosts } from '../helpers/social';
 import { useNavigate } from 'react-router-dom';
 
-const CreatePost = ({ force }) => {
+const CreatePost = ({ updatePosts }) => {
     const [account, setAccount] = useState(null)
 
     const [postParams, setPostParams] = useState({
@@ -38,9 +38,10 @@ const CreatePost = ({ force }) => {
     const post = async () => {
         setCreating(true)
         const tags = postParams.tags !== null ? postParams.tags.split(" ") : []
-        const id = await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id, tags)
-        force()
-        navigate(`/post/${id}`)
+        const res = await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id, tags)
+        const newPosts = await getPosts()
+        updatePosts(newPosts)
+        navigate(`/social/${res.id}`)
     }
 
     const inputClass = {

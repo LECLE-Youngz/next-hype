@@ -19,9 +19,6 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [tags, setTags] = useState([]);
 
-  const [forceUpdate, setForceUpdate] = useState(0);
-  const force = () => setForceUpdate(forceUpdate + 1);
-
   useEffect(() => {
     const fetchData = async () => {
       const users = await getUsers();
@@ -38,7 +35,11 @@ function App() {
       setTags(tags);
     };
     fetchData();
-  }, [forceUpdate]);
+  }, []);
+
+  const updatePosts = async (newPosts) => {
+    setPosts(newPosts);
+  }
 
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}>
@@ -84,7 +85,7 @@ function App() {
             ))
           }
           <Route path={`/social/create`} element={
-            <Wrapper children={<CreatePost force={force} />} />
+            <Wrapper children={<CreatePost updatePosts={updatePosts} />} />
           } />
           <Route path="/assets/*" />
           <Route path="*" element={<Navigate to="/" />} />

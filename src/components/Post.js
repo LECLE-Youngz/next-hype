@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import Markdown from 'react-markdown'
 import rehypeRaw from "rehype-raw";
+import remarkGfm from 'remark-gfm'
 import { BiUpvote, BiComment, BiBookmark, BiSolidUpvote, BiSolidComment, BiSolidBookmark } from "react-icons/bi";
 import { useEffect, useState } from 'react';
 import { parseTime } from '../libs/time';
@@ -150,7 +151,7 @@ const Post = ({ postId }) => {
 								<p className='pl-5 bg-white w-fit'>{parseTime(post.timestamp)}</p>
 							</div>
 							<article className="text-gray-600 ml-5 prose">
-								<Markdown rehypePlugins={[rehypeRaw]}>{post.text}</Markdown>
+								<Markdown rehypePlugins={[rehypeRaw, remarkGfm]}>{post.text}</Markdown>
 							</article>
 							<div className="flex gap-2 mt-5 justify-end">
 								{post.tags.map((tag) => (
