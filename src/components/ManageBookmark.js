@@ -33,18 +33,20 @@ function ManageBookmarks({ userId, setManageBookmarksPopup }) {
             <div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
                 <div className="bg-white shadow-xl w-full px-16 py-5 relative">
                     <h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># Manage bookmarks</h3>
-                    <div className="mt-20 container mx-auto">
+                    <div className="container mx-auto">
                         {bookmarks.length === 0 ?
-                            <div className="text-center">
-                                <p className="text-2xl mb-10 text-gray-500">
+                            <div className="mt-10 text-center">
+                                <p className="text-2xl text-gray-500">
                                     You don't have any bookmarks yet.
                                 </p>
                             </div>
                             :
-                            <div className="overflow-y-scroll mt-5 max-h-[26rem]">
-                                {bookmarks.map((bookmark) => (
-                                    <PostPreview key={bookmark.id} post={bookmark} />
-                                ))}
+                            <div className="mt-10 overflow-y-auto max-h-[26rem]">
+                                <div className='grid border h-56 border-gray-200 hover:border-gray-900'>
+                                    {bookmarks.map((bookmark) => (
+                                        <PostPreview postId={bookmark} />
+                                    ))}
+                                </div>
                             </div>
                         }
                     </div>

@@ -37,7 +37,8 @@ const CreatePost = ({ updatePosts }) => {
 
     const post = async () => {
         setCreating(true)
-        const tags = postParams.tags !== null ? postParams.tags.split(" ") : []
+        // split and trim tags
+        const tags = postParams.tags !== null ? postParams.tags.split(",").map((tag) => tag.trim()) : []
         const res = await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id, tags)
         const newPosts = await getPosts()
         updatePosts(newPosts)
