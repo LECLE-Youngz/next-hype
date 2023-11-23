@@ -7,6 +7,7 @@ import Advanced from "./Advanced";
 import ManageNFTs from "./ManageNFTs";
 import PurchasedData from "./PurchasedData";
 import { getBalance } from "../scripts";
+import ManageBookmarks from "./ManageBookmark";
 
 export default function Navbar() {
 	let [loginPopup, setLoginPopup] = useState(false);
@@ -16,18 +17,18 @@ export default function Navbar() {
 	useEffect(() => {
 		const user = getInfoUser();
 		setGoogleData(user);
-		if (user != null && Object.keys(user).length !== 0) {
-			console.log(user || Object.keys(user).length !== 0)
-			getBalance(user.wallet.address).then(res => {
-				setBalance(res);
-			})
-		}
+		// if (user != null && Object.keys(user).length !== 0) {
+		// 	getBalance(user.wallet.address).then(res => {
+		// 		setBalance(res);
+		// 	})
+		// }
 	}, [loginPopup]);
 
 	const logout = () => {
 		setAdvancedPopup(false);
 		setManageNFTsPopup(false);
 		setPurchasedDataPopup(false);
+		setManageBookmarksPopup(false);
 		storeInfoUser(null);
 		setGoogleData(null);
 	};
@@ -37,6 +38,7 @@ export default function Navbar() {
 		setAdvancedPopup(true);
 		setManageNFTsPopup(false);
 		setPurchasedDataPopup(false);
+		setManageBookmarksPopup(false);
 	};
 
 	const [manageNFTsPopup, setManageNFTsPopup] = useState(false);
@@ -44,6 +46,7 @@ export default function Navbar() {
 		setManageNFTsPopup(true);
 		setAdvancedPopup(false);
 		setPurchasedDataPopup(false);
+		setManageBookmarksPopup(false);
 	};
 
 	const [purchasedDataPopup, setPurchasedDataPopup] = useState(false);
@@ -51,6 +54,15 @@ export default function Navbar() {
 		setPurchasedDataPopup(true);
 		setAdvancedPopup(false);
 		setManageNFTsPopup(false);
+		setManageBookmarksPopup(false);
+	};
+
+	const [manageBookmarksPopup, setManageBookmarksPopup] = useState(false);
+	const manageBookmarks = () => {
+		setManageBookmarksPopup(true);
+		setAdvancedPopup(false);
+		setManageNFTsPopup(false);
+		setPurchasedDataPopup(false);
 	};
 
 	return (
@@ -61,6 +73,7 @@ export default function Navbar() {
 			{advancedPopup && <Advanced userId={googleData.user.id} setAdvancedPopup={setAdvancedPopup} />}
 			{manageNFTsPopup && <ManageNFTs userId={googleData.user.id} setManageNFTsPopup={setManageNFTsPopup} />}
 			{purchasedDataPopup && <PurchasedData userId={googleData.user.id} setPurchasedDataPopup={setPurchasedDataPopup} />}
+			{manageBookmarksPopup && <ManageBookmarks userId={googleData.user.id} setManageBookmarksPopup={setManageBookmarksPopup} />}
 			<div className="mx-auto relative z-50">
 				<nav className="flex flex-wrap items-center px-4 py-2">
 					<Link
@@ -133,6 +146,14 @@ export default function Navbar() {
 											<div className="h-[1px] bg-gray-400 my-2"></div>
 											<li className="">
 												<button
+													onClick={() => manageBookmarks()}
+													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
+												>
+													Manage Bookmarks
+												</button>
+											</li>
+											<li className="">
+												<button
 													onClick={() => manageNFTs()}
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
@@ -144,7 +165,7 @@ export default function Navbar() {
 													onClick={() => purchasedData()}
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
-													Purchased Data
+													Manage Data
 												</button>
 											</li>
 											<li className="">

@@ -17,10 +17,13 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 
 	const [selectedId, setSelectedId] = useState(null)
 
+
 	if (nfts === null) {
 		return (
-			<div className='h-full w-full flex items-center justify-center'>
-				<div className="animate-spin rounded-full self-center h-16 w-16 border-b-2 border-gray-500"></div>
+			<div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
+				<div className='h-full w-full flex items-center justify-center'>
+					<div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+				</div>
 			</div>
 		)
 	}
@@ -30,12 +33,12 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 			{metaPopup && <GenerationData id={selectedId} setMetaPopup={setMetaPopup} />}
 			<div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
 				<div className="bg-white shadow-xl w-full px-16 py-5 relative">
-					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># Choose NFT</h3>
+					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># Manage owned data</h3>
 					<div className="my-10 container mx-auto">
 						{
 							nfts.length === 0 ?
 								<div className="text-center">
-									<p className="pt-5 text-2xl font-semibold leading-normal mb-2 text-gray-500">
+									<p className="text-2xl mb-10 text-gray-500">
 										You don't own any NFTs yet.
 									</p>
 								</div>

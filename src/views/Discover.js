@@ -38,8 +38,10 @@ export default function Discover() {
 
 	if (onQuery) {
 		return (
-			<div className='h-screen w-full flex justify-center'>
-				<div className='animate-spin self-center rounded-full w-10 h-10 border-b-2 border-gray-500'></div>
+			<div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
+				<div className='h-full w-full flex items-center justify-center'>
+					<div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+				</div>
 			</div>
 		)
 	}

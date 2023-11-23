@@ -3,20 +3,24 @@ import { getInfoUser } from '../storage/local';
 import NFTSelector from './NFTSelector';
 import { LiaUndoAltSolid } from "react-icons/lia";
 import GenerationData from './GenerationData';
+import { createPost } from '../helpers/social';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
     const [account, setAccount] = useState(null)
 
     const [postParams, setPostParams] = useState({
-        title: "",
+        header: "",
         description: "",
-        content: "",
+        text: "",
         nft: null,
         data: null,
+        tags: []
     })
 
     const [nftSelectorPopup, setNFTSelectorPopup] = useState(false)
     const [metaPopup, setMetaPopup] = useState(false)
+    const [creating, setCreating] = useState(false)
 
     useEffect(() => {
         const user = getInfoUser().user
@@ -25,6 +29,14 @@ const CreatePost = () => {
 
     const setNFTAndData = (nft, data) => {
         setPostParams({ ...postParams, nft, data })
+    }
+
+    // const navigate = useNavigate()
+
+    const post = async () => {
+        setCreating(true)
+        await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id)
+        setCreating(false)
     }
 
     const inputClass = {
@@ -60,7 +72,7 @@ const CreatePost = () => {
             </div>
             <div className="grid grid-cols-2 mx-10 gap-10">
                 <div className='grid gap-3'>
-                    <input onChange={(e) => setPostParams({ ...postParams, title: e.target.value })} className={`${inputClass[postParams.title === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### title' />
+                    <input onChange={(e) => setPostParams({ ...postParams, header: e.target.value })} className={`${inputClass[postParams.header === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### title' />
 
                     <input onChange={(e) => setPostParams({ ...postParams, description: e.target.value })} className={`${inputClass[postParams.description === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### description' />
 
@@ -68,7 +80,7 @@ const CreatePost = () => {
                         <a href='https://www.markdownguide.org/basic-syntax/' className='text-blue-500 hover:text-blue-700'> markdown syntax</a>
                         {' -->'}</p>
 
-                    <textarea className={`${inputClass[postParams.content === '']} w-full h-96 p-3 border cursor-text focus:outline-black flex items-center justify-center `} onChange={(e) => setPostParams({ ...postParams, content: e.target.value })} placeholder='### content' />
+                    <textarea className={`${inputClass[postParams.text === '']} w-full h-96 p-3 border cursor-text focus:outline-black flex items-center justify-center `} onChange={(e) => setPostParams({ ...postParams, text: e.target.value })} placeholder='### content' />
                 </div>
                 <div className='grid grid-cols-2 gap-3'>
                     <div className='flex flex-col'>

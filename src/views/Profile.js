@@ -4,7 +4,7 @@ import { MdOutlineLanguage } from 'react-icons/md';
 import { HiOutlineMail } from 'react-icons/hi'
 import { Link, useNavigate } from 'react-router-dom';
 import { emailToWallet, getUsers } from '../helpers/user';
-import { getPosts, getPostsByUser } from '../helpers/social';
+import { getPosts, getPostsByUser, toggleFollowUser } from '../helpers/social';
 import PostPreview from '../components/PostPreview';
 import { getInfoUser } from '../storage/local';
 
@@ -21,6 +21,7 @@ function Profile({ userId, userInfo }) {
 	const [posts, setPosts] = useState(null)
 	const [wallet, setWallet] = useState(false)
 	const [account, setAccount] = useState(null)
+	const [followUpdating, setFollowUpdating] = useState(false)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -45,10 +46,18 @@ function Profile({ userId, userInfo }) {
 		fetchData();
 	}, []);
 
+	const toggleFollow = async () => {
+		setFollowUpdating(true)
+		await toggleFollowUser(user.id)
+		setFollowUpdating(false)
+	}
+
 	if (user === null || posts === null) {
 		return (
-			<div className='h-screen w-full flex justify-center'>
-				<div className='animate-spin self-center rounded-full w-10 h-10 border-b-2 border-gray-500'></div>
+			<div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
+				<div className='h-full w-full flex items-center justify-center'>
+					<div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+				</div>
 			</div>
 		)
 	}
@@ -75,10 +84,17 @@ function Profile({ userId, userInfo }) {
 						<p className='flex text-4xl font-light text-gray-900'>{user.name}
 							{
 								account.id !== user.id && (
-									user.socialUser.followers.includes(account.id) ?
-										<span className='ml-5 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 px-6 text-xl self-center w-min'>unfollow</span>
-										:
-										<span className='ml-5 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 px-6 text-xl self-center w-min'>follow</span>
+									<span onClick={toggleFollow} className='ml-5 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 px-6 text-xl self-center w-min'>
+										{
+											followUpdating ?
+												'loading'
+												:
+												user.socialUser.followers.includes(account.id) ?
+													<span className=''>unfollow</span>
+													:
+													<span className=''>follow</span>
+										}
+									</span>
 								)
 							}
 						</p>

@@ -3,7 +3,7 @@ import { BiUpvote, BiComment, BiBookmark, BiSolidUpvote, BiSolidComment, BiSolid
 import { useEffect, useState } from 'react';
 import { parseTime } from '../libs/time';
 import { getInfoUser } from '../storage/local';
-import { createComment, getPosts, toggleLikeComment, toggleLikePost } from '../helpers/social';
+import { createComment, getPosts, toggleBookmarkPost, toggleLikeComment, toggleLikePost } from '../helpers/social';
 import { IoSend } from "react-icons/io5";
 import { IoMdClose, IoMdReturnLeft } from "react-icons/io";
 
@@ -93,6 +93,12 @@ const Post = ({ postId }) => {
 			await toggleLikePost(postId)
 			setLikeUpdating(false)
 		}
+	}
+
+	const toggleBookmark = async () => {
+		setBookmarkUpdating(true)
+		await toggleBookmarkPost(postId)
+		setBookmarkUpdating(false)
 	}
 
 	const navigate = useNavigate()
@@ -197,12 +203,12 @@ const Post = ({ postId }) => {
 								{
 									!bookmarkUpdating ?
 										post.bookmark.includes(account.id) ?
-											<div className='flex w-10 items-center space-x-1 group cursor-pointer hover:text-blue-400 text-blue-600'>
+											<div className='flex w-10 items-center space-x-1 group cursor-pointer hover:text-blue-400 text-blue-600' onClick={() => toggleBookmark()}>
 												<BiSolidBookmark className='' />
 												<p className='text-lg'>{post.bookmark.length}</p>
 											</div>
 											:
-											<div className='flex w-10 items-center space-x-1 group cursor-pointer hover:text-blue-400'>
+											<div className='flex w-10 items-center space-x-1 group cursor-pointer hover:text-blue-400' onClick={() => toggleBookmark()}>
 												<BiBookmark className='' />
 												<p className='text-lg'>{post.bookmark.length}</p>
 											</div>

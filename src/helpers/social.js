@@ -71,12 +71,21 @@ export const toggleLikeComment = async (id) => {
     )
 }
 
-export const toggleFollow = async (id) => {
+export const getBookmarks = async (id) => {
+    let bookmarks
+
+    await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/bookmark/${id}`)
+        .then(res => { bookmarks = res.data })
+        .catch(error => { bookmarks = [] })
+
+    return bookmarks
+}
+
+export const toggleFollowUser = async (id) => {
     const access_token = getInfoUser().tokens.access_token;
 
     await axios.put(
-        `${process.env.REACT_APP_API_ENDPOINT}/social-user/${id}/follow-or-unfollow`,
-        {},
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/social-user/${id}/follow-or-unfollow`,
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -95,9 +104,6 @@ export const createComment = async (postId, commentId, text) => {
         data = { ...data, commentId }
     }
 
-    console.log(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ''}`,
-        data)
-
     await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ''}`,
         data,
@@ -110,3 +116,37 @@ export const createComment = async (postId, commentId, text) => {
     )
 }
 
+export const toggleBookmarkPost = async (id) => {
+    const access_token = getInfoUser().tokens.access_token;
+
+    await axios.put(
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/bookmark-or-unbookmark`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`,
+            }
+        }
+    )
+}
+
+export const createPost = async (header, description, text, nftId, tags) => {
+    const access_token = getInfoUser().tokens.access_token;
+
+    await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/post`,
+        {
+            header,
+            description,
+            text,
+            nftId,
+            tags
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`,
+            }
+        }
+    )
+}

@@ -36,8 +36,10 @@ export default function Social({ chosenTag }) {
 
     if (tags === null || posts === null) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+            <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
+                <div className='h-full w-full flex items-center justify-center'>
+                    <div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+                </div>
             </div>
         )
     }
