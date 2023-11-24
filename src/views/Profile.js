@@ -47,6 +47,15 @@ function Profile({ userId, userInfo }) {
 		fetchData();
 	}, []);
 
+	useEffect(() => {
+		const fetchData = async () => {
+			let user = await getUsers(userId)
+			setUser(user)
+		}
+
+		fetchData()
+	}, [followUpdating, subscribeUpdating])
+
 	const toggleFollow = async () => {
 		setFollowUpdating(true)
 		await toggleFollowUser(user.id)
@@ -68,6 +77,8 @@ function Profile({ userId, userInfo }) {
 			</div>
 		)
 	}
+
+	console.log(user.socialUser.followers, account.id)
 
 	return (
 		<div className="flex flex-col justify-between">

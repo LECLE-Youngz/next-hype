@@ -60,9 +60,6 @@ function App() {
           <Route path="/leaderboard" element={
             <Wrapper children={<LeaderBoard />} />
           } />
-          <Route path="/social" element={
-            <Wrapper children={<Social updatePosts={updatePosts} />} />
-          } />
           <Route path='/profile' element={
             <Wrapper children={<Profile />} />
           } />
@@ -73,17 +70,20 @@ function App() {
               } />
             ))
           }
+          <Route path="/social" element={
+            <Wrapper children={<Social updatePosts={updatePosts} />} />
+          } />
           {
-            posts.map((postId) => (
-              <Route path={`/social/${postId}`} element={
-                <Wrapper children={<Post postId={postId} />} />
+            tags.map((tag) => (
+              <Route path={`/social/tag/${tag.tag}`} element={
+                <Wrapper children={<Social chosenTag={tag.tag} updatePosts={updatePosts} />} />
               } />
             ))
           }
           {
-            tags.map((tag) => (
-              <Route path={`/social/tag/${tag?.tag}`} element={
-                <Wrapper children={<Social chosenTag={tag?.tag} updatePosts={updatePosts} />} />
+            posts.map((postId) => (
+              <Route path={`/social/${postId}`} element={
+                <Wrapper children={<Post postId={postId} />} />
               } />
             ))
           }

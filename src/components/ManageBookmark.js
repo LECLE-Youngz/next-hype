@@ -30,7 +30,7 @@ function ManageBookmarks({ userId, setManageBookmarksPopup }) {
 
     return (
         <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
-            <div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
+            <div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-[72rem] w-3/4">
                 <div className="bg-white shadow-xl w-full px-16 py-5 relative">
                     <h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># Manage bookmarks</h3>
                     <div className="container mx-auto">
@@ -41,12 +41,12 @@ function ManageBookmarks({ userId, setManageBookmarksPopup }) {
                                 </p>
                             </div>
                             :
-                            <div className="mt-10 overflow-y-auto max-h-[26rem]">
-                                <div className='grid border h-56 border-gray-200 hover:border-gray-900'>
-                                    {bookmarks.map((bookmark) => (
+                            <div className="mt-10 flex flex-wrap gap-x-4 overflow-y-auto overflow-x-hidden max-h-[26rem]">
+                                {bookmarks.map((bookmark) => (
+                                    <div className='grid border my-2 h-56 w-[31rem] border-gray-200 hover:border-gray-900'>
                                         <PostPreview postId={bookmark} />
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         }
                     </div>

@@ -86,6 +86,7 @@ export const toggleFollowUser = async (id) => {
 
     await axios.put(
         `${process.env.REACT_APP_API_ENDPOINT}/socials/social-user/${id}/follow-or-unfollow`,
+        {},
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +121,8 @@ export const toggleBookmarkPost = async (id) => {
     const access_token = getInfoUser().tokens.access_token;
 
     await axios.put(
-        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/bookmark-or-unbookmark`,
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/bookmark`,
+        {},
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -132,6 +134,27 @@ export const toggleBookmarkPost = async (id) => {
 
 export const createPost = async (postId, header, description, text, nftId, tags) => {
     const access_token = getInfoUser().tokens.access_token;
+
+    if (postId) {
+        await axios.put(
+            `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}`,
+            {
+                header,
+                description,
+                text,
+                nftId,
+                tags
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access_token}`,
+                }
+            }
+        )
+
+        return postId
+    }
 
     const res = await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId ?? ''}`,
@@ -150,5 +173,5 @@ export const createPost = async (postId, header, description, text, nftId, tags)
         }
     )
 
-    return res.data
+    return res.data.id
 }

@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { getPosts, getPostsByTag, getTags } from "../helpers/social";
 import PostPreview from "../components/PostPreview";
-import Post from "../components/Post";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Social({ chosenTag, updatePosts }) {
     const [search, setSearch] = useState("")
     const [posts, setPosts] = useState(null)
     const [tags, setTags] = useState(null)
-    const [chosenPost, setChosenPost] = useState(null)
-
-    const navigate = useNavigate()
+    const [updating, setUpdating] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,17 +20,23 @@ export default function Social({ chosenTag, updatePosts }) {
 
     useEffect(() => {
         const fetchData = async () => {
+            setUpdating(true)
             if (chosenTag) {
-                const posts = await getPostsByTag(chosenTag)
-                setPosts(posts)
+                const newPosts = await getPostsByTag(chosenTag);
+                setPosts([...newPosts]);
             } else {
-                const posts = await getPosts()
-                setPosts(posts)
-                updatePosts(posts, tags)
+                const newPosts = await getPosts();
+                setPosts([...newPosts]);
+                updatePosts(newPosts, tags);
             }
-        }
-        fetchData()
-    }, [chosenTag])
+            setUpdating(false)
+        };
+        fetchData();
+    }, [chosenTag, tags]); // Include tags as a dependency
+
+    console.log(posts)
+
+    const navigate = useNavigate()
 
     if (tags === null || posts === null) {
         return (
@@ -57,30 +60,11 @@ export default function Social({ chosenTag, updatePosts }) {
                 </button>
             </div>
             <div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
-                {chosenPost ?
-                    <>
-                        <p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight">## demo</p>
-                        <p className="truncate w-min border-gray-900 text-2xl font-extralight">/</p>
-                        <p className="truncate border-b w-1/2 border-gray-900 text-2xl font-extralight text-right flex">
-                            <p className="text-center px-5 appearance-none rounded-full flex-1 outline-none text-gray-600 w-full">## post view</p>
-                        </p>
-                        <p className="truncate w-min border-gray-900 text-2xl font-extralight">/</p>
-                        <p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight text-right flex">
-                            <p className="text-right px-5 appearance-none rounded-full flex-1 outline-none text-gray-600 w-full">## post detail</p>
-                            <Link type="submit" className="bg-white border-t border-x border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-3 text-xl" aria-label="search" to={`/social`}>
-                                back
-                            </Link>
-                        </p>
-                    </>
-                    :
-                    <>
-                        <p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight">## choose your tags</p>
-                        <p className="truncate w-min border-gray-900 text-2xl font-extralight">/</p>
-                        <p className="truncate border-b w-3/4 border-gray-900 text-2xl font-extralight text-right flex">
-                            <input className="text-right appearance-none rounded-full flex-1 outline-none text-gray-600 w-full pr-1" placeholder="## find posts" type="text" required="" onChange={(e) => setSearch(e.target.value)} />
-                        </p>
-                    </>
-                }
+                <p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight">## choose your tags</p>
+                <p className="truncate w-min border-gray-900 text-2xl font-extralight">/</p>
+                <p className="truncate border-b w-3/4 border-gray-900 text-2xl font-extralight text-right flex">
+                    <input className="text-right appearance-none rounded-full flex-1 outline-none text-gray-600 w-full pr-1" placeholder="## find posts" type="text" required="" onChange={(e) => setSearch(e.target.value)} />
+                </p>
             </div>
             <div className="grid grid-cols-4 mx-10 gap-10">
                 <div className="flex flex-wrap gap-3 h-min">
@@ -102,9 +86,9 @@ export default function Social({ chosenTag, updatePosts }) {
                         )
                     }
                 </div>
-                <div className="col-span-3 flex flex-wrap gap-y-6 justify-between">
+                <div className="col-span-3 flex flex-wrap gap-y-6 justify-evenly">
                     {
-                        posts.map(post =>
+                        !updating && posts.map(post =>
                             <div
                                 className="grid border w-[31rem] h-56 border-gray-200 hover:border-gray-900">
                                 <PostPreview postId={post} />
@@ -113,6 +97,6 @@ export default function Social({ chosenTag, updatePosts }) {
                     }
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

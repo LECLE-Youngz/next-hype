@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { BiUpvote, BiComment, BiBookmark, BiSolidUpvote, BiSolidComment, BiSolidBookmark } from "react-icons/bi";
 import { getInfoUser } from '../storage/local';
 import { Link } from 'react-router-dom';
-import { getPosts, toggleLikePost } from '../helpers/social';
+import { getPosts, toggleBookmarkPost, toggleLikePost } from '../helpers/social';
 
 function PostPreview({ postId }) {
 	const [account, setAccount] = useState(null)
@@ -31,6 +31,13 @@ function PostPreview({ postId }) {
 		setLikeUpdating(true)
 		await toggleLikePost(postId)
 		setLikeUpdating(false)
+	}
+
+
+	const toggleBookmark = async () => {
+		setBookmarkUpdating(true)
+		await toggleBookmarkPost(postId)
+		setBookmarkUpdating(false)
 	}
 
 	if (post === null) {
@@ -95,15 +102,20 @@ function PostPreview({ postId }) {
 							<p className='text-sm'>{post.listComment.length}</p>
 						</Link>
 						{
-							post.bookmark.includes(account.id) ?
-								<div className='cursor-pointer space-x-1 flex items-center hover:text-blue-400 text-blue-600'>
-									<BiSolidBookmark className='' />
-									<p className='text-sm'>{post.bookmark.length}</p>
-								</div>
+							!bookmarkUpdating ?
+								post.bookmark.includes(account.id) ?
+									<div className='cursor-pointer space-x-1 flex items-center hover:text-blue-400 text-blue-600' onClick={() => toggleBookmark()}>
+										<BiSolidBookmark className='' />
+										<p className='text-sm'>{post.bookmark.length}</p>
+									</div>
+									:
+									<div className='cursor-pointer space-x-1 flex items-center hover:text-blue-400 text-gray-500' onClick={() => toggleBookmark()}>
+										<BiBookmark className='' />
+										<p className='text-sm'>{post.bookmark.length}</p>
+									</div>
 								:
-								<div className='cursor-pointer space-x-1 flex items-center hover:text-blue-400 text-gray-500'>
-									<BiBookmark className='' />
-									<p className='text-sm'>{post.bookmark.length}</p>
+								<div className='flex w-8 justify-center'>
+									<div className='self-center animate-spin rounded-full w-5 h-5 border-b-2 border-gray-500'></div>
 								</div>
 						}
 					</div>
