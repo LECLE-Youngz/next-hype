@@ -4,7 +4,7 @@ import { getInfoUser } from '../storage/local';
 import { Link } from 'react-router-dom';
 import { getPosts, toggleBookmarkPost, toggleLikePost } from '../helpers/social';
 
-function PostPreview({ postId }) {
+function PostPreview({ postId, setManageBookmarksPopup }) {
 	const [account, setAccount] = useState(null)
 	const [post, setPost] = useState(null)
 
@@ -33,7 +33,6 @@ function PostPreview({ postId }) {
 		setLikeUpdating(false)
 	}
 
-
 	const toggleBookmark = async () => {
 		setBookmarkUpdating(true)
 		await toggleBookmarkPost(postId)
@@ -55,7 +54,7 @@ function PostPreview({ postId }) {
 					{post.tags.length === 0 ? <span className='font-medium' >no tags available</span> : <span className='font-medium' >posted in </span>}
 					{post.tags.map(tag =>
 						<>
-							<Link to={`/social/${tag}`} className=' hover:underline underline-offset-2'>{tag}</Link>
+							<Link onClick={() => setManageBookmarksPopup && setManageBookmarksPopup(false)} to={`/social/${tag}`} className=' hover:underline underline-offset-2'>{tag}</Link>
 							<span className='mx-1'>{tag === post.tags[post.tags.length - 1] ? '' : '/'}</span>
 						</>
 					)}
@@ -72,7 +71,7 @@ function PostPreview({ postId }) {
 						/> : <div className='border-gray-100 w-full'></div>
 				}
 				<div className='w-full flex flex-col space-y-3 content-between container'>
-					<Link to={`/social/${postId}`} className='group grid'>
+					<Link to={`/social/${postId}`} className='group grid' onClick={() => setManageBookmarksPopup && setManageBookmarksPopup(false)}>
 						<p className='text-gray-900 group-hover:text-gray-500 font-serif text-xl font-bold truncate'>{post.header}</p>
 						<p className='text-gray-900 group-hover:text-gray-500 text-xs font-light'>by {post.postOwner.name}</p>
 					</Link>
@@ -97,7 +96,7 @@ function PostPreview({ postId }) {
 									<div className='self-center animate-spin rounded-full w-5 h-5 border-b-2 border-gray-500'></div>
 								</div>
 						}
-						<Link className='space-x-1 flex items-center group cursor-pointer hover:text-gray-400' to={`/social/${postId}#comment`}>
+						<Link className='space-x-1 flex items-center group cursor-pointer hover:text-gray-400' to={`/social/${postId}#comment`} onClick={() => setManageBookmarksPopup && setManageBookmarksPopup(false)}>
 							<BiComment className='' />
 							<p className='text-sm'>{post.listComment.length}</p>
 						</Link>

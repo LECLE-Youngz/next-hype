@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import PostPreview from './PostPreview'
-import EditNFTDataPrice from './EditNFTDataPrice'
-import Withdraw from './Withdraw'
-import Transfer from './Transfer'
-import { getUsers } from '../helpers/user'
-import { getBookmarks, getPosts } from '../helpers/social'
+import { getBookmarks } from '../helpers/social'
 
 function ManageBookmarks({ userId, setManageBookmarksPopup }) {
     const [bookmarks, setBookmarks] = useState(null)
@@ -44,7 +40,7 @@ function ManageBookmarks({ userId, setManageBookmarksPopup }) {
                             <div className="mt-10 flex flex-wrap gap-x-4 overflow-y-auto overflow-x-hidden max-h-[26rem]">
                                 {bookmarks.map((bookmark) => (
                                     <div className='grid border my-2 h-56 w-[31rem] border-gray-200 hover:border-gray-900'>
-                                        <PostPreview postId={bookmark} />
+                                        <PostPreview postId={bookmark} setManageBookmarksPopup={setManageBookmarksPopup} />
                                     </div>
                                 ))}
                             </div>

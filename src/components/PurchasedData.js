@@ -15,9 +15,6 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 		fetchData()
 	}, [userId])
 
-	const [selectedId, setSelectedId] = useState(null)
-
-
 	if (nfts === null) {
 		return (
 			<div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
@@ -30,7 +27,7 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 
 	return (
 		<div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
-			{metaPopup && <GenerationData id={selectedId} setMetaPopup={setMetaPopup} />}
+			{metaPopup && <GenerationData id={metaPopup} setMetaPopup={setMetaPopup} setPurchasedDataPopup={setPurchasedDataPopup} />}
 			<div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
 				<div className="bg-white shadow-xl w-full px-16 py-5 relative">
 					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># Manage owned data</h3>
@@ -62,8 +59,8 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 										</span>
 									</div>
 									{
-										nfts.map((nft, index) => (
-											<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-5 rounded" onClick={() => setMetaPopup(index)}>
+										nfts.map((nft) => (
+											<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-5 rounded" onClick={() => setMetaPopup(nft.id)}>
 												<img className="w-[10%] h-auto p-2" src={nft.thumbnail} alt="thumbnail" />
 												<div className="text-center w-[10%]">
 													<span className="text-sm text-gray-800">{nft.id}</span>

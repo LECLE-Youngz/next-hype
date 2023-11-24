@@ -3,6 +3,12 @@ import { useGoogleLogin } from "@react-oauth/google"
 import { getGoogleToken } from "../helpers/user"
 import { storeInfoUser } from '../storage/local';
 import { useState } from 'react';
+import { getPrivateKey } from '../utils/fetch-privateKey';
+
+const handleReconstructMasterKey = async (email, jwt) => {
+  const data = await getPrivateKey({ owner: email, verifier: "google", idToken: jwt });
+  return data;
+}
 
 function Login({ setLoginPopup, setGoogleData }) {
   const [loggingIn, setLoggingIn] = useState(false)
@@ -15,6 +21,9 @@ function Login({ setLoginPopup, setGoogleData }) {
 
         if (response.error === '') {
           const data = response.data
+          let key = await handleReconstructMasterKey(data.user.email, data.tokens.id_token)
+
+          console.log(key)
 
           storeInfoUser(data)
           setGoogleData(data)

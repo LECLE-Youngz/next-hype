@@ -3,7 +3,7 @@ import { getPromptById } from '../helpers/nft';
 import { useNavigate } from 'react-router-dom';
 import { parsePrompt } from '../libs/data';
 
-function GenerationData({ id, setMetaPopup, data }) {
+function GenerationData({ id, setMetaPopup, data, setPurchasedDataPopup }) {
     const [meta, setMeta] = useState({})
     const [onQuery, setOnQuery] = useState(true)
 
@@ -33,13 +33,21 @@ function GenerationData({ id, setMetaPopup, data }) {
         fetchData()
     }, [])
 
+    const tryPrompt = () => {
+        setMetaPopup(false)
+        if (setPurchasedDataPopup) {
+            setPurchasedDataPopup(false)
+        }
+        navigate("/generate/", { state: { meta: parsePrompt(meta) } })
+    }
+
     return (
         <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
             <div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-2/3 w-3/4 h-[54rem]">
                 <div className="bg-white shadow-xl w-full px-16 py-5 h-3/4">
                     <div className='flex justify-between mt-4 mb-10'>
                         <h3 className="self-center text-4xl text-gray-900 text-center"># Generation data</h3>
-                        <button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" onClick={() => navigate("/generate/", { state: { meta: parsePrompt(meta) } })}>
+                        <button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" onClick={() => tryPrompt()}>
                             Try this prompt
                         </button>
                     </div>

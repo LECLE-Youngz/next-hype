@@ -121,7 +121,7 @@ export const toggleBookmarkPost = async (id) => {
     const access_token = getInfoUser().tokens.access_token;
 
     await axios.put(
-        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/bookmark`,
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/bookmark-or-unbookmark`,
         {},
         {
             headers: {
