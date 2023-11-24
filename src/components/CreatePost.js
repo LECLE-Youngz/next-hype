@@ -5,23 +5,22 @@ import { LiaUndoAltSolid } from "react-icons/lia";
 import GenerationData from './GenerationData';
 import { createPost, getPosts } from '../helpers/social';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getPromptById } from '../helpers/nft';
 
 const CreatePost = ({ updatePosts }) => {
     const [account, setAccount] = useState(null)
     const { state } = useLocation();
-
-    console.log(state)
 
     const [postParams, setPostParams] = useState(state?.post ?? {
         header: "",
         description: "",
         text: "",
         nft: null,
-        data: null,
         nsfwContent: false,
         exclusiveContent: false,
         tags: [],
     })
+    const [data, setData] = useState()
     const [tags, setTags] = useState(postParams.tags.join(", "))
 
     const [nftSelectorPopup, setNFTSelectorPopup] = useState(false)
@@ -34,6 +33,11 @@ const CreatePost = ({ updatePosts }) => {
     }, [])
 
     useEffect(() => {
+        const data = getPromptById(postParams.nft?.id)
+        setData(data)
+    }, [postParams.nft])
+
+    useEffect(() => {
         if (tags === "") {
             setPostParams({ ...postParams, tags: [] })
         } else {
@@ -41,18 +45,18 @@ const CreatePost = ({ updatePosts }) => {
         }
     }, [tags])
 
-    const setNFTAndData = (nft, data) => {
-        setPostParams({ ...postParams, nft, data })
+    const setNFTAndData = (nft) => {
+        setPostParams({ ...postParams, nft })
     }
 
     const navigate = useNavigate()
 
     const post = async () => {
         setCreating(true)
-        const res = await createPost(state?.postId, postParams.header, postParams.description, postParams.text, postParams.nft.id, postParams.tags)
+        const postId = await createPost(state?.postId, postParams.header, postParams.description, postParams.text, postParams.nft.id, postParams.tags)
         const newPosts = await getPosts()
         updatePosts(newPosts)
-        navigate(`/social/${res.id}`)
+        navigate(`/social/${postId}`)
     }
 
     const inputClass = {
@@ -80,7 +84,7 @@ const CreatePost = ({ updatePosts }) => {
             }
             {
                 metaPopup &&
-                <GenerationData data={postParams.data} setMetaPopup={setMetaPopup} />
+                <GenerationData data={data} setMetaPopup={setMetaPopup} />
             }
             <div className="flex justify-between">
                 <h1 className="text-4xl text-gray-900"># Join the{' '}
@@ -110,7 +114,7 @@ const CreatePost = ({ updatePosts }) => {
                 </div>
                 <div className='grid grid-cols-2'>
                     <div className='flex flex-col space-y-5'>
-                        <div className={`${previewSizeClass(postParams.data?.H / postParams.data?.W)} ${inputClass[postParams.nft == null]} cursor-pointer border-dashed border-gray-400 grid self-center hover:border-gray-900 border-[1.5px]`} onClick={() => setNFTSelectorPopup(true)}>
+                        <div className={`${previewSizeClass(data?.H / data?.W)} ${inputClass[postParams.nft == null]} cursor-pointer border-dashed border-gray-400 grid self-center hover:border-gray-900 border-[1.5px]`} onClick={() => setNFTSelectorPopup(true)}>
                             {
                                 postParams.nft !== null ? (
                                     <div className="relative group">
@@ -126,7 +130,7 @@ const CreatePost = ({ updatePosts }) => {
                             }
                         </div>
                         {
-                            postParams.data !== null &&
+                            data !== null &&
                             <div className='bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-lg cursor-pointer mt-5' onClick={() => setMetaPopup(true)}>
                                 view generate data
                             </div>

@@ -151,7 +151,9 @@ const Post = ({ postId }) => {
 							<p className="my-5 text-lg text-gray-600 font-semibold">{post.description}</p>
 							<div className='border-[0.5px] border-gray-200'></div>
 							<div className='-translate-y-4 flex justify-end'>
-								<p className='pl-5 bg-white w-fit'>{parseTime(post.timestamp)}</p>
+								<p className='pl-5 bg-white w-fit'>
+									{parseTime(post.timestamp)}
+								</p>
 							</div>
 							<article className="text-gray-600 ml-5 prose">
 								<Markdown rehypePlugins={[rehypeRaw, remarkGfm]}>{post.text}</Markdown>
