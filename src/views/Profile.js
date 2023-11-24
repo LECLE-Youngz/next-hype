@@ -22,6 +22,7 @@ function Profile({ userId, userInfo }) {
 	const [wallet, setWallet] = useState(false)
 	const [account, setAccount] = useState(null)
 	const [followUpdating, setFollowUpdating] = useState(false)
+	const [subscribeUpdating, setSubscribeUpdating] = useState(false)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -50,6 +51,12 @@ function Profile({ userId, userInfo }) {
 		setFollowUpdating(true)
 		await toggleFollowUser(user.id)
 		setFollowUpdating(false)
+	}
+
+	const toggleSubscribe = async () => {
+		setSubscribeUpdating(true)
+		await toggleFollowUser(user.id)
+		setSubscribeUpdating(false)
 	}
 
 	if (user === null || posts === null) {
@@ -81,23 +88,38 @@ function Profile({ userId, userInfo }) {
 				<div className='flex w-3/5'>
 					<img src={user.picture} className="mr-10 self-center shadow-xl h-40" alt="..." />
 					<div className="self-center text-center space-y-2">
-						<p className='flex text-4xl font-light text-gray-900'>{user.name}
+						<p className='text-4xl mx-auto font-light text-gray-900'>{user.name}
+						</p>
+						<div className='flex justify-center'>
 							{
 								account.id !== user.id && (
-									<span onClick={toggleFollow} className='ml-5 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 px-6 text-xl self-center w-min'>
-										{
-											followUpdating ?
-												'loading'
-												:
-												user.socialUser.followers.includes(account.id) ?
-													<span className=''>unfollow</span>
+									<div className='flex justify-evenly'>
+										<span onClick={toggleFollow} className='w-36 mx-2 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 text-xl self-center'>
+											{
+												followUpdating ?
+													'loading'
 													:
-													<span className=''>follow</span>
-										}
-									</span>
+													user.socialUser.followers.includes(account.id) ?
+														<span className=''>unfollow</span>
+														:
+														<span className=''>follow</span>
+											}
+										</span>
+										<span onClick={toggleSubscribe} className='w-36 mx-2 border border-gray-900 hover:bg-gray-900 text-gray-900 hover:text-gray-100 cursor-pointer py-2 text-xl self-center'>
+											{
+												subscribeUpdating ?
+													'loading'
+													:
+													user.socialUser?.subscribers?.includes(account.id) ?
+														<span className=''>unsubscribe</span>
+														:
+														<span className=''>subscribe</span>
+											}
+										</span>
+									</div>
 								)
 							}
-						</p>
+						</div>
 						<div className='flex justify-evenly'>
 							<div className="gap-2 flex items-center">
 								<HiOutlineMail className="font-bold text-xl text-gray-500" />
@@ -165,7 +187,7 @@ function Profile({ userId, userInfo }) {
 							))
 					}
 				</div>
-				<div className='w-2/5 grid h-min mt-3 space-y-6'>
+				<div className='w-2/5 grid h-min mt-3 space-y-6 justify-items-center'>
 					{
 						posts.length === 0 ?
 							<div className='w-full flex justify-center h-80 pt-10'>
@@ -177,7 +199,7 @@ function Profile({ userId, userInfo }) {
 								post.description.toLowerCase().includes(postSearch.toLowerCase()) ||
 								post.text.toLowerCase().includes(postSearch.toLowerCase())
 							).map(post =>
-								<div className="h-56 grid border w-full border-gray-200 hover:border-gray-900 cursor-pointer">
+								<div className="h-56 grid border w-[31rem] border-gray-200 hover:border-gray-900 cursor-pointer">
 									<PostPreview {...post} />
 								</div>
 							)

@@ -34,3 +34,16 @@ export const parsePrompt = (prompt) => {
         track_id: null
     }
 }
+
+export const parsePost = (post) => {
+    return {
+        header: post.header,
+        description: post.description,
+        text: post.text,
+        tags: post.tags,
+        nsfwContent: false,
+        exclusiveContent: false,
+        nft: post.nft,
+        data: null
+    }
+}

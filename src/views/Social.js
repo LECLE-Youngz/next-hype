@@ -4,7 +4,7 @@ import PostPreview from "../components/PostPreview";
 import Post from "../components/Post";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Social({ chosenTag }) {
+export default function Social({ chosenTag, updatePosts }) {
     const [search, setSearch] = useState("")
     const [posts, setPosts] = useState(null)
     const [tags, setTags] = useState(null)
@@ -29,6 +29,7 @@ export default function Social({ chosenTag }) {
             } else {
                 const posts = await getPosts()
                 setPosts(posts)
+                updatePosts(posts, tags)
             }
         }
         fetchData()
@@ -105,7 +106,7 @@ export default function Social({ chosenTag }) {
                     {
                         posts.map(post =>
                             <div
-                                className="grid border w-[49%] h-56 border-gray-200 hover:border-gray-900">
+                                className="grid border w-[31rem] h-56 border-gray-200 hover:border-gray-900">
                                 <PostPreview postId={post} />
                             </div>
                         )

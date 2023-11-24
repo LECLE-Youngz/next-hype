@@ -9,6 +9,7 @@ import { getInfoUser } from '../storage/local';
 import { createComment, getPosts, toggleBookmarkPost, toggleLikeComment, toggleLikePost } from '../helpers/social';
 import { IoSend } from "react-icons/io5";
 import { IoMdClose, IoMdReturnLeft } from "react-icons/io";
+import { parsePost } from '../libs/data';
 
 const Post = ({ postId }) => {
 	const [account, setAccount] = useState(null)
@@ -106,7 +107,6 @@ const Post = ({ postId }) => {
 
 	const navigate = useNavigate()
 
-
 	if (post === null) {
 		return (
 			<div className='h-screen w-full flex justify-center'>
@@ -122,9 +122,12 @@ const Post = ({ postId }) => {
 					<span className="twinkle-text">
 						community
 					</span>{' '}</h1>
-				<button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" onClick={() => navigate("/social/create")}>
-					Create post
-				</button>
+				{
+					post.postOwner.id === account.id &&
+					<button className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl" onClick={() => navigate("/social/create", { state: { postId: postId, post: parsePost(post) } })}>
+						Edit post
+					</button>
+				}
 			</div>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
 				<p className="truncate border-b w-1/4 border-gray-900 text-2xl font-extralight">## demo</p>

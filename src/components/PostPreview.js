@@ -43,13 +43,16 @@ function PostPreview({ postId }) {
 
 	return (
 		<>
-			<div className='mx-4 mt-4 flex'>
-				{post.tags.map(tag =>
-					<>
-						<Link to={`/social/${tag}`} className='text-gray-900 text-sm font-light truncate hover:underline underline-offset-2'>{tag}</Link>
-						<span className='text-gray-900 text-sm font-light mx-1'>{tag === post.tags[post.tags.length - 1] ? '' : '/'}</span>
-					</>
-				)}
+			<div className='mx-4 mt-4 container'>
+				<p className='truncate container overflow-hidden w-[29rem] text-gray-900 text-sm font-light'>
+					{post.tags.length === 0 ? <span className='font-medium' >no tags available</span> : <span className='font-medium' >posted in </span>}
+					{post.tags.map(tag =>
+						<>
+							<Link to={`/social/${tag}`} className=' hover:underline underline-offset-2'>{tag}</Link>
+							<span className='mx-1'>{tag === post.tags[post.tags.length - 1] ? '' : '/'}</span>
+						</>
+					)}
+				</p>
 			</div>
 			<div className='flex space-x-4 p-4'>
 				{
@@ -61,14 +64,14 @@ function PostPreview({ postId }) {
 							style={{ objectFit: 'cover', backgroundSize: 'cover', backgroundClip: 'cover' }}
 						/> : <div className='border-gray-100 w-full'></div>
 				}
-				<div className='w-full flex flex-col space-y-3 content-between'>
+				<div className='w-full flex flex-col space-y-3 content-between container'>
 					<Link to={`/social/${postId}`} className='group grid'>
 						<p className='text-gray-900 group-hover:text-gray-500 font-serif text-xl font-bold truncate'>{post.header}</p>
 						<p className='text-gray-900 group-hover:text-gray-500 text-xs font-light'>by {post.postOwner.name}</p>
 					</Link>
-					<div className='bg-gray-200 p-3 text-xs h-full'>
+					<p className='bg-gray-200 p-[0.75rem] text-xs w-[18.5rem] container truncated-text h-[4.5rem]'>
 						{post.description}
-					</div>
+					</p>
 					<div className='place-self-end flex space-x-5 text-lg text-gray-600'>
 						{
 							!likeUpdating ?

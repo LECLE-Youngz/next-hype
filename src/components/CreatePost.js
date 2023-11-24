@@ -4,12 +4,15 @@ import NFTSelector from './NFTSelector';
 import { LiaUndoAltSolid } from "react-icons/lia";
 import GenerationData from './GenerationData';
 import { createPost, getPosts } from '../helpers/social';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const CreatePost = ({ updatePosts }) => {
     const [account, setAccount] = useState(null)
+    const { state } = useLocation();
 
-    const [postParams, setPostParams] = useState({
+    console.log(state)
+
+    const [postParams, setPostParams] = useState(state?.post ?? {
         header: "",
         description: "",
         text: "",
@@ -17,8 +20,9 @@ const CreatePost = ({ updatePosts }) => {
         data: null,
         nsfwContent: false,
         exclusiveContent: false,
-        tags: null,
+        tags: [],
     })
+    const [tags, setTags] = useState(postParams.tags.join(", "))
 
     const [nftSelectorPopup, setNFTSelectorPopup] = useState(false)
     const [metaPopup, setMetaPopup] = useState(false)
@@ -29,6 +33,14 @@ const CreatePost = ({ updatePosts }) => {
         setAccount(user);
     }, [])
 
+    useEffect(() => {
+        if (tags === "") {
+            setPostParams({ ...postParams, tags: [] })
+        } else {
+            setPostParams({ ...postParams, tags: tags.split(",").map((tag) => tag.trim()) })
+        }
+    }, [tags])
+
     const setNFTAndData = (nft, data) => {
         setPostParams({ ...postParams, nft, data })
     }
@@ -37,9 +49,7 @@ const CreatePost = ({ updatePosts }) => {
 
     const post = async () => {
         setCreating(true)
-        // split and trim tags
-        const tags = postParams.tags !== null ? postParams.tags.split(",").map((tag) => tag.trim()) : []
-        const res = await createPost(postParams.header, postParams.description, postParams.text, postParams.nft.id, tags)
+        const res = await createPost(state?.postId, postParams.header, postParams.description, postParams.text, postParams.nft.id, postParams.tags)
         const newPosts = await getPosts()
         updatePosts(newPosts)
         navigate(`/social/${res.id}`)
@@ -88,18 +98,18 @@ const CreatePost = ({ updatePosts }) => {
             </div>
             <div className="grid grid-cols-2 mx-10 gap-10">
                 <div className='grid gap-3'>
-                    <input onChange={(e) => setPostParams({ ...postParams, header: e.target.value })} className={`${inputClass[postParams.header === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### title' />
+                    <input onChange={(e) => setPostParams({ ...postParams, header: e.target.value })} className={`${inputClass[postParams.header === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### title' defaultValue={postParams.header} />
 
-                    <input onChange={(e) => setPostParams({ ...postParams, description: e.target.value })} className={`${inputClass[postParams.description === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### description' />
+                    <input onChange={(e) => setPostParams({ ...postParams, description: e.target.value })} className={`${inputClass[postParams.description === '']} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" placeholder='### description' defaultValue={postParams.description} />
 
                     <p className='mt-3 text-sm text-gray-600'>{'<!-- '} the post content is formatted using
                         <a href='https://www.markdownguide.org/basic-syntax/' className='text-blue-500 hover:text-blue-700'> markdown syntax</a>
                         {' -->'}</p>
 
-                    <textarea className={`${inputClass[postParams.text === '']} w-full h-96 p-3 border cursor-text focus:outline-black flex items-center justify-center `} onChange={(e) => setPostParams({ ...postParams, text: e.target.value })} placeholder='### content' />
+                    <textarea className={`${inputClass[postParams.text === '']} w-full h-96 p-3 border cursor-text focus:outline-black flex items-center justify-center `} onChange={(e) => setPostParams({ ...postParams, text: e.target.value })} placeholder='### content' defaultValue={postParams.text} />
                 </div>
-                <div className='grid grid-cols-2 gap-3'>
-                    <div className='flex flex-col'>
+                <div className='grid grid-cols-2'>
+                    <div className='flex flex-col space-y-5'>
                         <div className={`${previewSizeClass(postParams.data?.H / postParams.data?.W)} ${inputClass[postParams.nft == null]} cursor-pointer border-dashed border-gray-400 grid self-center hover:border-gray-900 border-[1.5px]`} onClick={() => setNFTSelectorPopup(true)}>
                             {
                                 postParams.nft !== null ? (
@@ -121,9 +131,8 @@ const CreatePost = ({ updatePosts }) => {
                                 view generate data
                             </div>
                         }
-                    </div>
-                    <div className='flex flex-col'>
-                        <input onChange={(e) => setPostParams({ ...postParams, tags: e.target.value })} className={`${inputClass[postParams.tags === null]} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" defaultValue={postParams.tags} placeholder='### tags' />
+                        <input onChange={(e) => setTags(e.target.value)}
+                            className={`${inputClass[postParams.tags.length === 0]} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" defaultValue={tags} placeholder='### tags' />
                         <div className="w-full flex">
                             <button onClick={() => setPostParams({ ...postParams, nsfwContent: true })}
                                 className={`${inputClass[!postParams.nsfwContent]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
@@ -144,6 +153,8 @@ const CreatePost = ({ updatePosts }) => {
                                 <p className="text-center w-full">### public</p>
                             </button>
                         </div>
+                    </div>
+                    <div className='flex flex-col'>
                     </div>
                 </div>
             </div>

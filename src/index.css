@@ -7,6 +7,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Habibi&display=swap");
 
 @layer components {
+	.truncated-text {
+		overflow: hidden;
+		display: block;
+		word-wrap: break-word;
+	}
+
 	.twinkle-text {
 		animation: twinkle 1s linear infinite;
 		background: linear-gradient(to right, #f32170, #ff6b08, #cf23cf, #eedd44);

@@ -10,8 +10,6 @@ export default function Generate() {
 	const [onGenerate, setOnGenerate] = useState(false);
 	const { state } = useLocation();
 
-	console.log(state?.meta)
-
 	const [generateParams, setGenerateParams] = useState(state?.meta ?? {
 		prompt: "",
 		negative_prompt: "(worst quality, low quality, large head, extra digits:1.4) ",
@@ -31,8 +29,6 @@ export default function Generate() {
 		webhook: null,
 		track_id: null
 	});
-
-	console.log(generateParams.seed)
 
 	useEffect(() => {
 		if (generateParams.seed === "") {

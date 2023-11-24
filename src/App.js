@@ -37,8 +37,11 @@ function App() {
     fetchData();
   }, []);
 
-  const updatePosts = async (newPosts) => {
+  const updatePosts = async (newPosts, newTags) => {
     setPosts(newPosts);
+    if (newTags) {
+      setTags(newTags);
+    }
   }
 
   return (
@@ -58,7 +61,7 @@ function App() {
             <Wrapper children={<LeaderBoard />} />
           } />
           <Route path="/social" element={
-            <Wrapper children={<Social />} />
+            <Wrapper children={<Social updatePosts={updatePosts} />} />
           } />
           <Route path='/profile' element={
             <Wrapper children={<Profile />} />
@@ -80,7 +83,7 @@ function App() {
           {
             tags.map((tag) => (
               <Route path={`/social/tag/${tag?.tag}`} element={
-                <Wrapper children={<Social chosenTag={tag?.tag} />} />
+                <Wrapper children={<Social chosenTag={tag?.tag} updatePosts={updatePosts} />} />
               } />
             ))
           }

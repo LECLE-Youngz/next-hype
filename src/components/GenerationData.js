@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getPromptById } from '../helpers/nft';
 import { useNavigate } from 'react-router-dom';
-import { parsePrompt } from '../libs/prompt';
+import { parsePrompt } from '../libs/data';
 
 function GenerationData({ id, setMetaPopup, data }) {
     const [meta, setMeta] = useState({})

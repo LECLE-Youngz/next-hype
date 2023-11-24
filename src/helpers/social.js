@@ -130,11 +130,11 @@ export const toggleBookmarkPost = async (id) => {
     )
 }
 
-export const createPost = async (header, description, text, nftId, tags) => {
+export const createPost = async (postId, header, description, text, nftId, tags) => {
     const access_token = getInfoUser().tokens.access_token;
 
     const res = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}/socials/post`,
+        `${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId ?? ''}`,
         {
             header,
             description,
