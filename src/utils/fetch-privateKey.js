@@ -8,9 +8,9 @@ export const ec = new EC('secp256k1');
 
 const config = {
     nodeEndpoints: [
-        'http://localhost:3001',
-        'http://localhost:3002',
-        'http://localhost:3003',
+        process.env.REACT_APP_NODE_ENDPOINT_1,
+        process.env.REACT_APP_NODE_ENDPOINT_2,
+        process.env.REACT_APP_NODE_ENDPOINT_3,
     ],
     nodePub: [
         {
