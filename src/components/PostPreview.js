@@ -64,7 +64,7 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 				{
 					post.nft ?
 						<img
-							src={post.nft.thumbnail}
+							src={post.nft.image}
 							className="border-gray-100 h-[9.5rem] object-cover"
 							alt="..."
 							style={{ objectFit: 'cover', backgroundSize: 'cover', backgroundClip: 'cover' }}

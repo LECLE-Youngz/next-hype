@@ -63,7 +63,6 @@ export default function Generate() {
 
 		setOnGenerate(false)
 		setResponse(res)
-		console.log(res)
 	}
 
 	const [copy, setCopy] = useState("Click to copy")
@@ -144,11 +143,11 @@ export default function Generate() {
 								<p className="self-center mb-2 mt-5">### nsfw filter</p>
 								<div className="w-full flex">
 									<button onClick={() => setGenerateParams({ ...generateParams, safety_checker: "yes" })}
-										className={`${inputClass[generateParams.safety_checker !== "yes"]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
+										className={`${inputClass[generateParams.safety_checker !== "yes"]} border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
 										<p className="text-center w-full">yes</p>
 									</button>
 									<button onClick={() => setGenerateParams({ ...generateParams, safety_checker: "no" })}
-										className={`${inputClass[generateParams.safety_checker !== "no"]}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
+										className={`${inputClass[generateParams.safety_checker !== "no"]} border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}>
 										<p className="text-center w-full">no</p>
 									</button>
 								</div>
@@ -169,7 +168,7 @@ export default function Generate() {
 					<div className='flex'>
 						<button className={`${onGenerate ? "border-gray-900 cursor-default" : "hover:border-gray-500"} group h-12 w-40 mt-10 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`} onClick={() => generate()} disabled={onGenerate}>
 							<div className="relative flex items-center space-x-4 justify-center">
-								<span className="block tracking-wide text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
+								<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
 									{
 										!onGenerate ?
 											"Summit"
@@ -186,7 +185,7 @@ export default function Generate() {
 						{
 							typeof response === "object" && response !== null ? (
 								<div className="relative">
-									<img src={response?.output[0] ?? null} style={{ width: "100%", height: "100%", objectFit: "cover" }} className="xl" />
+									<img src={response?.output?.[0]} style={{ width: "100%", height: "100%", objectFit: "cover" }} className="xl" />
 									<div className={`${onGenerate ? "block" : "hidden"} absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center`}>
 										<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-500"></div>
 									</div>
@@ -206,9 +205,9 @@ export default function Generate() {
 						}
 					</div>
 					<div className="mt-10">
-						<button className={`group h-12 w-40 mx-auto border border-gray-900 hover:border-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`} onClick={() => setMintPopup(true)} disabled={typeof response !== "object" || response == null}>
+						<button className={`group h-12 w-40 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`} onClick={() => setMintPopup(true)} disabled={typeof response !== "object" || response == null}>
 							<div className="relative flex items-center space-x-4 justify-center">
-								<span className="block tracking-wide text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
+								<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
 									<RiNftFill className="inline-block mr-2" /> Mint NFT
 								</span>
 							</div>
@@ -218,97 +217,97 @@ export default function Generate() {
 			</div>
 			{
 				typeof response === "object" && response !== null &&
-				<div className="w-full">
-					<div className="border border-dashed border-gray-200 bg-gray-200 p-5 ">
-						<h2 className=" text-2xl text-gray-800 text-center font-bold mb-10">Generation data</h2>
+				<div className="w-full mx-5">
+					<h3 className="mt-10 mb-5 text-2xl text-gray-900 mx-5 font-extralight">## generation details</h3>
+					<div className=" mx-14 border border-dashed border-gray-200 bg-gray-100 p-5 ">
 						{
 							<div className="grid grid-cols-6 gap-x-10 gap-y-5 items-center">
-								<p className="">Generation Time</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.generationTime)}>
+								<p className="">### generation time</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.generationTime)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.generationTime} s
 								</p>
-								<p className="">Prompt</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.prompt)}>
+								<p className="">### prompt</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.prompt)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.prompt}
 								</p>
-								<p className="">Negative Prompt</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.negative_prompt)}>
+								<p className="">### negative prompt</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.negative_prompt)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.negative_prompt}
 								</p>
-								<p className="">Model</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.model)}>
+								<p className="">### model</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.model)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.model}
 								</p>
-								<p className="">VAE</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.vae)}>
+								<p className="">### vae</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.vae)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.vae}
 								</p>
-								<p className="">Size</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.W + "x" + response.meta.H)}>
+								<p className="">### size</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.W + "x" + response.meta.H)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.W}x{response.meta.H}
 								</p>
-								<p className="">Revision</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<p className="">### revision</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.revision}
 								</p>
-								<p className="">Steps</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.steps)}>
+								<p className="">### steps</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.steps)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.steps}
 								</p>
-								<p className="">CFG scale</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.guidance_scale)}>
+								<p className="">### cfg scale</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.guidance_scale)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.guidance_scale}
 								</p>
-								<p className="">Seed</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.seed)}>
+								<p className="">### seed</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(response.meta.seed)}>
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.seed}
 								</p>
-								<p className="">NSFW filter</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<p className="">### nsfw filter</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.safetychecker}
 								</p>
-								<p className="">Attention slicing</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<p className="">### attention slicing</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>
 									{response.meta.enable_attention_slicing}
 								</p>
-								<p className="">Instant response</p>
-								<p className="group relative col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<p className="">### instant response</p>
+								<p className="group relative font-medium col-span-5 hover:bg-gray-200 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
 									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0  transition-opacity group-hover:opacity-100">
 										{copy}
 									</span>

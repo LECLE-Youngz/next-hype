@@ -1,59 +1,76 @@
-import React from 'react'
+import { useState } from 'react'
+import GenerationData from './GenerationData'
+
+const fakeData = {
+    meta: {
+        prompt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget aliquam ultricies.",
+        negative_prompt: "Nunc nisl ultrices nisl, eu ultricies nisl nisl eget nisl. Nullam euismod, nisl eget aliquam ultricies, nunc nisl ultrices nisl, eu ultricies nisl nisl eget nisl.",
+        model: "Lorem ipsum dolor sit amet.",
+        vae: "Consectetur adipiscing elit.",
+        W: 512,
+        H: 512,
+        revision: "Lorem ipsum dolor sit amet.",
+        steps: 20,
+        guidance_scale: 7.5,
+        seed: 12345,
+        safetychecker: "Lorem",
+        enable_attention_slicing: "Lorem",
+        instant_response: "Lorem",
+    }
+}
 
 const DataPreview = ({ data }) => {
+    const [metaPopup, setMetaPopup] = useState(false)
+
+    let metadata = data ?? fakeData
+
     return (
-        <div className="container mx-auto">
-            <div className="ml-10 grid grid-cols-4 gap-x-10 gap-y-5 items-center overflow-y-scroll max-h-[26rem]">
-                <p className="">## prompt</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.prompt}
-                </p>
-                <p className="">## negative prompt</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.negative_prompt}
-                </p>
-                <p className="">## model</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.model}
-                </p>
-                <p className="">## vae</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.vae}
-                </p>
-                <p className="">## size</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.W}x{data.H}
-                </p>
-                <p className="">## revision</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.revision}
-                </p>
-                <p className="">## steps</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.steps}
-                </p>
-                <p className="">## cfg scale</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.guidance_scale}
-                </p>
-                <p className="">## seed</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.seed}
-                </p>
-                <p className="">## nsfw filter</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.safetychecker}
-                </p>
-                <p className="">## attention slicing</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.enable_attention_slicing}
-                </p>
-                <p className="">## instant response</p>
-                <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-                    {data.instant_response}
-                </p>
+        <>
+            {
+                metaPopup &&
+                <GenerationData data={metadata} setMetaPopup={setMetaPopup} />
+            }
+            <div className="container grid hover:bg-gray-50 cursor-pointer" onClick={() => setMetaPopup(true)}>
+                <div className="grid text-sm w-full divide-y-[0.5px] px-3 divide-gray-300 items-center overflow-y-scroll max-h-[26rem]">
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.prompt}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.negative_prompt}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.model}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.vae}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.W}x{metadata.meta.H}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.revision}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.steps}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.guidance_scale}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.seed}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.safetychecker}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.enable_attention_slicing}
+                    </p>
+                    <p className="font-medium w-full px-4 py-3">
+                        {metadata.meta.instant_response}
+                    </p>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

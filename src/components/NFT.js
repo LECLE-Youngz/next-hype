@@ -5,43 +5,57 @@ import { AiOutlineVerticalAlignBottom, AiOutlineSmile, AiOutlineCheck } from 're
 import GenerationData from './GenerationData'
 import { getInfoUser } from '../storage/local'
 import DataPurchase from './DataPurchase'
-import { btcLogo, rskLogo } from '../data'
 import NFTPurchase from './NFTPurchase'
+import { parsePrice } from '../libs/blockchain'
+import NFTDetail from './NFTDetail'
 
-function NFT({ thumbnail, name, id, owner, price, promptPrice, promptBuyer, description, onSale }) {
+function NFT({ image, name, id, owner, price, promptPrice, promptBuyer, promptAllower }) {
     const [metaPopup, setMetaPopup] = useState(false)
     const [dataPurchasePopup, setDataPurchasePopup] = useState(false)
     const [nftPurchasePopup, setNFTPurchasePopup] = useState(false)
-    const [account, setAccount] = useState({})
+    const [nftDetailPopup, setNFTDetailPopup] = useState(false)
+    const [account, setAccount] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const user = await getInfoUser().user
+            const user = await getInfoUser()
             setAccount(user)
         }
         fetchData()
     }, [])
+
+    if (account === null) {
+        return (
+            <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
+                <div className='h-full w-full flex items-center justify-center'>
+                    <div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <>
             {metaPopup && <GenerationData id={id} setMetaPopup={setMetaPopup} />}
             {dataPurchasePopup && <DataPurchase id={id} promptPrice={promptPrice} name={name} ownerName={owner.name} userId={owner.id} setDataPurchasePopup={setDataPurchasePopup} />}
             {nftPurchasePopup && <NFTPurchase id={id} price={price} name={name} ownerName={owner.name} userId={owner.id} setNFTPurchasePopup={setNFTPurchasePopup} />}
+            {nftDetailPopup && <NFTDetail image={image} name={name} id={id} owner={owner} price={price} promptPrice={promptPrice} promptBuyer={promptBuyer} promptAllower={promptAllower} setNFTDetailPopup={setNFTDetailPopup} />}
             <div className="m-3 w-[20rem]">
                 <div className="bg-white overflow-hidden border border-gray-200 hover:border-gray-900 px-3 pt-3 text-gray-500">
                     <div className="block relative object-cover w-[18.5rem] h-[18.5rem]">
                         <img
-                            src={thumbnail}
+                            onClick={() => setNFTDetailPopup(true)}
+                            src={image}
                             className="hover:opacity-90 h-full w-full object-cover"
                             alt="..."
                             style={{ objectFit: 'cover', backgroundSize: 'cover', backgroundClip: 'cover' }}
                         />
-                        {promptPrice === 0 ?
+                        {promptPrice === "0" ?
                             <div className="group absolute bg-green-500 bottom-0 right-0 gap-2 inline-flex items-center text-white px-3 h-12 text-2xl cursor-pointer" onClick={() => setMetaPopup(true)}>
                                 <span className="group-hover:block hidden text-sm">generation data is shown publicly</span>
                                 <AiOutlineSmile />
                             </div>
-                            : promptBuyer.includes(account?.address?.eth) ?
+                            : promptBuyer.includes(account.key.ethAddress) || promptAllower?.includes(account.key.ethAddress) ?
                                 <div className="group absolute bg-red-500 bottom-0 right-0 gap-2 inline-flex items-center text-white px-3 h-12 text-2xl cursor-pointer" onClick={() => setMetaPopup(true)}>
                                     <span className="group-hover:block hidden text-sm">you have access to this generation data</span>
                                     <AiOutlineCheck />
@@ -69,9 +83,8 @@ function NFT({ thumbnail, name, id, owner, price, promptPrice, promptBuyer, desc
                             </div>
                             {
                                 price != 0 &&
-                                <button className="group border px-3 hover:bg-gray-900 hover:text-gray-100 h-10 self-center hover:border-gray-900 cursor-pointer disabled:pointer-events-none" onClick={() => setNFTPurchasePopup(true)} disabled={owner.id === account.id}>
-                                    <span className="self-center text-sm text-right flex items-center gap-1">{price}
-                                        <SiBitcoinsv />
+                                <button className="group border px-3 hover:bg-gray-900 hover:text-gray-100 h-10 self-center hover:border-gray-900 cursor-pointer disabled:pointer-events-none" onClick={() => setNFTPurchasePopup(true)} disabled={owner.id === account.user.id}>
+                                    <span className="self-center text-sm text-right flex items-center gap-1">{parsePrice(price)}
                                     </span>
                                 </button>
                             }

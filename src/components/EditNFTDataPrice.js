@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { editPromptPrices } from '../helpers/nft'
+import { parseAmount } from '../libs/blockchain'
 
 function EditNFTDataPrice({ nfts, setEditPricePopup }) {
     const [onSummit, setOnSummit] = useState(false)
@@ -9,7 +10,7 @@ function EditNFTDataPrice({ nfts, setEditPricePopup }) {
     const summit = async () => {
         setOnSummit(true)
 
-        const res = await editPromptPrices(nfts.map(nft => nft.nftId), promptPrice === null ? 0 : promptPrice * 1e18)
+        const res = await editPromptPrices(nfts.map(nft => nft.nftId), promptPrice === null ? "0" : parseAmount(promptPrice))
 
         setOnSuccess(res)
         setOnSummit(false)
@@ -35,7 +36,7 @@ function EditNFTDataPrice({ nfts, setEditPricePopup }) {
                         <div className="grid space-y-5">
                             <div className='flex justify-between items-center'>
                                 <input type="number" placeholder="Price" className={`${inputClass[promptPrice === null || promptPrice === 0]} w-full h-12 p-3 rounded-full border-2 cursor-text border-gray-200 flex items-center justify-center font-semibold`} onChange={(e) => setPromptPrice(e.target.value)} value={promptPrice === 0 ? "" : promptPrice} disabled={promptPrice === 0} />
-                                <p className='text-xl mx-6 text-yellow-600 font-semibold'>BTC</p>
+                                <p className='text-xl mx-6 text-yellow-600 font-semibold'>AVAX</p>
                             </div>
                             <div className='flex justify-between items-center'>
                                 <button className={`${inputClass[promptPrice === 0]} rounded-full border-2 cursor-pointer rounded-r-none h-12 font-semibold w-1/2 flex items-center justify-center`} onClick={() => setPromptPrice(null)} defaultValue={promptPrice !== 0}>

@@ -10,10 +10,15 @@ import { createComment, getPosts, toggleBookmarkPost, toggleLikeComment, toggleL
 import { IoSend } from "react-icons/io5";
 import { IoMdClose, IoMdReturnLeft } from "react-icons/io";
 import { parsePost } from '../libs/data';
+import NFTPreview from './NFTPreview';
+import DataPreview from './DataPreview';
+import { getPromptById } from '../helpers/nft';
 
 const Post = ({ postId }) => {
 	const [account, setAccount] = useState(null)
 	const [post, setPost] = useState(null)
+	const [data, setData] = useState(null)
+
 	const [replies, setReplies] = useState([])
 	const [postComment, setPostComment] = useState('')
 	const [onComment, setOnComment] = useState(false)
@@ -72,7 +77,9 @@ const Post = ({ postId }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const post = await getPosts(postId)
+			const data = await getPromptById(post.nft.id)
 			setPost(post)
+			setData(data)
 			setReplies(Array(post.listComment.length).fill(null))
 			setShowReplies(Array(post.listComment.length).fill(false))
 		}
@@ -141,8 +148,9 @@ const Post = ({ postId }) => {
 				</p>
 			</div>
 			<div className="grid grid-cols-4 mx-10 gap-10">
-				<div className="flex flex-col">
-					<img className="w-full h-fit" src={post.nft.thumbnail} alt="post" />
+				<div className="flex flex-col ">
+					<NFTPreview {...post.nft} owner={post.postOwner} className="block group mx-auto relative w-fit cursor-pointer" />
+					<DataPreview data={data} />
 				</div>
 				<div className="flex col-span-3">
 					<div className='grid grid-cols-3 gap-5 w-full'>
@@ -231,16 +239,16 @@ const Post = ({ postId }) => {
 										<div className=' bg-gray-100 p-3'>
 											<div className='flex justify-between items-center'>
 												<Link
-													to={"/profile/" + comment.ownerComment.id}
+													to={"/profile/" + comment.postOwnerComment.id}
 													className="flex items-center space-x-3"
 												>
 													<img
-														src={comment.ownerComment.picture}
+														src={comment.postOwnerComment.picture}
 														className="h-8"
 														alt="profile"
 													/>
 													<span className="font-light group-hover:text-gray-500 text-gray-900">
-														{comment.ownerComment.name}
+														{comment.postOwnerComment.name}
 													</span>
 												</Link>
 												<p className="text-gray-600 text-sm">{parseTime(comment.timestamp)}</p>
@@ -285,16 +293,16 @@ const Post = ({ postId }) => {
 												<div className='text-sm'>
 													<div div className='flex justify-between items-center' >
 														<Link
-															to={"/profile/" + reply.ownerComment.id}
+															to={"/profile/" + reply.postOwnerComment.id}
 															className="flex items-center space-x-3"
 														>
 															<img
-																src={reply.ownerComment.picture}
+																src={reply.postOwnerComment.picture}
 																className="h-6"
 																alt="profile"
 															/>
 															<span className="font-light group-hover:text-gray-500 text-gray-900">
-																{reply.ownerComment.name}
+																{reply.postOwnerComment.name}
 															</span>
 														</Link>
 														<p className="text-gray-600 text-xs">{parseTime(reply.timestamp)}</p>

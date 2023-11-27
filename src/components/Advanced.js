@@ -1,26 +1,18 @@
 import { useEffect, useState } from 'react'
 import { getInfoUser } from '../storage/local'
-import { btcLogo, rskLogo } from '../data'
+import { avaxLogo } from '../data'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import { getBalance } from '../scripts';
 const { ethers } = require("ethers");
 
 function Advanced({ setAdvancedPopup }) {
     const [keys, setKeys] = useState(null)
-    const [btcExpanded, setBtcExpanded] = useState(false)
-    const [rskExpanded, setRskExpanded] = useState(false)
-    const [btcShown, setBtcShown] = useState(false)
-    const [rskShown, setRskShown] = useState(false)
+    const [expanded, setExpanded] = useState(false)
+    const [show, setShown] = useState(false)
 
     useEffect(() => {
-        const keysData = getInfoUser().key.data
-        const modified = {
-            addressBtc: keysData.btcAddress,
-            addressRsk: keysData.ethAddress,
-            // pubKey: keysData.pubKey,
-            privKey: keysData.privKey,
-        }
-        setKeys(modified)
+        const keysData = getInfoUser().key
+        setKeys(keysData)
     }, [])
 
     const [copy, setCopy] = useState("Click to copy")
@@ -45,7 +37,7 @@ function Advanced({ setAdvancedPopup }) {
                         <div className="flex items-center flex-col gap-5">
                             <div className="flex items-center space-x-2 w-full">
                                 <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <img src={btcLogo} alt="" className="w-10 h-10" />
+                                    <img src={avaxLogo} alt="" className="w-10 h-10" />
                                 </div>
                                 {
                                     keys !== null &&
@@ -53,98 +45,44 @@ function Advanced({ setAdvancedPopup }) {
                                         <div className='relative flex items-center justify-between w-full'>
                                             <div className='group flex items-center'>
                                                 <p className="rounded-lg cursor-pointer px-2 py-0.5 text-left font-semibold group-hover:bg-gray-200"
-                                                    onClick={() => copyText(keys.addressBtc)}
+                                                    onClick={() => copyText(keys.ethAddress)}
                                                 >
-                                                    {keys.addressBtc.slice(0, 20) + '...' + keys.addressBtc.slice(-10)}
+                                                    {keys.ethAddress.slice(0, 20) + '...' + keys.ethAddress.slice(-10)}
                                                 </p>
-                                                <span className="pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 bg-opacity-0 group-hover:bg-gray-900 text-white ml-2 rounded-lg px-2 text-sm py-0.5">
+                                                <span className="absolute top-8 pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 bg-opacity-0 group-hover:bg-gray-900 text-white ml-2 rounded-lg px-2 text-sm py-0.5">
                                                     {copy}
                                                 </span>
                                             </div>
                                             {
-                                                btcExpanded ?
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-right cursor-pointer text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => { setBtcExpanded(false); setBtcShown(false) }}>
+                                                expanded ?
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-right cursor-pointer text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => { setExpanded(false); setShown(false) }}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                                                     </svg>
 
-                                                    : <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-right cursor-pointer text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => { setBtcExpanded(true); setBtcShown(false) }}>
+                                                    : <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-right cursor-pointer text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => { setExpanded(true); setShown(false) }}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                                     </svg>
                                             }
                                         </div>
                                         {
-                                            btcExpanded &&
+                                            expanded &&
                                             <div className='flex items-center justify-between'>
                                                 {
-                                                    btcExpanded &&
-                                                    <div className='group flex items-center'>
+                                                    expanded &&
+                                                    <div className='relative group flex items-center'>
                                                         <p className="hover:bg-gray-200 px-2 py-0.5 rounded-lg cursor-pointer text-xs text-gray-500"
                                                             onClick={() => copyText(keys.privKey)}>
-                                                            {btcShown ? keys.privKey : '*'.repeat(64)}
+                                                            {show ? keys.privKey : '*'.repeat(64)}
                                                         </p>
-                                                        <span className="pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 bg-opacity-0 group-hover:bg-gray-900 text-white ml-2 rounded-lg px-2 text-sm py-0.5">
+                                                        <span className="absolute top-6 pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 bg-opacity-0 group-hover:bg-gray-900 text-white ml-2 rounded-lg px-2 text-sm py-0.5">
                                                             {copy}
                                                         </span>
                                                     </div>
                                                 }
                                                 {
-                                                    btcShown ?
-                                                        <AiFillEye className='cursor-pointer h-6 w-6 text-gray-500 hover:text-gray-700' onClick={() => setBtcShown(false)} />
-                                                        : <AiFillEyeInvisible className='cursor-pointer h-6 w-6 text-gray-500 hover:text-gray-700' onClick={() => setBtcShown(true)} />
-                                                }
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                            <div className="flex items-center space-x-2 w-full">
-                                <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <img src={rskLogo} alt="" className="w-10 h-10 object-contain" />
-                                </div>
-                                {
-                                    keys !== null &&
-                                    <div className='flex flex-col w-full'>
-                                        <div className='relative flex items-center justify-between w-full'>
-                                            <div className='group flex items-center'>
-                                                <p className="rounded-lg cursor-pointer px-2 py-0.5 text-left font-semibold group-hover:bg-gray-200"
-                                                    onClick={() => copyText(keys.addressRsk)}
-                                                >
-                                                    {keys.addressRsk.slice(0, 20) + '...' + keys.addressRsk.slice(-10)}
-                                                </p>
-                                                <span className="pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 bg-opacity-0 group-hover:bg-gray-900 text-white ml-2 rounded-lg px-2 text-sm py-0.5">
-                                                    {copy}
-                                                </span>
-                                            </div>
-                                            {
-                                                rskExpanded ?
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-right cursor-pointer text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => { setRskExpanded(false); setRskShown(false) }}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                                                    </svg>
-
-                                                    : <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-right cursor-pointer text-gray-500 hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={() => { setRskExpanded(true); setRskShown(false) }}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                    </svg>
-                                            }
-                                        </div>
-                                        {
-                                            rskExpanded &&
-                                            <div className='flex items-center justify-between'>
-                                                {
-                                                    rskExpanded &&
-                                                    <div className='group flex items-center'>
-                                                        <p className="hover:bg-gray-200 px-2 py-0.5 rounded-lg cursor-pointer text-xs text-gray-500"
-                                                            onClick={() => copyText(keys.privKey)}>
-                                                            {rskShown ? keys.privKey : '*'.repeat(64)}
-                                                        </p>
-                                                        <span className="pointer-events-none transition-opacity opacity-0 group-hover:opacity-100 bg-opacity-0 group-hover:bg-gray-900 text-white ml-2 rounded-lg px-2 text-sm py-0.5">
-                                                            {copy}
-                                                        </span>
-                                                    </div>
-                                                }
-                                                {
-                                                    rskShown ?
-                                                        <AiFillEye className='cursor-pointer h-6 w-6 text-gray-500 hover:text-gray-700' onClick={() => setRskShown(false)} />
-                                                        : <AiFillEyeInvisible className='cursor-pointer h-6 w-6 text-gray-500 hover:text-gray-700' onClick={() => setRskShown(true)} />
+                                                    show ?
+                                                        <AiFillEye className='cursor-pointer h-6 w-6 text-gray-500 hover:text-gray-700' onClick={() => setShown(false)} />
+                                                        : <AiFillEyeInvisible className='cursor-pointer h-6 w-6 text-gray-500 hover:text-gray-700' onClick={() => setShown(true)} />
                                                 }
                                             </div>
                                         }

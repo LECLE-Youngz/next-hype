@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react'
-import EditNFTPrice from './EditNFTPrice'
-import EditNFTDataPrice from './EditNFTDataPrice'
-import Withdraw from './Withdraw'
-import Transfer from './Transfer'
 import { } from '../scripts'
 import { getUsers } from '../helpers/user'
 import { getPromptById } from '../helpers/nft'
+import { parsePrice } from '../libs/blockchain'
 
 function NFTSelector({ userId, setNFTAndData, setNFTSelectorPopup }) {
 	const [nfts, setNFTs] = useState([])
@@ -70,7 +67,7 @@ function NFTSelector({ userId, setNFTAndData, setNFTSelectorPopup }) {
 										{
 											nfts.map((nft, index) => (
 												<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-5 rounded" onClick={() => select(index)}>
-													<img className="w-[10%] h-auto p-2" src={nft.thumbnail} alt="thumbnail" />
+													<img className="w-[10%] h-auto p-2" src={nft.image} alt="image" />
 													<div className="text-center w-[10%]">
 														<span className="text-sm text-gray-800">{nft.id}</span>
 													</div>
@@ -78,10 +75,10 @@ function NFTSelector({ userId, setNFTAndData, setNFTSelectorPopup }) {
 														<span className="text-sm text-gray-600">{nft.name}</span>
 													</div>
 													<div className="text-center w-[20%]">
-														<span className="text-gray-600 text-sm">{nft.price == 0 ? "Not for sale" : nft.price}</span>
+														<span className="text-gray-600 text-sm">{nft.price !== "0" ? parsePrice(nft.price) : "Not for sale"}</span>
 													</div>
 													<div className="text-center w-[20%]">
-														<span className="text-gray-600 text-sm">{nft.promptPrice == 0 ? "Public data" : nft.promptPrice}</span>
+														<span className="text-gray-600 text-sm">{nft.promptPrice !== "0" ? parsePrice(nft.promptPrice) : "Public data"}</span>
 													</div>
 												</div>
 											))

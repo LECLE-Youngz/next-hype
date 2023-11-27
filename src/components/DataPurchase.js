@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { buyNFTPrompt } from '../helpers/nft'
+import { parsePrice } from '../libs/blockchain'
 
 function DataPurchase({ id, name, promptPrice, ownerName, userId, setDataPurchasePopup }) {
 	const [onSummit, setOnSummit] = useState(false)
@@ -31,7 +32,7 @@ function DataPurchase({ id, name, promptPrice, ownerName, userId, setDataPurchas
 							<p className='text-lg text-gray-500 font-semibold'>## transfer to</p>
 							<p className='col-span-2 text-lg text-gray-700 font-semibold'>{ownerName}</p>
 							<p className='text-lg text-gray-500 font-semibold'>## nft price</p>
-							<p className='col-span-2 text-lg text-gray-700 font-semibold'>{promptPrice} eth</p>
+							<p className='col-span-2 text-lg text-gray-700 font-semibold'>{parsePrice(promptPrice)} eth</p>
 						</div>
 						<div className='container mx-auto grid gap-2 mt-10 w-1/2'>
 							<button className="group border py-4 px-8 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors ease-in-out duration-500 disabled:pointer-events-none" onClick={() => summit()} disabled={onSummit || onSuccess}>

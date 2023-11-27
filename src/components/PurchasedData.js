@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import GenerationData from './GenerationData'
 import { getMyPrompts } from '../scripts'
 import { getPrompts } from '../helpers/nft'
+import { parsePrice } from '../libs/blockchain'
 
 function PurchasedData({ userId, setPurchasedDataPopup }) {
 	const [nfts, setNFTs] = useState(null)
@@ -36,7 +37,7 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 							nfts.length === 0 ?
 								<div className="text-center">
 									<p className="text-2xl mb-10 text-gray-500">
-										You don't own any NFTs yet.
+										You don't own any data yet.
 									</p>
 								</div>
 								:
@@ -61,7 +62,7 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 									{
 										nfts.map((nft) => (
 											<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-5 rounded" onClick={() => setMetaPopup(nft.id)}>
-												<img className="w-[10%] h-auto p-2" src={nft.thumbnail} alt="thumbnail" />
+												<img className="w-[10%] h-auto p-2" src={nft.image} alt="image" />
 												<div className="text-center w-[10%]">
 													<span className="text-sm text-gray-800">{nft.id}</span>
 												</div>
@@ -69,10 +70,10 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 													<span className="text-sm text-gray-600">{nft.name}</span>
 												</div>
 												<div className="text-center w-[20%]">
-													<span className="text-gray-600 text-sm">{nft.price == 0 ? "Not for sale" : nft.price}</span>
+													<span className="text-gray-600 text-sm">{nft.price !== "0" ? parsePrice(nft.price) : "Not for sale"}</span>
 												</div>
 												<div className="text-center w-[20%]">
-													<span className="text-gray-600 text-sm">{nft.promptPrice == 0 ? "Public data" : nft.promptPrice}</span>
+													<span className="text-gray-600 text-sm">{nft.promptPrice !== "0" ? parsePrice(nft.promptPrice) : "Public data"}</span>
 												</div>
 											</div>
 										))

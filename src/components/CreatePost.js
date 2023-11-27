@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { getInfoUser } from '../storage/local';
 import NFTSelector from './NFTSelector';
 import { LiaUndoAltSolid } from "react-icons/lia";
-import GenerationData from './GenerationData';
 import { createPost, getPosts } from '../helpers/social';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getPromptById } from '../helpers/nft';
+import DataPreview from './DataPreview';
 
 const CreatePost = ({ updatePosts }) => {
     const [account, setAccount] = useState(null)
@@ -20,11 +20,10 @@ const CreatePost = ({ updatePosts }) => {
         exclusiveContent: false,
         tags: [],
     })
-    const [data, setData] = useState()
+    const [data, setData] = useState(null)
     const [tags, setTags] = useState(postParams.tags.join(", "))
 
     const [nftSelectorPopup, setNFTSelectorPopup] = useState(false)
-    const [metaPopup, setMetaPopup] = useState(false)
     const [creating, setCreating] = useState(false)
 
     useEffect(() => {
@@ -33,8 +32,11 @@ const CreatePost = ({ updatePosts }) => {
     }, [])
 
     useEffect(() => {
-        const data = getPromptById(postParams.nft?.id)
-        setData(data)
+        const fetchData = async () => {
+            const data = await getPromptById(postParams.nft?.id)
+            setData(data)
+        }
+        fetchData()
     }, [postParams.nft])
 
     useEffect(() => {
@@ -66,7 +68,7 @@ const CreatePost = ({ updatePosts }) => {
 
     const previewSizeClass = (ratio) => ratio === 1 || isNaN(ratio) ? "w-[20rem] h-[20rem]" : ratio > 1 ? "w-[20rem] h-[32rem]" : "w-[32rem] h-[20rem]"
 
-    if (creating) {
+    if (creating || (postParams.nft && data === null)) {
         return (
             <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
                 <div className='h-full w-full flex items-center justify-center'>
@@ -81,10 +83,6 @@ const CreatePost = ({ updatePosts }) => {
             {
                 nftSelectorPopup &&
                 <NFTSelector userId={account.id} setNFTAndData={setNFTAndData} setNFTSelectorPopup={setNFTSelectorPopup} />
-            }
-            {
-                metaPopup &&
-                <GenerationData data={data} setMetaPopup={setMetaPopup} />
             }
             <div className="flex justify-between">
                 <h1 className="text-4xl text-gray-900"># Join the{' '}
@@ -112,13 +110,13 @@ const CreatePost = ({ updatePosts }) => {
 
                     <textarea className={`${inputClass[postParams.text === '']} w-full h-96 p-3 border cursor-text focus:outline-black flex items-center justify-center `} onChange={(e) => setPostParams({ ...postParams, text: e.target.value })} placeholder='### content' defaultValue={postParams.text} />
                 </div>
-                <div className='grid grid-cols-2'>
+                <div className='grid grid-cols-2 gap-10'>
                     <div className='flex flex-col space-y-5'>
                         <div className={`${previewSizeClass(data?.H / data?.W)} ${inputClass[postParams.nft == null]} cursor-pointer border-dashed border-gray-400 grid self-center hover:border-gray-900 border-[1.5px]`} onClick={() => setNFTSelectorPopup(true)}>
                             {
                                 postParams.nft !== null ? (
                                     <div className="relative group">
-                                        <img src={postParams.nft.thumbnail} style={{ width: "100%", height: "100%", objectFit: "cover" }} className="xl" />
+                                        <img src={postParams.nft.image} style={{ width: "100%", height: "100%", objectFit: "cover" }} className="xl" />
                                         <div className="top-0 w-full h-full absolute hidden group-hover:grid bg-white border border-gray-900 group-hover:bg-gray-900 group-hover:bg-opacity-50 text-gray-900 group-hover:text-gray-100 px-5 py-3 self-center text-2xl" >
                                             <LiaUndoAltSolid className='mx-auto self-center' />
                                         </div>
@@ -129,12 +127,6 @@ const CreatePost = ({ updatePosts }) => {
                                     </div>
                             }
                         </div>
-                        {
-                            data !== null &&
-                            <div className='bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-lg cursor-pointer mt-5' onClick={() => setMetaPopup(true)}>
-                                view generate data
-                            </div>
-                        }
                         <input onChange={(e) => setTags(e.target.value)}
                             className={`${inputClass[postParams.tags.length === 0]} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `} type="text" defaultValue={tags} placeholder='### tags' />
                         <div className="w-full flex">
@@ -158,7 +150,11 @@ const CreatePost = ({ updatePosts }) => {
                             </button>
                         </div>
                     </div>
-                    <div className='flex flex-col'>
+                    <div className='w-full'>
+                        {
+                            data !== null &&
+                            <DataPreview data={data} />
+                        }
                     </div>
                 </div>
             </div>

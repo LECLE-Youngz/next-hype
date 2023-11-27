@@ -4,6 +4,7 @@ import EditNFTDataPrice from './EditNFTDataPrice'
 import Withdraw from './Withdraw'
 import Transfer from './Transfer'
 import { getUsers } from '../helpers/user'
+import { parsePrice } from '../libs/blockchain'
 
 function ManageNFTs({ userId, setManageNFTsPopup }) {
 	const [nfts, setNFTs] = useState(null)
@@ -109,7 +110,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 													{selected[index] && <div className='w-3 h-3 rounded-full bg-gray-500'></div>}
 												</div>
 											</div>
-											<img className="w-[10%] h-auto p-2" src={nft.thumbnail} alt="thumbnail" />
+											<img className="w-[10%] h-auto p-2" src={nft.image} alt="image" />
 											<div className="text-center w-[10%]">
 												<span className="text-sm text-gray-800">{nft.id}</span>
 											</div>
@@ -117,10 +118,10 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 												<span className="text-sm text-gray-600">{nft.name}</span>
 											</div>
 											<div className="text-center w-[20%]">
-												<span className="text-gray-600 text-sm">{nft.price == 0 ? "Not for sale" : nft.price}</span>
+												<span className="text-gray-600 text-sm">{nft.price !== "0" ? parsePrice(nft.price) : "Not for sale"}</span>
 											</div>
 											<div className="text-center w-[20%]">
-												<span className="text-gray-600 text-sm">{nft.promptPrice == 0 ? "Public data" : nft.promptPrice}</span>
+												<span className="text-gray-600 text-sm">{nft.promptPrice !== "0" ? parsePrice(nft.promptPrice) : "Public data"}</span>
 											</div>
 										</div>
 									))

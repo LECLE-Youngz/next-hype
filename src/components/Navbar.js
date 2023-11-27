@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Login from "./Login";
-import { btcLogo, logo } from "../data";
+import { avaxLogo, logo } from "../data";
 import { getInfoUser, storeInfoUser } from "../storage/local";
 import Advanced from "./Advanced";
 import ManageNFTs from "./ManageNFTs";
@@ -17,11 +17,12 @@ export default function Navbar() {
 	useEffect(() => {
 		const user = getInfoUser();
 		setGoogleData(user);
-		// if (user != null && Object.keys(user).length !== 0) {
-		// 	getBalance(user.wallet.address).then(res => {
-		// 		setBalance(res);
-		// 	})
-		// }
+		if (user != null && Object.keys(user).length !== 0) {
+			console.log(user)
+			getBalance(user.key.ethAddress).then(res => {
+				setBalance(res);
+			})
+		}
 	}, [loginPopup]);
 
 	const logout = () => {
@@ -138,9 +139,9 @@ export default function Navbar() {
 										<div className="h-3 invisible"></div>
 										<div className=" bg-white drop-shadow-2xl p-2">
 											<li className="flex select-none px-4 items-center">
-												<img src={btcLogo} className="h-6 w-6 rounded-full mr-2" alt="profile" />
-												<span className="font-bold text-amber-600 text-sm py-2">
-													{parseFloat(balance).toFixed(6)} BTC
+												<img src={avaxLogo} className="h-6 w-6 rounded-full mr-2" alt="profile" />
+												<span className="font-bold text-gray-600 text-sm py-2">
+													{parseFloat(balance).toFixed(6)} AVAX
 												</span>
 											</li>
 											<div className="h-[1px] bg-gray-400 my-2"></div>

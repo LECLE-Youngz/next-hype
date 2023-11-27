@@ -1,7 +1,6 @@
-import { buyPrompt, createToken, executeSale, getCurrentToken, transferNFTs, updatePromptPrices, updateTokenPrices, withdrawNFTs } from "../scripts";
+import { approve, buyPrompt, createToken, executeSale, listItem, safeMint, tokenId, transferNFTs, updatePromptPrices, updateTokenPrices, withdrawNFTs } from "../scripts";
 import axios from "axios";
 import { getInfoUser } from "../storage/local";
-import { updateRanking, getRanking } from "./social";
 
 export const buyNFT = async (id, price, idUserSold) => {
     let success
@@ -27,95 +26,43 @@ export const buyNFTPrompt = async (id, promptPrice, idUserSold) => {
 }
 
 export const mintNFT = async (data, metadata) => {
-    let success
+    let access_token = getInfoUser().tokens.access_token;
+    let userAddress = getInfoUser().key.ethAddress
+    let nftId = await tokenId().then(res => (res + 1n).toString())
 
-    if (data.isRootStock) {
-        let nftId
-        await getCurrentToken().then(res => nftId = (res + 1n).toString())
+    const res1 = await safeMint(`${process.env.REACT_APP_API_ENDPOINT}/nfts/${nftId}`)
+    if (res1.status !== 1) return false
 
-        await createToken(data.thumbnail, data.price, data.promptPrice).then(res => success = res.status === 1)
+    if (data.price !== "0") {
+        const res2 = await approve(nftId)
+        if (res2.status !== 1) return false
 
-        if (success) {
-            await axios.post(
-                `${process.env.REACT_APP_API_ENDPOINT}/storages`,
-                {
-                    nftId: nftId,
-                    name: data.name,
-                    thumbnail: data.thumbnail,
-                },
-                {
-                    headers: { 'Content-Type': 'application/json' }
-                }
-            ).catch((error) => { success = false; console.log(error) })
-
-            await axios.post(
-                `${process.env.REACT_APP_API_ENDPOINT}/metadatas`,
-                { id: nftId, meta: metadata },
-                {
-                    headers: { 'Content-Type': 'application/json' }
-                }
-            ).catch((error) => { success = false; console.log(error) })
-        }
-    } else {
-        let address = getInfoUser().key.data.btcAddress
-        let response
-
-        await axios.post(
-            `${process.env.REACT_APP_BTC_ENDPOINT}/inscribeOrd`,
-            {
-                address: address,
-                imageLink: data.thumbnail,
-            },
-            {
-                headers: {}
-            }
-        )
-            .then(res => { response = res.data; success = true; console.log(res) })
-            .catch(error => { success = false; console.log(error) })
-
-        if (success) {
-            let nftId = response.inscription
-
-            await axios.post(
-                `${process.env.REACT_APP_API_ENDPOINT}/ordinals`,
-                {
-                    nftId: nftId,
-                    owner: address,
-                    price: 0,
-                    promptPrice: 0,
-                    promptBuyer: [address],
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getInfoUser().tokens.access_token}`,
-                    }
-                }
-            ).catch(() => { success = false })
-
-            if (success) {
-                await axios.post(
-                    `${process.env.REACT_APP_API_ENDPOINT}/storages`,
-                    {
-                        nftId: nftId,
-                        name: data.name,
-                        thumbnail: data.thumbnail,
-                    },
-                    {
-                        headers: { 'Content-Type': 'application/json' }
-                    }
-                ).catch(() => { success = false })
-
-                await axios.post(
-                    `${process.env.REACT_APP_API_ENDPOINT}/metadatas`,
-                    { id: nftId, meta: metadata },
-                    {
-                        headers: { 'Content-Type': 'application/json' }
-                    }
-                ).catch(() => { success = false })
-            }
-        }
+        const res3 = await listItem(nftId, data.price, data.promptPrice)
+        if (res3.status !== 1) return false
     }
+
+    let success = true
+
+    await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/nfts`,
+        {
+            id: 10,
+            name: data.name,
+            image: data.image,
+            price: data.price,
+            promptPrice: data.promptPrice,
+            promptBuyer: [],
+            promptAllower: [userAddress],
+            addressCollection: data.collection,
+            meta: metadata,
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`
+            }
+        }
+    ).catch(() => { success = false })
 
     return success
 }
