@@ -10,7 +10,7 @@ const handleReconstructMasterKey = async (email, jwt) => {
   return data;
 }
 
-function Login({ setLoginPopup }) {
+function Login({ setLoginPopup, setGoogleData }) {
   const [loggingIn, setLoggingIn] = useState(false)
 
   const login = useGoogleLogin({
@@ -24,6 +24,7 @@ function Login({ setLoginPopup }) {
           let key = await handleReconstructMasterKey(data.user.email, data.tokens.id_token)
 
           storeInfoUser({ ...data, key: key.data })
+          setGoogleData({ ...data, key: key.data })
           setLoginPopup(false)
         } else {
           console.error(`Failed to fetch user info. Status code: ${response.status}`);

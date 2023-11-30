@@ -14,6 +14,8 @@ export default function Discover() {
 	const [onQuery, setOnQuery] = useState(true)
 	const [search, setSearch] = useState("")
 
+	console.log(nfts)
+
 	useEffect(() => {
 		const fetchData = async () => {
 			setOnQuery(true);

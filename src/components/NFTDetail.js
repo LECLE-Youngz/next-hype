@@ -5,13 +5,16 @@ import NFTPurchase from './NFTPurchase'
 import { getInfoUser } from '../storage/local'
 import DataPreview from './DataPreview'
 import { Link } from 'react-router-dom'
-import { getPromptById } from '../helpers/nft'
+import { getCollectionName, getLinkedPosts, getPromptById } from '../helpers/nft'
+import PostPreview from './PostPreview'
 
-const NFTDetail = ({ image, name, id, owner, price, promptPrice, promptBuyer, promptAllower, setNFTDetailPopup, collectionAddress }) => {
+const NFTDetail = ({ image, name, id, owner, price, description, promptPrice, promptBuyer, promptAllower, setNFTDetailPopup, collectionAddress }) => {
     const [dataPurchasePopup, setDataPurchasePopup] = useState(false)
     const [nftPurchasePopup, setNFTPurchasePopup] = useState(false)
     const [account, setAccount] = useState({})
     const [data, setData] = useState(null)
+    const [linkedPosts, setLinkedPosts] = useState(null)
+    const [collectionName, setCollectionName] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,11 +22,15 @@ const NFTDetail = ({ image, name, id, owner, price, promptPrice, promptBuyer, pr
             setAccount(user)
             const data = await getPromptById(id)
             setData(data)
+            const linkedPosts = await getLinkedPosts(id)
+            setLinkedPosts(linkedPosts)
+            const collectionName = await getCollectionName(collectionAddress)
+            setCollectionName(collectionName)
         }
         fetchData()
     }, [])
 
-    if (data === null) {
+    if (linkedPosts === null) {
         return (
             <div className='fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
                 <div className='h-full w-full flex items-center justify-center'>
@@ -32,22 +39,22 @@ const NFTDetail = ({ image, name, id, owner, price, promptPrice, promptBuyer, pr
             </div>
         )
     }
-
     return (
         <>
             {dataPurchasePopup && <DataPurchase id={id} promptPrice={promptPrice} name={name} ownerName={owner.name} userId={owner.id} setDataPurchasePopup={setDataPurchasePopup} />}
             {nftPurchasePopup && <NFTPurchase id={id} price={price} name={name} ownerName={owner.name} userId={owner.id} setNFTPurchasePopup={setNFTPurchasePopup} />}
             <div className='fixed top-0 right-0 z-20 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none'>
-                <div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
-                    <div className="bg-white shadow-xl w-full px-16 py-5 relative">
-                        <h3 className="self-center text-4xl mt-4 mb-5 text-gray-900"># NFT Detail</h3>
+                <div className="overflow-y-auto flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-2/3 w-3/4">
+                    <div className="max-h-[80vh] overflow-y-auto bg-white shadow-xl w-full px-16 py-5 relative">
+                        <h3 className="self-center text-4xl mt-5 text-gray-900"># NFT Detail</h3>
 
-                        <div className="mx-4 flex items-center justify-between self-center py-2">
-                            <h3 className="text-4xl font-light w-full text-center">
-                                <p className="text-gray-900 text-center">{name}</p>
+                        <div className="mb-3 mx-4 flex items-center justify-between self-center py-2">
+                            <h3 className="w-full text-center flex flex-col">
+                                <p className="text-gray-900 text-4xl font-light ">{name}</p>
+                                <hr className="border-gray-200 h-1 my-3" />
+                                <p className="text-gray-500 text-xl font-light">{description}</p>
                             </h3>
                         </div>
-                        <hr className="border-gray-200 h-1 mb-5" />
 
                         <div className='grid grid-cols-2 container gap-x-5'>
                             <img
@@ -64,14 +71,14 @@ const NFTDetail = ({ image, name, id, owner, price, promptPrice, promptBuyer, pr
                                     <div className='blur-lg'>
                                         <DataPreview />
                                     </div>
-                                    <div className="absolute inset-0 b\ flex items-center justify-center">
+                                    <div className="absolute inset-0 flex items-center justify-center">
                                         <p className="text-xl text-gray-900 font-light">purchase to see the generation data</p>
                                     </div>
                                 </div>
                             }
                         </div>
-                        <div className="grid mt-5">
-                            <div className='my-5 flex justify-between w-full'>
+                        <div className="grid mx-4 mt-7 mb-2">
+                            <div className='flex justify-between w-full'>
                                 <div className='self-center group text-base'>
                                     <Link to={"/profile/" + owner.id} className="text-gray-800 group-hover:text-gray-500 flex items-center space-x-2">
                                         <img src={owner.picture} className="h-14 border border-gray-200 group-hover:border-gray-900 rounded-none" alt="..." />
@@ -80,8 +87,14 @@ const NFTDetail = ({ image, name, id, owner, price, promptPrice, promptBuyer, pr
                                 </div>
                                 {
                                     price != 0 ?
-                                        <button className="group border px-3 hover:bg-gray-900 hover:text-gray-100 self-center hover:border-gray-900 cursor-pointer disabled:pointer-events-none" onClick={() => setNFTPurchasePopup(true)} disabled={owner.id === account.id}>
-                                            <span className="self-center text-base px-5 py-2 text-right flex items-center">buy this nft with {parsePrice(price)} eth
+                                        <button className="group border px-3 hover:bg-gray-900 hover:text-gray-100 self-center hover:border-gray-900 cursor-pointer disabled:pointer-events-none" onClick={() => setNFTPurchasePopup(true)} disabled={owner.id === account.user.id}>
+                                            <span className="self-center text-base px-5 py-2 text-right flex items-center">
+                                                {
+                                                    owner.id === account.user.id ?
+                                                        "this nft is yours"
+                                                        :
+                                                        "buy this nft with " + parsePrice(price) + " eth"
+                                                }
                                             </span>
                                         </button>
                                         :
@@ -92,11 +105,32 @@ const NFTDetail = ({ image, name, id, owner, price, promptPrice, promptBuyer, pr
 
                                 }
                             </div>
+
+                            {
+                                linkedPosts.length > 0 &&
+                                <div className='my-5 grid justify-between w-full'>
+                                    <div className='self-center group text-base'>
+                                        <span className="text-2xl font-extralight">
+                                            <span className="text-gray-800">## linked to posts</span>
+                                        </span>
+                                    </div>
+                                    <div className="mt-5 col-span-3 flex flex-wrap gap-y-6 justify-evenly">
+                                        {
+                                            linkedPosts.map((post, index) => (
+                                                <div
+                                                    className="grid border w-[31rem] h-56 border-gray-200 hover:border-gray-900">
+                                                    <PostPreview postId={post.id} />
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
                 <div className='h-screen w-screen absolute -z-10' onClick={() => setNFTDetailPopup(false)}></div>
-            </div>
+            </div >
         </>
 
     )

@@ -1,8 +1,11 @@
-import { approve, buyPrompt, createToken, executeSale, listItem, safeMint, tokenId, transferNFTs, updatePromptPrices, updateTokenPrices, withdrawNFTs } from "../scripts";
+import { buyPrompt, executeSale, transferNFTs, updatePromptPrices, updateTokenPrices, withdrawNFTs } from "../scripts";
+import { getTotalToken, safeMint, approve } from "../scripts/collection";
+import { listItem } from "../scripts/marketplace";
 import axios from "axios";
 import { getInfoUser } from "../storage/local";
+import { name, symbol } from "../scripts/generative";
 
-export const buyNFT = async (id, price, idUserSold) => {
+export const buyNFT = async (id, price) => {
     let success
 
     await executeSale(id, price).then(res => success = res.status === 1)
@@ -28,7 +31,7 @@ export const buyNFTPrompt = async (id, promptPrice, idUserSold) => {
 export const mintNFT = async (data, metadata) => {
     let access_token = getInfoUser().tokens.access_token;
     let userAddress = getInfoUser().key.ethAddress
-    let nftId = await tokenId().then(res => (res + 1n).toString())
+    let nftId = await getTotalToken().then(res => (res).toString())
 
     const res1 = await safeMint(`${process.env.REACT_APP_API_ENDPOINT}/nfts/${nftId}`)
     if (res1.status !== 1) return false
@@ -46,8 +49,9 @@ export const mintNFT = async (data, metadata) => {
     await axios.post(
         `${process.env.REACT_APP_API_ENDPOINT}/nfts`,
         {
-            id: 10,
+            id: nftId,
             name: data.name,
+            description: data.description,
             image: data.image,
             price: data.price,
             promptPrice: data.promptPrice,
@@ -173,4 +177,44 @@ export const getNFTs = async (queryParams) => {
     })
 
     return nfts
+}
+
+export const getLinkedPosts = async (id) => {
+    let posts
+
+    await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/post/${id}`)
+        .then(res => { posts = res.data })
+        .catch(error => posts = []);
+
+    return posts
+}
+
+export const getNFTsFromCollection = async (address) => {
+    const res = [0]
+
+    return res
+}
+
+export const getCollectionName = async (address) => {
+    if (address === process.env.REACT_APP_COLLECTION_ADDRESS) return "NEXTHYPE"
+
+    console.log(address, process.env.REACT_APP_COLLECTION_ADDRESS)
+
+    const res = await name(address)
+
+    return res
+}
+
+export const getUserCollections = async (address) => {
+    const res = [process.env.REACT_APP_COLLECTION_ADDRESS]
+
+    return res
+}
+
+export const getSymbol = async (address) => {
+    if (address === process.env.REACT_APP_COLLECTION_ADDRESS) return "NET"
+
+    const res = await symbol(address)
+
+    return res
 }

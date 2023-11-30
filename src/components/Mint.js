@@ -18,8 +18,6 @@ function Mint({ response, setMintPopup }) {
 		fetchData()
 	}, [])
 
-	console.log(response)
-
 	const summit = async () => {
 		setOnSummit(true)
 
@@ -36,6 +34,7 @@ function Mint({ response, setMintPopup }) {
 
 	const [mintParams, setMintParams] = useState({
 		name: "",
+		description: "",
 		price: null,
 		promptPrice: null,
 		image: response.output[0],
@@ -56,7 +55,7 @@ function Mint({ response, setMintPopup }) {
 		true: "bg-gray-200 text-gray-900 border-gray-200",
 	}
 
-	const valid = () => mintParams.name !== "" && (mintParams.price !== null) && (mintParams.promptPrice !== null) && onSuccess !== false
+	const valid = () => mintParams.name !== "" && (mintParams.price !== null) && (mintParams.promptPrice !== null) && onSuccess !== false && mintParams.collection !== null && mintParams.description !== ""
 
 	if (collections === null) {
 		return (
@@ -76,6 +75,7 @@ function Mint({ response, setMintPopup }) {
 					<div class="container mx-auto">
 						<div className="grid space-y-5">
 							<input type="text" placeholder="## name" className={`${inputClass[mintParams.name === ""]}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`} onChange={(e) => setMintParams({ ...mintParams, name: e.target.value })} />
+							<input type="text" placeholder="## description" className={`${inputClass[mintParams.description === ""]}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`} onChange={(e) => setMintParams({ ...mintParams, description: e.target.value })} />
 							<div className={`h-12 group w-full border focus:outline-black relative cursor-pointer ${inputClass[mintParams.collection === null]}`}>
 								{!mintParams.collection ?
 									<p className='p-3 bg-gray-200 text-gray-400 text-left'>

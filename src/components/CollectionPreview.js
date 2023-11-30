@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PreviewData = () => {
+const CollectionPreview = () => {
     return (
         <div>
 
@@ -8,4 +8,4 @@ const PreviewData = () => {
     )
 }
 
-export default PreviewData
+export default CollectionPreview

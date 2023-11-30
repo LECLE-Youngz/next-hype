@@ -9,7 +9,7 @@ import NFTPurchase from './NFTPurchase'
 import { parsePrice } from '../libs/blockchain'
 import NFTDetail from './NFTDetail'
 
-function NFT({ image, name, id, owner, price, promptPrice, promptBuyer, promptAllower }) {
+function NFT({ image, name, id, owner, description, price, promptPrice, promptBuyer, promptAllower, collectionAddress }) {
     const [metaPopup, setMetaPopup] = useState(false)
     const [dataPurchasePopup, setDataPurchasePopup] = useState(false)
     const [nftPurchasePopup, setNFTPurchasePopup] = useState(false)
@@ -39,7 +39,7 @@ function NFT({ image, name, id, owner, price, promptPrice, promptBuyer, promptAl
             {metaPopup && <GenerationData id={id} setMetaPopup={setMetaPopup} />}
             {dataPurchasePopup && <DataPurchase id={id} promptPrice={promptPrice} name={name} ownerName={owner.name} userId={owner.id} setDataPurchasePopup={setDataPurchasePopup} />}
             {nftPurchasePopup && <NFTPurchase id={id} price={price} name={name} ownerName={owner.name} userId={owner.id} setNFTPurchasePopup={setNFTPurchasePopup} />}
-            {nftDetailPopup && <NFTDetail image={image} name={name} id={id} owner={owner} price={price} promptPrice={promptPrice} promptBuyer={promptBuyer} promptAllower={promptAllower} setNFTDetailPopup={setNFTDetailPopup} />}
+            {nftDetailPopup && <NFTDetail image={image} name={name} id={id} owner={owner} description={description} price={price} promptPrice={promptPrice} promptBuyer={promptBuyer} promptAllower={promptAllower} collectionAddress={collectionAddress} setNFTDetailPopup={setNFTDetailPopup} />}
             <div className="m-3 w-[20rem]">
                 <div className="bg-white overflow-hidden border border-gray-200 hover:border-gray-900 px-3 pt-3 text-gray-500">
                     <div className="block relative object-cover w-[18.5rem] h-[18.5rem]">
@@ -69,8 +69,8 @@ function NFT({ image, name, id, owner, price, promptPrice, promptBuyer, promptAl
 
                     <div className="my-auto h-[8rem] grid">
                         <div className="mx-4 flex items-center justify-between self-center py-2">
-                            <h3 className="text-xl">
-                                <p className="text-gray-900">{name}</p>
+                            <h3 className="text-xl grid">
+                                <p className="text-gray-900 truncate">{name}</p>
                             </h3>
                         </div>
                         <hr className="border-gray-200 h-1" />

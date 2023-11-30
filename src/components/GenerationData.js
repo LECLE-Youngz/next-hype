@@ -27,6 +27,7 @@ function GenerationData({ id, setMetaPopup, data, setPurchasedDataPopup }) {
         const fetchData = async () => {
             let res
             res = data ?? await getPromptById(id)
+            console.log(res)
             setMeta(res.meta)
             setOnQuery(false)
         }
@@ -58,7 +59,7 @@ function GenerationData({ id, setMetaPopup, data, setPurchasedDataPopup }) {
                                     <div className='animate-spin rounded-full h-20 w-20 border-b-2 border-gray-500'></div>
                                 </div>
                                 :
-                                <div className="ml-10 grid grid-cols-4 gap-x-10 gap-y-5 items-center overflow-y-scroll max-h-[26rem]">
+                                <div className="ml-10 grid grid-cols-4 gap-x-10 gap-y-5 items-center overflow-y-auto max-h-[26rem]">
                                     <p className="">## prompt</p>
                                     <p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full" onClick={() => copyText(meta.prompt)}>
                                         <span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">

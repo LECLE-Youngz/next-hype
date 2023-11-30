@@ -8,6 +8,7 @@ import ManageNFTs from "./ManageNFTs";
 import PurchasedData from "./PurchasedData";
 import { getBalance } from "../scripts";
 import ManageBookmarks from "./ManageBookmark";
+import ManageCollections from "./ManageCollections";
 
 export default function Navbar() {
 	let [loginPopup, setLoginPopup] = useState(false);
@@ -15,14 +16,16 @@ export default function Navbar() {
 	let [balance, setBalance] = useState(0);
 
 	useEffect(() => {
-		const user = getInfoUser();
-		setGoogleData(user);
-		if (user != null && Object.keys(user).length !== 0) {
-			console.log(user)
-			getBalance(user.key.ethAddress).then(res => {
-				setBalance(res);
-			})
+		const fetchData = async () => {
+			const user = getInfoUser();
+			setGoogleData(user);
+			if (user != null && Object.keys(user).length !== 0) {
+				getBalance(user.key.ethAddress).then(res => {
+					setBalance(res);
+				})
+			}
 		}
+		fetchData();
 	}, [loginPopup]);
 
 	const logout = () => {
@@ -40,6 +43,7 @@ export default function Navbar() {
 		setManageNFTsPopup(false);
 		setPurchasedDataPopup(false);
 		setManageBookmarksPopup(false);
+		setManageCollectionsPopup(false);
 	};
 
 	const [manageNFTsPopup, setManageNFTsPopup] = useState(false);
@@ -48,6 +52,7 @@ export default function Navbar() {
 		setAdvancedPopup(false);
 		setPurchasedDataPopup(false);
 		setManageBookmarksPopup(false);
+		setManageCollectionsPopup(false);
 	};
 
 	const [purchasedDataPopup, setPurchasedDataPopup] = useState(false);
@@ -56,6 +61,7 @@ export default function Navbar() {
 		setAdvancedPopup(false);
 		setManageNFTsPopup(false);
 		setManageBookmarksPopup(false);
+		setManageCollectionsPopup(false);
 	};
 
 	const [manageBookmarksPopup, setManageBookmarksPopup] = useState(false);
@@ -64,6 +70,16 @@ export default function Navbar() {
 		setAdvancedPopup(false);
 		setManageNFTsPopup(false);
 		setPurchasedDataPopup(false);
+		setManageCollectionsPopup(false);
+	};
+
+	const [manageCollectionsPopup, setManageCollectionsPopup] = useState(false);
+	const manageCollections = () => {
+		setManageCollectionsPopup(true);
+		setAdvancedPopup(false);
+		setManageNFTsPopup(false);
+		setPurchasedDataPopup(false);
+		setManageBookmarksPopup(false);
 	};
 
 	return (
@@ -75,6 +91,7 @@ export default function Navbar() {
 			{manageNFTsPopup && <ManageNFTs userId={googleData.user.id} setManageNFTsPopup={setManageNFTsPopup} />}
 			{purchasedDataPopup && <PurchasedData userId={googleData.user.id} setPurchasedDataPopup={setPurchasedDataPopup} />}
 			{manageBookmarksPopup && <ManageBookmarks userId={googleData.user.id} setManageBookmarksPopup={setManageBookmarksPopup} />}
+			{manageCollectionsPopup && <ManageCollections userId={googleData.user.id} setManageCollectionsPopup={setManageCollectionsPopup} />}
 			<div className="mx-auto relative z-50">
 				<nav className="flex flex-wrap items-center px-4 py-2">
 					<Link
@@ -151,6 +168,14 @@ export default function Navbar() {
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
 													Manage Bookmarks
+												</button>
+											</li>
+											<li className="">
+												<button
+													onClick={() => manageCollections()}
+													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
+												>
+													Manage Collections
 												</button>
 											</li>
 											<li className="">

@@ -31,7 +31,7 @@ const DataPreview = ({ data }) => {
                 <GenerationData data={metadata} setMetaPopup={setMetaPopup} />
             }
             <div className="container grid hover:bg-gray-50 cursor-pointer" onClick={() => setMetaPopup(true)}>
-                <div className="grid text-sm w-full divide-y-[0.5px] px-3 divide-gray-300 items-center overflow-y-scroll max-h-[26rem]">
+                <div className="grid text-sm w-full divide-y-[0.5px] px-3 divide-gray-300 items-center overflow-y-auto max-h-[26rem]">
                     <p className="font-medium w-full px-4 py-3">
                         {metadata.meta.prompt}
                     </p>

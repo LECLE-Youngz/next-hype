@@ -41,7 +41,7 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 									</p>
 								</div>
 								:
-								<div className="overflow-y-scroll mt-3 max-h-[26rem]">
+								<div className="overflow-y-auto mt-3 max-h-[26rem]">
 									<div className="flex items-center px-5 py-2 bg-gray-100 text-gray-600 rounded shadow-md">
 										<span className="text-center w-[10%]">
 											<span className="text-xs text-gray-600 font-bold">Thumbnail</span>

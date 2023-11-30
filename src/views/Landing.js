@@ -23,7 +23,7 @@ export default function Landing() {
 
 	const settings = {
 		speed: 500,
-		slidesToShow: 3,
+		slidesToShow: nfts.length > 3 ? 3 : nfts.length,
 		slidesToScroll: 1,
 		infinite: true,
 		autoplay: true,
@@ -59,8 +59,8 @@ export default function Landing() {
 				<div className="-mx-24 py-20 bg-gray-800">
 					<Slider {...settings} >
 						{nfts.map((nft) => (
-							<div onClick={() => setNFTDetailPopup(nft)} className="group">
-								<NFTPreview {...nft} className="block group mx-auto relative w-[20rem] h-[20rem] cursor-pointer" />
+							<div onClick={() => setNFTDetailPopup(nft)} className="">
+								<NFTPreview {...nft} block className="block group mx-auto relative w-[20rem] h-[20rem] cursor-pointer" />
 							</div>
 						))}
 					</Slider>

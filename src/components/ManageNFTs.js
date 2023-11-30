@@ -79,7 +79,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 								</p>
 							</div>
 							:
-							<div className="overflow-y-scroll mt-5 max-h-[26rem]">
+							<div className="overflow-y-auto mt-5 max-h-[26rem]">
 								<div className="flex items-center px-5 py-2 bg-gray-100 text-gray-600 shadow-md">
 									<div className="w-[10%]">
 										<div className='mx-auto w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center checked:bg-gray-500 cursor-pointer' onClick={() => toggleSelect(-1)} checked={selected.includes(true)}>
