@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import NFTDetail from './NFTDetail'
 
-function NFTPreview({ image, name, id, owner, description, price, promptPrice, promptBuyer, promptAllower, collectionAddress, block, className }) {
+function NFTPreview({ image, name, id, owner, description, price, promptPrice, promptBuyer, promptAllower, addressCollection, block, className }) {
     const [nftDetailPopup, setNFTDetailPopup] = useState(false)
 
     return (
         <>
-            {!block && nftDetailPopup && <NFTDetail image={image} name={name} id={id} owner={owner} description={description} price={price} promptPrice={promptPrice} promptBuyer={promptBuyer} promptAllower={promptAllower} collectionAddress={collectionAddress} setNFTDetailPopup={setNFTDetailPopup} />}
+            {!block && nftDetailPopup && <NFTDetail image={image} name={name} id={id} owner={owner} description={description} price={price} promptPrice={promptPrice} promptBuyer={promptBuyer} promptAllower={promptAllower} addressCollection={addressCollection} setNFTDetailPopup={setNFTDetailPopup} />}
 
             <div className={className} onClick={() => setNFTDetailPopup(true)}>
                 <img src={image} className="w-[20rem] h-auto object-cover " alt="..." />
