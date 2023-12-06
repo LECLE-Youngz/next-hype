@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import EditNFTPrice from "./EditNFTPrice";
 import EditNFTDataPrice from "./EditNFTDataPrice";
-import Withdraw from "./Withdraw";
 import Transfer from "./Transfer";
 import { getUsers } from "../helpers/user";
 import { parsePrice } from "../libs/blockchain";
@@ -10,9 +8,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 	const [nfts, setNFTs] = useState(null);
 	const [selected, setSelected] = useState([]);
 
-	const [editNftPricePopup, setEditPricePopup] = useState(false);
-	const [editDataPricePopup, setEditDataPricePopup] = useState(false);
-	const [withdrawPopup, setWithdrawPopup] = useState(false);
+	const [editPricePopup, setEditPricePopup] = useState(false);
 	const [transferPopup, setTransferPopup] = useState(false);
 
 	useEffect(() => {
@@ -50,22 +46,10 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 
 	return (
 		<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
-			{editNftPricePopup && (
-				<EditNFTPrice
-					nfts={nfts.filter((_, index) => selected[index])}
-					setEditPricePopup={setEditPricePopup}
-				/>
-			)}
-			{editDataPricePopup && (
+			{editPricePopup && (
 				<EditNFTDataPrice
 					nfts={nfts.filter((_, index) => selected[index])}
-					setEditPricePopup={setEditDataPricePopup}
-				/>
-			)}
-			{withdrawPopup && (
-				<Withdraw
-					nfts={nfts.filter((_, index) => selected[index])}
-					setWithdrawPopup={setWithdrawPopup}
+					setEditPricePopup={setEditPricePopup}
 				/>
 			)}
 			{transferPopup && (
@@ -85,15 +69,8 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 							onClick={() => setEditPricePopup(true)}
 							disabled={!selected.includes(true)}
 						>
-							<p className="text-white text-sm font-semibold">Edit NFT Price</p>
-						</button>
-						<button
-							className="rounded-full bg-green-600 flex items-center justify-center hover:bg-green-700 cursor-pointer px-5 py-2 disabled:pointer-events-none disabled:bg-opacity-50"
-							onClick={() => setEditDataPricePopup(true)}
-							disabled={!selected.includes(true)}
-						>
 							<p className="text-white text-sm font-semibold">
-								Edit Data Price
+								Edit NFT/Data Price
 							</p>
 						</button>
 						<button
@@ -101,14 +78,9 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 							onClick={() => setTransferPopup(true)}
 							disabled={!selected.includes(true)}
 						>
-							<p className="text-white text-sm font-semibold">Transfer</p>
-						</button>
-						<button
-							className="rounded-full bg-red-600 flex items-center justify-center hover:bg-red-700 cursor-pointer px-5 py-2 disabled:pointer-events-none disabled:bg-opacity-50"
-							onClick={() => setWithdrawPopup(true)}
-							disabled={!selected.includes(true)}
-						>
-							<p className="text-white text-sm font-semibold">Withdraw</p>
+							<p className="text-white text-sm font-semibold">
+								Transfer/Withdraw
+							</p>
 						</button>
 					</div>
 					<div className="mt-20 container mx-auto">
@@ -120,15 +92,15 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 							</div>
 						) : (
 							<div className="overflow-y-auto mt-5 max-h-[26rem]">
-								<div className="flex items-center px-5 py-2 bg-gray-100 text-gray-600 shadow-md">
+								<div className="flex items-center px-5 py-2 text-gray-600 border border-gray-900">
 									<div className="w-[10%]">
 										<div
-											className="mx-auto w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center checked:bg-gray-500 cursor-pointer"
+											className="mx-auto w-5 h-5 border-2 border-gray-300 flex items-center justify-center checked:bg-gray-800 cursor-pointer"
 											onClick={() => toggleSelect(-1)}
 											checked={selected.includes(true)}
 										>
 											{selected.includes(true) && (
-												<div className="check w-3 h-3 rounded-full bg-gray-500"></div>
+												<div className="check w-3 h-3 bg-gray-800"></div>
 											)}
 										</div>
 									</div>
@@ -157,47 +129,54 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 									</span>
 								</div>
 								{nfts.map((nft, index) => (
-									<div
-										className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-3 "
-										onClick={() => toggleSelect(index)}
-									>
-										<div className="w-[10%]">
-											<div
-												className="mx-auto w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center checked:bg-gray-500"
-												onClick={() => toggleSelect(index)}
-												checked={selected[index]}
-											>
-												{selected[index] && (
-													<div className="w-3 h-3 rounded-full bg-gray-500"></div>
-												)}
+									<>
+										<div
+											className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
+											onClick={() => toggleSelect(index)}
+										>
+											<div className="w-[10%]">
+												<div
+													className="mx-auto w-5 h-5 border-2 border-gray-300 flex items-center justify-center checked:bg-gray-600"
+													onClick={() => toggleSelect(index)}
+													checked={selected[index]}
+												>
+													{selected[index] && (
+														<div className="w-3 h-3 bg-gray-600"></div>
+													)}
+												</div>
+											</div>
+											<img
+												className="w-[10%] h-auto p-2"
+												src={nft.image}
+												alt="image"
+											/>
+											<div className="text-center w-[10%]">
+												<span className="text-sm text-gray-800">{nft.id}</span>
+											</div>
+											<div className="text-center w-[30%]">
+												<span className="text-sm text-gray-600">
+													{nft.name}
+												</span>
+											</div>
+											<div className="text-center w-[20%]">
+												<span className="text-gray-600 tex	t-sm">
+													{nft.price.avax !== "0"
+														? parsePrice(nft.price.avax)
+														: "Not for sale"}
+												</span>
+											</div>
+											<div className="text-center w-[20%]">
+												<span className="text-gray-600 text-sm">
+													{nft.promptPrice.avax !== "0"
+														? parsePrice(nft.promptPrice.avax)
+														: "Public data"}
+												</span>
 											</div>
 										</div>
-										<img
-											className="w-[10%] h-auto p-2"
-											src={nft.image}
-											alt="image"
-										/>
-										<div className="text-center w-[10%]">
-											<span className="text-sm text-gray-800">{nft.id}</span>
-										</div>
-										<div className="text-center w-[30%]">
-											<span className="text-sm text-gray-600">{nft.name}</span>
-										</div>
-										<div className="text-center w-[20%]">
-											<span className="text-gray-600 text-sm">
-												{nft.price.avax !== "0"
-													? parsePrice(nft.price.avax)
-													: "Not for sale"}
-											</span>
-										</div>
-										<div className="text-center w-[20%]">
-											<span className="text-gray-600 text-sm">
-												{nft.promptPrice.avax !== "0"
-													? parsePrice(nft.promptPrice.avax)
-													: "Public data"}
-											</span>
-										</div>
-									</div>
+										{index !== nft.length - 1 && (
+											<hr className="border-gray-300 my-2" />
+										)}
+									</>
 								))}
 							</div>
 						)}

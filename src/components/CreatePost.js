@@ -17,7 +17,6 @@ const CreatePost = ({ updatePosts }) => {
 			description: "",
 			text: "",
 			nft: null,
-			nsfwContent: false,
 			exclusiveContent: false,
 			tags: [],
 		}
@@ -70,6 +69,7 @@ const CreatePost = ({ updatePosts }) => {
 			postParams.text,
 			postParams.nft.id,
 			postParams.nft.addressCollection,
+			postParams.exclusiveContent,
 			postParams.tags
 		);
 		const newPosts = await getPosts();
@@ -178,7 +178,7 @@ const CreatePost = ({ updatePosts }) => {
 					/>
 				</div>
 				<div className="grid grid-cols-2 gap-10">
-					<div className="flex flex-col space-y-5">
+					<div className="flex flex-col space-y-4">
 						<div
 							className={`${previewSizeClass(data?.H / data?.W)} ${
 								inputClass[postParams.nft == null]
@@ -208,37 +208,6 @@ const CreatePost = ({ updatePosts }) => {
 								</div>
 							)}
 						</div>
-						<input
-							onChange={(e) => setTags(e.target.value)}
-							className={`${
-								inputClass[postParams.tags.length === 0]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-							type="text"
-							defaultValue={tags}
-							placeholder="### tags"
-						/>
-						<div className="w-full flex">
-							<button
-								onClick={() =>
-									setPostParams({ ...postParams, nsfwContent: true })
-								}
-								className={`${
-									inputClass[!postParams.nsfwContent]
-								}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}
-							>
-								<p className="text-center w-full">### nsfw</p>
-							</button>
-							<button
-								onClick={() =>
-									setPostParams({ ...postParams, nsfwContent: false })
-								}
-								className={`${
-									inputClass[postParams.nsfwContent]
-								}  border cursor-pointer none h-12 w-1/2 flex items-center justify-center`}
-							>
-								<p className="text-center w-full">### safe</p>
-							</button>
-						</div>
 						<div className="w-full flex">
 							<button
 								onClick={() =>
@@ -260,6 +229,21 @@ const CreatePost = ({ updatePosts }) => {
 							>
 								<p className="text-center w-full">### public</p>
 							</button>
+						</div>
+						<div>
+							<p className="text-sm my-3 text-gray-600">
+								{"<!-- "} tags are separated by commas (,)
+								{" -->"}
+							</p>
+							<input
+								onChange={(e) => setTags(e.target.value)}
+								className={`${
+									inputClass[postParams.tags.length === 0]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+								type="text"
+								defaultValue={tags}
+								placeholder="### tags"
+							/>
 						</div>
 					</div>
 					<div className="w-full">

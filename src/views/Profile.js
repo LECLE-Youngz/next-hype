@@ -189,7 +189,7 @@ function Profile({ userId, userInfo }) {
 								<div className="flex justify-evenly space-x-5">
 									<div className="flex h-12 place-items-center">
 										<span
-											className="w-36 h-full grid border cursor-pointer text-base  hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
+											className="w-48 h-full grid border cursor-pointer text-base  hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
 											onClick={() =>
 												setUserListPopup([
 													true,
@@ -204,20 +204,29 @@ function Profile({ userId, userInfo }) {
 										</span>
 									</div>
 									<div className="flex h-12 place-items-center">
-										<span
-											className="w-36 h-full grid border cursor-pointer text-base  hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
-											onClick={() =>
-												setUserListPopup([
-													true,
-													"Subscribers",
-													user.socialUser.subscribers,
-												])
-											}
-										>
-											<span className="self-center">
-												{user.socialUser.subscribers.length} subscribers
+										{user.socialUser.subscribers.length !== 0 ? (
+											<span
+												className="w-48 h-full grid border cursor-pointer text-base hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
+												onClick={() =>
+													setUserListPopup([
+														true,
+														"Subscribers",
+														user.socialUser.subscribers,
+													])
+												}
+											>
+												<span className="self-center">
+													{user.socialUser.subscribers.length} subscribers
+												</span>
 											</span>
-										</span>
+										) : (
+											<div className="relative w-48 h-full">
+												<div className="grad p-[1.5px] absolute inset-0"></div>
+												<div className="grid absolute m-[1.5px] inset-0 cursor-pointer text-base  bg-white hover:border-gray-900 hover:text-white items-center hover:grad text-gray-900">
+													<p className="self-center">Eneable creator</p>
+												</div>
+											</div>
+										)}
 									</div>
 								</div>
 							)}
@@ -306,22 +315,7 @@ function Profile({ userId, userInfo }) {
 							</p>
 						</div>
 					) : (
-						posts
-							.filter(
-								(post) =>
-									post.header
-										.toLowerCase()
-										.includes(postSearch.toLowerCase()) ||
-									post.description
-										.toLowerCase()
-										.includes(postSearch.toLowerCase()) ||
-									post.text.toLowerCase().includes(postSearch.toLowerCase())
-							)
-							.map((post) => (
-								<div className="h-56 grid border w-[31rem] border-gray-200 hover:border-gray-900 cursor-pointer">
-									<PostPreview {...post} />
-								</div>
-							))
+						posts.map((post) => <PostPreview postId={post} />)
 					)}
 				</div>
 			</div>

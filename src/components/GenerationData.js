@@ -5,12 +5,12 @@ import { parsePrompt } from "../libs/data";
 
 function GenerationData({
 	id,
-	collection,
+	addressCollection,
 	setMetaPopup,
 	data,
 	setPurchasedDataPopup,
 }) {
-	const [meta, setMeta] = useState({});
+	const [meta, setMeta] = useState(null);
 	const [onQuery, setOnQuery] = useState(true);
 
 	const [copy, setCopy] = useState("click to copy");
@@ -31,7 +31,7 @@ function GenerationData({
 	useEffect(() => {
 		setOnQuery(true);
 		const fetchData = async () => {
-			let res = data ?? (await getPromptById(id, collection));
+			let res = data ?? (await getPromptById(id, addressCollection));
 			setMeta(res.meta);
 			setOnQuery(false);
 		};
@@ -45,6 +45,16 @@ function GenerationData({
 		}
 		navigate("/generate/", { state: { meta: parsePrompt(meta) } });
 	};
+
+	if (meta === null) {
+		return (
+			<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
+				<div className="h-full w-full flex items-center justify-center">
+					<div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
@@ -62,122 +72,116 @@ function GenerationData({
 						</button>
 					</div>
 					<div className="container mx-auto">
-						{onQuery === true ? (
-							<div className="h-[26rem] flex justify-center items-center">
-								<div className="animate-spin rounded-full h-20 w-20 border-b-2 border-gray-500"></div>
-							</div>
-						) : (
-							<div className="ml-10 grid grid-cols-4 gap-x-10 gap-y-5 items-center overflow-y-auto max-h-[26rem]">
-								<p className="">## prompt</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.prompt)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.prompt}
-								</p>
-								<p className="">## negative prompt</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.negative_prompt)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.negative_prompt}
-								</p>
-								<p className="">## model</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.model)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.model}
-								</p>
-								<p className="">## vae</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.vae)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.vae}
-								</p>
-								<p className="">## size</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.W + "x" + meta.H)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.W}x{meta.H}
-								</p>
-								<p className="">## revision</p>
-								<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.revision}
-								</p>
-								<p className="">## steps</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.steps)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.steps}
-								</p>
-								<p className="">## cfg scale</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.guidance_scale)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.guidance_scale}
-								</p>
-								<p className="">## seed</p>
-								<p
-									className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
-									onClick={() => copyText(meta.seed)}
-								>
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.seed}
-								</p>
-								<p className="">## nsfw filter</p>
-								<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.safetychecker}
-								</p>
-								<p className="">## attention slicing</p>
-								<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.enable_attention_slicing}
-								</p>
-								<p className="">## instant response</p>
-								<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
-									<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-										{copy}
-									</span>
-									{meta.instant_response}
-								</p>
-							</div>
-						)}
+						<div className="ml-10 grid grid-cols-4 gap-x-10 gap-y-5 items-center overflow-y-auto max-h-[26rem]">
+							<p className="">## prompt</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.prompt)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.prompt}
+							</p>
+							<p className="">## negative prompt</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.negative_prompt)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.negative_prompt}
+							</p>
+							<p className="">## model</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.model)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.model}
+							</p>
+							<p className="">## vae</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.vae)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.vae}
+							</p>
+							<p className="">## size</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.W + "x" + meta.H)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.W}x{meta.H}
+							</p>
+							<p className="">## revision</p>
+							<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.revision}
+							</p>
+							<p className="">## steps</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.steps)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.steps}
+							</p>
+							<p className="">## cfg scale</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.guidance_scale)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.guidance_scale}
+							</p>
+							<p className="">## seed</p>
+							<p
+								className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full"
+								onClick={() => copyText(meta.seed)}
+							>
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.seed}
+							</p>
+							<p className="">## nsfw filter</p>
+							<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.safetychecker}
+							</p>
+							<p className="">## attention slicing</p>
+							<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.enable_attention_slicing}
+							</p>
+							<p className="">## instant response</p>
+							<p className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-300 hover:cursor-pointer py-2 px-4 hover:text-gray-800 w-full">
+								<span className="pointer-events-none absolute right-4 bottom-2 opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+									{copy}
+								</span>
+								{meta.instant_response}
+							</p>
+						</div>
 					</div>
 					<div className="py-10 space-y-2 text-gray-600 sm:-mb-8">
 						<p className="text-xs">

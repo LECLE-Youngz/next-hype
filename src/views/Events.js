@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import NFT from "../components/NFT";
 import { getNFTs } from "../helpers/nft";
 
-export default function Discover() {
+export default function Collections() {
 	const [queryParams, setQueryParams] = useState({
 		userId: null,
 		listing: null,
@@ -55,7 +55,7 @@ export default function Discover() {
 			</h1>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
 				<p className="truncate border-b w-1/2 border-gray-900 text-2xl font-extralight">
-					## filter by
+					## specify your generation parameters below
 				</p>
 				<p className="truncate w-min border-gray-900 text-2xl font-extralight">
 					/

@@ -8,6 +8,8 @@ function DataPurchase({
 	promptPrice,
 	ownerName,
 	userId,
+	addressCollection,
+	isAvax = true,
 	setDataPurchasePopup,
 }) {
 	const [onSummit, setOnSummit] = useState(false);
@@ -15,7 +17,7 @@ function DataPurchase({
 	const summit = async () => {
 		setOnSummit(true);
 
-		const res = await buyNFTPrompt(id, promptPrice, userId);
+		const res = await buyNFTPrompt(id, addressCollection, promptPrice, isAvax);
 
 		setOnSuccess(res);
 		setOnSummit(false);
@@ -31,10 +33,7 @@ function DataPurchase({
 					<div class="container mx-auto">
 						<p className="font-semibold ml-10 text-gray-500">
 							you are about to purchase the
-							<span className="text-gray-500 font-semibold twinkle-text">
-								{" "}
-								{name}{" "}
-							</span>
+							<span className="font-semibold twinkle-text"> {name} </span>
 							's <span className="font-semibold">generation data</span>.
 						</p>
 						<div className="grid grid-cols-3 gap-4 mt-10 mx-10">
@@ -87,9 +86,9 @@ function DataPurchase({
 					</div>
 					<div className="py-10 space-y-2 text-gray-600 sm:-mb-8">
 						<p className="text-xs">
-							{"<!-- "} nft purchase{" "}
+							{"<!-- "} generation data purchase{" "}
 							<span className="underline underline-offset-2">does not</span>{" "}
-							include the generation data {" -->"}
+							include the nft {" -->"}
 						</p>
 						<p className="text-xs">
 							{"<!-- "} your charge will be{" "}

@@ -5,11 +5,7 @@ import NFTPurchase from "./NFTPurchase";
 import { getInfoUser } from "../storage/local";
 import DataPreview from "./DataPreview";
 import { Link } from "react-router-dom";
-import {
-	getCollectionName,
-	getLinkedPosts,
-	getPromptById,
-} from "../helpers/nft";
+import { getLinkedPosts, getPromptById } from "../helpers/nft";
 import PostPreview from "./PostPreview";
 import CollectionPreview from "./CollectionPreview";
 
@@ -214,9 +210,7 @@ const NFTDetail = ({
 									</div>
 									<div className="mt-5 col-span-3 flex flex-wrap gap-y-6 justify-evenly">
 										{linkedPosts.map((post, index) => (
-											<div className="grid border w-[31rem] h-56 border-gray-200 hover:border-gray-900">
-												<PostPreview postId={post.id} />
-											</div>
+											<PostPreview postId={post.id} />
 										))}
 									</div>
 								</div>

@@ -48,25 +48,33 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 					<div class="container mx-auto">
 						<p className="font-semibold ml-10 text-gray-500">
 							you are about to subscribe
-							<span className="text-gray-500 font-semibold twinkle-text">
-								{" "}
-								{user.name}{" "}
-							</span>
+							<span className="font-semibold twinkle-text"> {user.name} </span>
+						</p>
+						<p className="text-center text-gray-500 mt-5 text-2xl">
+							you will have{" "}
+							<span className="font-semibold twinkle-text">full access</span> to
+							<ul className="mt-2 text-base list-inside text-gray-500">
+								<li>all exclusive posts</li>
+								<li>all exclusive nfts</li>
+								<li>all non-public generation data</li>
+							</ul>
 						</p>
 						<div className="grid grid-cols-3 gap-4 mt-10 mx-10">
 							<button
 								className={`${
 									inputClass[choice === 0]
-								} border cursor-pointer none flex flex-col items-center justify-center p-3`}
+								} border cursor-pointer none flex flex-col items-center justify-evenly p-3 h-56`}
 								onClick={() => setChoice(0)}
 								defaultValue={choice === 0}
 							>
-								<p className="text-xl text-gray-500 font-semibold">weekly</p>
-								<p className="col-span-2 text-lg text-gray-700 font-semibold">
-									{subscription[0]} avax
-								</p>
-								<hr className="w-11/12 border-gray-300 my-4 mx-auto" />
-								<p className="text-xs  text-gray-500 font-light">
+								<div className="grid gap-1">
+									<p className="text-2xl text-gray-900 font-semibold">weekly</p>
+									<p className="col-span-2 text-lg text-gray-500 font-semibold">
+										{subscription[0]} avax
+									</p>
+									<hr className="w-11/12 border-gray-300 my-4 mx-auto" />
+								</div>
+								<p className="text-sm text-gray-500 font-light h-14">
 									become a member for <b className="font-semibold">7 days</b>,
 									good for starters
 								</p>
@@ -74,16 +82,20 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 							<button
 								className={`${
 									inputClass[choice === 1]
-								} border cursor-pointer none flex flex-col items-center justify-center p-3`}
+								} border cursor-pointer none flex flex-col items-center justify-evenly p-3 h-56`}
 								onClick={() => setChoice(1)}
 								defaultValue={choice === 1}
 							>
-								<p className="text-xl text-gray-500 font-semibold">monthly</p>
-								<p className="col-span-2 text-lg text-gray-700 font-semibold">
-									{subscription[1]} avax
-								</p>
+								<div className="grid gap-1">
+									<p className="text-2xl text-gray-900 font-semibold">
+										monthly
+									</p>
+									<p className="col-span-2 text-lg text-gray-500 font-semibold">
+										{subscription[1]} avax
+									</p>
+								</div>
 								<hr className="w-11/12 border-gray-300 my-4 mx-auto" />
-								<p className="text-xs  text-gray-500 font-light">
+								<p className="text-sm text-gray-500 font-light h-14">
 									become a member for <b className="font-semibold">30 days</b>{" "}
 									with a cheaper price
 								</p>
@@ -91,18 +103,20 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 							<button
 								className={`${
 									inputClass[choice === 2]
-								} border cursor-pointer none flex flex-col items-center justify-center p-3`}
+								} border cursor-pointer none flex flex-col items-center justify-evenly p-3 h-56`}
 								onClick={() => setChoice(2)}
 								defaultValue={choice === 2}
 							>
-								<p className="text-xl text-gray-500 font-semibold">
-									half-yearly
-								</p>
-								<p className="col-span-2 text-lg text-gray-700 font-semibold">
-									{subscription[2]} avax
-								</p>
+								<div className="grid gap-1">
+									<p className="text-2xl text-gray-900 font-semibold">
+										half-yearly
+									</p>
+									<p className="col-span-2 text-lg text-gray-500 font-semibold">
+										{subscription[2]} avax
+									</p>
+								</div>
 								<hr className="w-11/12 border-gray-300 my-4 mx-auto" />
-								<p className="text-xs  text-gray-500 font-light">
+								<p className="text-sm text-gray-500 font-light h-14">
 									become a member for <b className="font-semibold">180 days</b>{" "}
 									with the most favorable price
 								</p>
@@ -110,20 +124,20 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 						</div>
 						<div className="container mx-auto grid gap-2 mt-10 w-1/2">
 							<button
-								className="group border py-4 px-8 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors ease-in-out duration-500 disabled:pointer-events-none"
+								className="border py-4 px-8 border-gray-900 text-gray-900 hover:grad hover:border-transparent hover:text-white duration-300 disabled:pointer-events-none disabled:grad disabled:border-transparent"
 								onClick={() => summit()}
 								disabled={onSummit || onSuccess}
 							>
-								<div className="relative flex items-center space-x-4 justify-center">
+								<div className="relative flex items-center space-x-4 justify-center text-lg">
 									{!onSummit && !onSuccess ? (
-										<p className="block w-max text-gray-900 text-lg transition duration-300 group-hover:text-gray-100">
+										<p className="block w-max">
 											{onSuccess === null ? "Purchase" : "Failed!"}
 										</p>
 									) : !onSuccess ? (
-										<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
+										<div className="animate-spin rounded-full h-7 w-7 border-b-2 border-white"></div>
 									) : (
 										<svg
-											className="h-6 w-6 fill-gray-500"
+											className="h-7 w-7 fill-white"
 											xmlns="http://www.w3.org/2000/svg"
 											viewBox="0 0 50 50"
 										>

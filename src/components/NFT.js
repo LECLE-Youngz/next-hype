@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { SiBitcoinsv } from "react-icons/si";
 import {
 	AiOutlineVerticalAlignBottom,
 	AiOutlineSmile,
@@ -25,7 +24,7 @@ function NFT({
 	promptAllower,
 	addressCollection,
 }) {
-	const [metaPopup, setMetaPopup] = useState(false);
+	const [metaPopup, setMetaPopup] = useState([false]);
 	const [dataPurchasePopup, setDataPurchasePopup] = useState(false);
 	const [nftPurchasePopup, setNFTPurchasePopup] = useState(false);
 	const [nftDetailPopup, setNFTDetailPopup] = useState(false);
@@ -54,7 +53,7 @@ function NFT({
 			{metaPopup[0] && (
 				<GenerationData
 					id={id}
-					collection={addressCollection}
+					addressCollection={addressCollection}
 					setMetaPopup={setMetaPopup}
 				/>
 			)}
@@ -65,6 +64,7 @@ function NFT({
 					name={name}
 					ownerName={owner.name}
 					userId={owner.id}
+					addressCollection={addressCollection}
 					setDataPurchasePopup={setDataPurchasePopup}
 				/>
 			)}
@@ -108,10 +108,10 @@ function NFT({
 								backgroundClip: "cover",
 							}}
 						/>
-						{promptPrice === "0" ? (
+						{promptPrice.avax === "0" ? (
 							<div
 								className="group absolute bg-green-500 bottom-0 right-0 gap-2 inline-flex items-center text-white px-3 h-12 text-2xl cursor-pointer"
-								onClick={() => setMetaPopup(true)}
+								onClick={() => setMetaPopup([true])}
 							>
 								<span className="group-hover:block hidden text-sm">
 									generation data is shown publicly
@@ -122,7 +122,7 @@ function NFT({
 						  promptAllower?.includes(account.key.ethAddress.toLowerCase()) ? (
 							<div
 								className="group absolute bg-red-500 bottom-0 right-0 gap-2 inline-flex items-center text-white px-3 h-12 text-2xl cursor-pointer"
-								onClick={() => setMetaPopup(true)}
+								onClick={() => setMetaPopup([true])}
 							>
 								<span className="group-hover:block hidden text-sm">
 									you have access to this generation data
@@ -163,7 +163,7 @@ function NFT({
 									<span>{owner.name}</span>
 								</Link>
 							</div>
-							{price.avax != 0 && (
+							{price.avax !== "0" && (
 								<button
 									className="group border px-3 hover:bg-gray-900 hover:text-gray-100 h-10 self-center hover:border-gray-900 cursor-pointer disabled:pointer-events-none"
 									onClick={() => setNFTPurchasePopup(true)}

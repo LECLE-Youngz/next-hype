@@ -9,7 +9,7 @@ function NFTPurchase({
 	ownerName,
 	userId,
 	addressCollection,
-	isAvax,
+	isAvax = true,
 	setNFTPurchasePopup,
 }) {
 	const [onSummit, setOnSummit] = useState(false);
@@ -34,10 +34,7 @@ function NFTPurchase({
 					<div class="container mx-auto">
 						<p className="font-semibold ml-10 text-gray-500">
 							you are about to purchase the
-							<span className="text-gray-500 font-semibold twinkle-text">
-								{" "}
-								{name}{" "}
-							</span>
+							<span className="font-semibold twinkle-text"> {name} </span>
 							<span className="font-semibold">nft</span>
 						</p>
 						<div className="grid grid-cols-3 gap-4 mt-10 mx-10">

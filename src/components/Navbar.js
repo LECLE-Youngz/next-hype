@@ -20,11 +20,11 @@ export default function Navbar() {
 			const user = getInfoUser();
 			setGoogleData(user);
 			if (user != null && Object.keys(user).length !== 0) {
-				getBalance(user.key.ethAddress).then(res => {
+				getBalance(user.key.ethAddress).then((res) => {
 					setBalance(res);
-				})
+				});
 			}
-		}
+		};
 		fetchData();
 	}, [loginPopup]);
 
@@ -87,57 +87,94 @@ export default function Navbar() {
 			{(loginPopup || (!googleData && window.location.pathname !== "/")) && (
 				<Login setLoginPopup={setLoginPopup} setGoogleData={setGoogleData} />
 			)}
-			{advancedPopup && <Advanced userId={googleData.user.id} setAdvancedPopup={setAdvancedPopup} />}
-			{manageNFTsPopup && <ManageNFTs userId={googleData.user.id} setManageNFTsPopup={setManageNFTsPopup} />}
-			{purchasedDataPopup && <PurchasedData userId={googleData.user.id} setPurchasedDataPopup={setPurchasedDataPopup} />}
-			{manageBookmarksPopup && <ManageBookmarks userId={googleData.user.id} setManageBookmarksPopup={setManageBookmarksPopup} />}
-			{manageCollectionsPopup && <ManageCollections userId={googleData.user.id} setManageCollectionsPopup={setManageCollectionsPopup} />}
+			{advancedPopup && (
+				<Advanced
+					userId={googleData.user.id}
+					setAdvancedPopup={setAdvancedPopup}
+				/>
+			)}
+			{manageNFTsPopup && (
+				<ManageNFTs
+					userId={googleData.user.id}
+					setManageNFTsPopup={setManageNFTsPopup}
+				/>
+			)}
+			{purchasedDataPopup && (
+				<PurchasedData
+					userId={googleData.user.id}
+					setPurchasedDataPopup={setPurchasedDataPopup}
+				/>
+			)}
+			{manageBookmarksPopup && (
+				<ManageBookmarks
+					userId={googleData.user.id}
+					setManageBookmarksPopup={setManageBookmarksPopup}
+				/>
+			)}
+			{manageCollectionsPopup && (
+				<ManageCollections
+					userId={googleData.user.id}
+					setManageCollectionsPopup={setManageCollectionsPopup}
+				/>
+			)}
 			<div className="mx-auto relative z-50">
-				<nav className="flex flex-wrap items-center px-4 py-2">
+				<nav className="flex items-center px-4 py-2">
 					<Link
 						to="/"
-						className="gap-2 hover:text-gray-500 inline-flex items-center leading-none mr-4 text-3xl text-black"
+						className="w-full gap-2 hover:text-gray-500 inline-flex items-center leading-none mr-4 text-3xl text-black"
 					>
 						<img src={logo} className="h-8" alt="logo" />
 						<span className="hover:cursor-pointer mx-2">NEXT HYPE</span>
 						<div className="xl:block hidden border-r border-black border-[0.5] h-12"></div>
-						<span className="xl:block hidden ml-2 text-base font-light">two greatest breakthroughs<br />reunited in one platform
+						<span className="xl:block hidden ml-2 text-base font-light">
+							two greatest breakthroughs
+							<br />
+							reunited in one platform
 						</span>
 					</Link>
-					<div
-						className="flex-1 hidden space-y-2 w-full lg:flex lg:items-center lg:space-x-4 lg:space-y-0 lg:w-auto"
-						data-name="nav-menu"
-					>
-						<div className="flex flex-col ml-auto lg:flex-row mr-10">
+					<div className="flex w-full items-center relative">
+						<div className="flex space-x-8 flex-row absolute right-[35%]">
 							<Link
 								to="/generate"
-								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black lg:p-4 xl:px-6"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
 							>
 								Generate
 							</Link>
 							<Link
 								to="/discover"
-								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black lg:p-4 xl:px-6"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
 							>
 								Discover
 							</Link>
 							<Link
+								to="/collections"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
+							>
+								Collections
+							</Link>
+							<Link
+								to="/events"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
+							>
+								Events
+							</Link>
+							<Link
 								to="/social"
-								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black lg:p-4 xl:px-6"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
 							>
 								Social
 							</Link>
 							<Link
 								to="/leaderboard"
-								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black lg:p-4 xl:px-6"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
 							>
 								Leaderboard
 							</Link>
 						</div>
-						<div className="w-1/4 flex place-content-end">
+						<div className="flex right-0 w-[30%] absolute">
 							{typeof googleData === "object" &&
-								googleData !== null &&
-								Object.keys(googleData).length !== 0 ? (
+							googleData !== null &&
+							Object.keys(googleData).length !== 0 ? (
 								<div className="group relative inline-block ml-auto lg:flex-row">
 									<Link
 										to={"/profile/" + googleData.user.id}
@@ -156,7 +193,11 @@ export default function Navbar() {
 										<div className="h-3 invisible"></div>
 										<div className=" bg-white drop-shadow-2xl p-2">
 											<li className="flex select-none px-4 items-center">
-												<img src={avaxLogo} className="h-6 w-6 rounded-full mr-2" alt="profile" />
+												<img
+													src={avaxLogo}
+													className="h-6 w-6 rounded-full mr-2"
+													alt="profile"
+												/>
 												<span className="font-bold text-gray-600 text-sm py-2">
 													{parseFloat(balance).toFixed(6)} AVAX
 												</span>
@@ -218,15 +259,16 @@ export default function Navbar() {
 								<div className="flex flex-col ml-auto lg:flex-row">
 									<button
 										onClick={() => setLoginPopup(true)}
-										className="border py-4 px-8 border-black text-black hover:bg-black hover:text-white transition-colors ease-in-out duration-500">
+										className="border py-4 px-8 border-black text-black hover:bg-black hover:text-white transition-colors ease-in-out duration-500"
+									>
 										Join Now
 									</button>
 								</div>
 							)}
 						</div>
 					</div>
-				</nav >
-			</div >
+				</nav>
+			</div>
 		</>
 	);
 }

@@ -32,7 +32,7 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 					id={metaPopup[1]}
 					collection={metaPopup[2]}
 					setMetaPopup={setMetaPopup}
-					data={nfts.find((nft) => nft.id === metaPopup[1]).meta}
+					data={nfts.find((nft) => nft.id === metaPopup[1])}
 					setPurchasedDataPopup={setPurchasedDataPopup}
 				/>
 			)}
@@ -50,7 +50,7 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 							</div>
 						) : (
 							<div className="overflow-y-auto mt-3 max-h-[26rem]">
-								<div className="flex items-center px-5 py-2 bg-gray-100 text-gray-600 rounded shadow-md">
+								<div className="flex items-center px-5 py-2 text-gray-600 border border-gray-900">
 									<span className="text-center w-[10%]">
 										<span className="text-xs text-gray-600 font-bold">
 											Thumbnail
@@ -75,39 +75,46 @@ function PurchasedData({ userId, setPurchasedDataPopup }) {
 										</span>
 									</span>
 								</div>
-								{nfts.map((nft) => (
-									<div
-										className="cursor-pointer h-16 hover:bg-gray-200 bg-white shadow flex p-5 items-center mt-5 rounded"
-										onClick={() =>
-											setMetaPopup([true, nft.id, nft.addressCollection])
-										}
-									>
-										<img
-											className="w-[10%] h-auto p-2"
-											src={nft.image}
-											alt="image"
-										/>
-										<div className="text-center w-[10%]">
-											<span className="text-sm text-gray-800">{nft.id}</span>
+								{nfts.map((nft, index) => (
+									<>
+										<div
+											className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
+											onClick={() =>
+												setMetaPopup([true, nft.id, nft.addressCollection])
+											}
+										>
+											<img
+												className="w-[10%] h-auto p-2"
+												src={nft.image}
+												alt="image"
+											/>
+											<div className="text-center w-[10%]">
+												<span className="text-sm text-gray-800">{nft.id}</span>
+											</div>
+											<div className="text-center w-[40%]">
+												<span className="text-sm text-gray-600">
+													{nft.name}
+												</span>
+											</div>
+											<div className="text-center w-[20%]">
+												<span className="text-gray-600 text-sm">
+													{nft.price.avax !== "0"
+														? parsePrice(nft.price.avax)
+														: "Not for sale"}
+												</span>
+											</div>
+											<div className="text-center w-[20%]">
+												<span className="text-gray-600 text-sm">
+													{nft.promptPrice.avax !== "0"
+														? parsePrice(nft.promptPrice.avax)
+														: "Public data"}
+												</span>
+											</div>
 										</div>
-										<div className="text-center w-[40%]">
-											<span className="text-sm text-gray-600">{nft.name}</span>
-										</div>
-										<div className="text-center w-[20%]">
-											<span className="text-gray-600 text-sm">
-												{nft.price.avax !== "0"
-													? parsePrice(nft.price.avax)
-													: "Not for sale"}
-											</span>
-										</div>
-										<div className="text-center w-[20%]">
-											<span className="text-gray-600 text-sm">
-												{nft.promptPrice.avax !== "0"
-													? parsePrice(nft.promptPrice.avax)
-													: "Public data"}
-											</span>
-										</div>
-									</div>
+										{index !== nfts.length - 1 && (
+											<hr className="border-gray-300 my-2" />
+										)}
+									</>
 								))}
 							</div>
 						)}

@@ -1,17 +1,17 @@
 import {
-	buyPrompt,
-	collection,
-	executeSale,
+	generativeFactory,
 	transferNFTs,
 	updatePromptPrices,
 	updateTokenPrices,
 	withdrawNFTs,
 } from "../scripts";
 import { getTotalToken, safeMint, approve } from "../scripts/collection";
-import { buyItem, listItem } from "../scripts/marketplace";
+import { buyItem, buyPrompt, listItem } from "../scripts/marketplace";
 import axios from "axios";
 import { getInfoUser } from "../storage/local";
 import { name, symbol } from "../scripts/generative";
+import { getAccessToken } from "./user";
+import { deployGenerativeToken } from "../scripts/generativeFactory";
 
 export const buyNFT = async (id, addressCollection, price, isAvax = true) => {
 	let success;
@@ -29,29 +29,56 @@ export const buyNFT = async (id, addressCollection, price, isAvax = true) => {
 	return success;
 };
 
-export const buyNFTPrompt = async (id, promptPrice, idUserSold) => {
+export const buyNFTPrompt = async (
+	id,
+	addressCollection,
+	promptPrice,
+	isAvax = true
+) => {
 	let success;
 
-	await buyPrompt(id, promptPrice).then((res) => (success = res.status === 1));
+	if (isAvax) {
+		await buyPrompt(addressCollection, id, "0", {
+			value: promptPrice.avax,
+		}).then((res) => (success = res.status === 1));
+	} else {
+		await buyPrompt(addressCollection, id, promptPrice.usd, {
+			value: "0",
+		}).then((res) => (success = res.status === 1));
+	}
 
 	return success;
 };
 
 export const mintNFT = async (data, metadata) => {
-	let access_token = getInfoUser().tokens.access_token;
+	let access_token = await getAccessToken();
 	let userAddress = getInfoUser().key.ethAddress;
-	let nftId = await getTotalToken(userAddress).then((res) => res);
+	let generative =
+		data.collection === process.env.REACT_APP_COLLECTION_ADDRESS
+			? null
+			: data.collection;
+
+	let nftId = await getTotalToken(generative).then((res) => res);
+
+	console.log(nftId);
 
 	const res1 = await safeMint(
-		`${process.env.REACT_APP_API_ENDPOINT}/nfts/${nftId}/collection/${data.collection}`
+		userAddress,
+		`${process.env.REACT_APP_API_ENDPOINT}/nfts/${nftId}/collection/${data.collection}`,
+		generative
 	);
 	if (res1.status !== 1) return false;
 
 	if (data.price !== "0") {
-		const res2 = await approve(nftId);
+		const res2 = await approve(nftId, generative);
 		if (res2.status !== 1) return false;
 
-		const res3 = await listItem(nftId, data.price, data.promptPrice);
+		const res3 = await listItem(
+			data.collection,
+			nftId,
+			data.price,
+			data.promptPrice
+		);
 		if (res3.status !== 1) return false;
 	}
 
@@ -61,7 +88,7 @@ export const mintNFT = async (data, metadata) => {
 		.post(
 			`${process.env.REACT_APP_API_ENDPOINT}/nfts/`,
 			{
-				id: nftId,
+				id: Number(nftId),
 				name: data.name,
 				description: data.description,
 				image: data.image,
@@ -75,8 +102,9 @@ export const mintNFT = async (data, metadata) => {
 				},
 			}
 		)
-		.catch(() => {
+		.catch((e) => {
 			success = false;
+			console.log(e);
 		});
 
 	return success;
@@ -84,7 +112,7 @@ export const mintNFT = async (data, metadata) => {
 
 export const getPrompts = async () => {
 	let prompts;
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 	await axios
 		.get(`${process.env.REACT_APP_API_ENDPOINT}/data/owner`, {
 			headers: {
@@ -104,7 +132,7 @@ export const getPrompts = async () => {
 
 export const getPromptById = async (id, collection) => {
 	let prompt;
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 	await axios
 		.get(
 			`${process.env.REACT_APP_API_ENDPOINT}/data/${id}/collection/${collection}`,
@@ -120,6 +148,7 @@ export const getPromptById = async (id, collection) => {
 		})
 		.catch((error) => {
 			prompt = null;
+			console.log(error);
 		});
 
 	return prompt;
@@ -154,7 +183,7 @@ export const transferToAddress = async (ids, to, isRootStock, isWithdraw) => {
 			});
 		}
 	} else {
-		const access_token = getInfoUser().tokens.access_token;
+		const access_token = await getAccessToken();
 
 		await Promise.all(
 			ids?.map(async (id) => {
@@ -218,46 +247,83 @@ export const getNFTs = async (queryParams) => {
 };
 
 export const getLinkedPosts = async (id, collection) => {
-	let posts;
-
-	await axios
+	let posts = await axios
 		.get(
 			`${process.env.REACT_APP_API_ENDPOINT}/nfts/post/${id}/collection/${collection}`
 		)
-		.then((res) => {
-			posts = res.data;
-		})
+		.then((res) => (res = res.data))
 		.catch((error) => (posts = []));
 
 	return posts;
 };
 
-export const getNFTsFromCollection = async (address) => {
-	const res = [0];
+export const getCollections = async (address) => {
+	let collections = await axios
+		.get(
+			`${process.env.REACT_APP_API_ENDPOINT}/nfts/collection/${address ?? ""}`
+		)
+		.then((res) => (res = res.data))
+		.catch((error) => {
+			console.log(error);
+			collections = [];
+		});
 
-	return res;
+	return collections;
 };
 
-export const getCollectionName = async (address) => {
-	if (address === process.env.REACT_APP_COLLECTION_ADDRESS) return "NEXTHYPE";
+export const getUserCollections = async () => {
+	const access_token = await getAccessToken();
 
-	console.log(address, process.env.REACT_APP_COLLECTION_ADDRESS);
+	let collections = await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/owner/collection`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			},
+		})
+		.then((res) => (res = res.data))
+		.catch((error) => {
+			console.log(error);
+		});
 
-	const res = await name(address);
-
-	return res;
+	return collections;
 };
 
-export const getUserCollections = async (address) => {
-	const res = [process.env.REACT_APP_COLLECTION_ADDRESS];
+export const getCollectionInfo = async (address) => {
+	let info = {
+		name: null,
+		symbol: null,
+		nft: null,
+		owner: null,
+	};
 
-	return res;
+	if (address === process.env.REACT_APP_COLLECTION_ADDRESS) {
+		info.name = "NEXTHYPE";
+		info.symbol = "NET";
+		info.owner = null;
+		info.nft = null;
+	} else {
+		info.name = await name(address);
+		info.symbol = await symbol(address);
+		await axios
+			.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/collection/${address}`)
+			.then((res) => {
+				info.owner = res.data.user;
+				info.nft = res.data.nft;
+			})
+			.catch((error) => {
+				info.owner = null;
+				info.nft = null;
+			});
+	}
+
+	return info;
 };
 
-export const getSymbol = async (address) => {
-	if (address === process.env.REACT_APP_COLLECTION_ADDRESS) return "NET";
+export const createCollection = async (name, symbol) => {
+	let success = await deployGenerativeToken(name, symbol).then(
+		(res) => res.status === 1
+	);
 
-	const res = await symbol(address);
-
-	return res;
+	return success;
 };

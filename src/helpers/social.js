@@ -1,11 +1,18 @@
 import axios from "axios";
-import { getInfoUser } from "../storage/local";
+import { getAccessToken } from "./user";
 
 export const getPosts = async (id) => {
 	let posts;
 
+	const access_token = await getAccessToken();
+
 	await axios
-		.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id ?? ""}`)
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id ?? ""}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			},
+		})
 		.then((res) => {
 			posts = res.data;
 		})
@@ -62,7 +69,7 @@ export const getPostsByTag = async (tag) => {
 };
 
 export const toggleLikePost = async (id) => {
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 
 	await axios.put(
 		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/like-or-unlike`,
@@ -77,7 +84,7 @@ export const toggleLikePost = async (id) => {
 };
 
 export const toggleLikeComment = async (id) => {
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 
 	await axios.put(
 		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/comment/${id}/like-or-unlike`,
@@ -107,7 +114,7 @@ export const getBookmarks = async (id) => {
 };
 
 export const toggleFollowUser = async (id) => {
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 
 	await axios.put(
 		`${process.env.REACT_APP_API_ENDPOINT}/socials/social-user/${id}/follow-or-unfollow`,
@@ -122,7 +129,7 @@ export const toggleFollowUser = async (id) => {
 };
 
 export const createComment = async (postId, commentId, text) => {
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 
 	let data = { text };
 
@@ -145,7 +152,7 @@ export const createComment = async (postId, commentId, text) => {
 };
 
 export const toggleBookmarkPost = async (id) => {
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 
 	await axios.put(
 		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${id}/bookmark-or-unbookmark`,
@@ -166,9 +173,10 @@ export const createPost = async (
 	text,
 	nftId,
 	addressCollection,
+	exclusiveContent,
 	tags
 ) => {
-	const access_token = getInfoUser().tokens.access_token;
+	const access_token = await getAccessToken();
 
 	if (postId) {
 		await axios.put(
@@ -180,6 +188,7 @@ export const createPost = async (
 				nftId,
 				addressCollection,
 				tags,
+				exclusiveContent,
 			},
 			{
 				headers: {
@@ -199,7 +208,9 @@ export const createPost = async (
 			description,
 			text,
 			nftId,
+			addressCollection,
 			tags,
+			exclusiveContent,
 		},
 		{
 			headers: {
