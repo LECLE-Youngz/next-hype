@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import EditNFTDataPrice from "./EditNFTDataPrice";
 import Transfer from "./Transfer";
 import { getUsers } from "../helpers/user";
 import { parsePrice } from "../libs/blockchain";
+import EditNFTPrice from "./EditNFTPrice";
 
 function ManageNFTs({ userId, setManageNFTsPopup }) {
 	const [nfts, setNFTs] = useState(null);
@@ -47,7 +47,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 	return (
 		<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
 			{editPricePopup && (
-				<EditNFTDataPrice
+				<EditNFTPrice
 					nfts={nfts.filter((_, index) => selected[index])}
 					setEditPricePopup={setEditPricePopup}
 				/>
@@ -60,30 +60,28 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 			)}
 			<div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-1/2 w-3/4">
 				<div className="bg-white shadow-xl w-full px-16 py-5 relative">
-					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900">
-						# Manage NFTs
-					</h3>
-					<div className="flex absolute top-24 right-16 gap-x-3">
-						<button
-							className="rounded-full bg-blue-600 flex items-center justify-center hover:bg-blue-700 cursor-pointer px-5 py-2 disabled:pointer-events-none disabled:bg-opacity-50"
-							onClick={() => setEditPricePopup(true)}
-							disabled={!selected.includes(true)}
-						>
-							<p className="text-white text-sm font-semibold">
-								Edit NFT/Data Price
-							</p>
-						</button>
-						<button
-							className="rounded-full bg-fuchsia-600 flex items-center justify-center hover:bg-fuchsia-700 cursor-pointer px-5 py-2 disabled:pointer-events-none disabled:bg-opacity-50"
-							onClick={() => setTransferPopup(true)}
-							disabled={!selected.includes(true)}
-						>
-							<p className="text-white text-sm font-semibold">
-								Transfer/Withdraw
-							</p>
-						</button>
+					<div className="flex justify-between">
+						<h3 className="self-center text-4xl text-gray-900">
+							# Manage collections
+						</h3>
+						<div className="flex space-x-4">
+							<button
+								className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-xl disabled:border-gray-400 disabled:text-gray-400 disabled:pointer-events-none"
+								onClick={() => setEditPricePopup(true)}
+								disabled={!selected.includes(true)}
+							>
+								Edit prices
+							</button>
+							<button
+								className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-xl disabled:border-gray-400 disabled:text-gray-400 disabled:pointer-events-none"
+								onClick={() => setTransferPopup(true)}
+								disabled={!selected.includes(true)}
+							>
+								Transfer
+							</button>
+						</div>
 					</div>
-					<div className="mt-20 container mx-auto">
+					<div className="mt-10 container mx-auto">
 						{nfts.length === 0 ? (
 							<div className="text-center">
 								<p className="text-2xl mb-10 text-gray-500">

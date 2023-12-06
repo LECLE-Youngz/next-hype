@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Login from "./Login";
-import { avaxLogo, logo } from "../data";
+import { avaxLogo, logo, usdcLogo } from "../data";
 import { getInfoUser, storeInfoUser } from "../storage/local";
 import Advanced from "./Advanced";
 import ManageNFTs from "./ManageNFTs";
@@ -13,14 +13,14 @@ import ManageCollections from "./ManageCollections";
 export default function Navbar() {
 	let [loginPopup, setLoginPopup] = useState(false);
 	let [googleData, setGoogleData] = useState(null);
-	let [balance, setBalance] = useState(0);
+	let [balance, setBalance] = useState({ avax: 0, usdc: 0 });
 
 	useEffect(() => {
 		const fetchData = async () => {
 			const user = getInfoUser();
 			setGoogleData(user);
 			if (user != null && Object.keys(user).length !== 0) {
-				getBalance(user.key.ethAddress).then((res) => {
+				await getBalance(user.key.ethAddress).then((res) => {
 					setBalance(res);
 				});
 			}
@@ -81,6 +81,13 @@ export default function Navbar() {
 		setPurchasedDataPopup(false);
 		setManageBookmarksPopup(false);
 	};
+
+	const navigate = useNavigate();
+
+	if (googleData === null && window.location.pathname !== "/") {
+		navigate("/");
+		setLoginPopup(true);
+	}
 
 	return (
 		<>
@@ -199,16 +206,34 @@ export default function Navbar() {
 													alt="profile"
 												/>
 												<span className="font-bold text-gray-600 text-sm py-2">
-													{parseFloat(balance).toFixed(6)} AVAX
+													{parseFloat(balance.avax).toFixed(4)} AVAX
+												</span>
+											</li>
+											<li className="flex select-none px-4 items-center">
+												<img
+													src={usdcLogo}
+													className="h-6 w-6 rounded-full mr-2"
+													alt="profile"
+												/>
+												<span className="font-bold text-gray-600 text-sm py-2">
+													{parseFloat(balance.usdc).toFixed(4)} USDC
 												</span>
 											</li>
 											<div className="h-[1px] bg-gray-400 my-2"></div>
 											<li className="">
 												<button
+													onClick={() => advanced()}
+													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
+												>
+													Wallet
+												</button>
+											</li>
+											<li className="">
+												<button
 													onClick={() => manageBookmarks()}
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
-													Manage Bookmarks
+													Bookmarks
 												</button>
 											</li>
 											<li className="">
@@ -216,7 +241,7 @@ export default function Navbar() {
 													onClick={() => manageCollections()}
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
-													Manage Collections
+													Collections
 												</button>
 											</li>
 											<li className="">
@@ -224,7 +249,7 @@ export default function Navbar() {
 													onClick={() => manageNFTs()}
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
-													Manage NFTs
+													NFTs
 												</button>
 											</li>
 											<li className="">
@@ -232,17 +257,10 @@ export default function Navbar() {
 													onClick={() => purchasedData()}
 													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
 												>
-													Manage Data
+													Data
 												</button>
 											</li>
-											<li className="">
-												<button
-													onClick={() => advanced()}
-													className="hover:bg-gray-900 hover:text-gray-100 py-2 px-4 block blackspace-no-wrap w-full text-left"
-												>
-													Advanced
-												</button>
-											</li>
+
 											<div className="h-[1px] bg-gray-400 my-2"></div>
 											<li className="">
 												<button

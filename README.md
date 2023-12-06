@@ -30,7 +30,7 @@ cd server
 yarn start:dev:node3
 ```
 
-### Start Bitcoin Core Server
+### Start LINK Core Server
 
 > **Note:** Checkout [Ordinal Server](https://github.com/TranNhi27/ord_server) repo by our teammate.
 

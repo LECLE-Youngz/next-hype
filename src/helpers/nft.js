@@ -1,17 +1,19 @@
-import {
-	generativeFactory,
-	transferNFTs,
-	updatePromptPrices,
-	updateTokenPrices,
-	withdrawNFTs,
-} from "../scripts";
 import { getTotalToken, safeMint, approve } from "../scripts/collection";
-import { buyItem, buyPrompt, listItem } from "../scripts/marketplace";
+import {
+	buyItem,
+	buyPrompt,
+	cancelListing,
+	listItem,
+	updateListing,
+} from "../scripts/marketplace";
 import axios from "axios";
 import { getInfoUser } from "../storage/local";
 import { name, symbol } from "../scripts/generative";
 import { getAccessToken } from "./user";
 import { deployGenerativeToken } from "../scripts/generativeFactory";
+import { allowance } from "../scripts/usd";
+import { parsePrice } from "../libs/blockchain";
+import { Big } from "bigdecimal.js";
 
 export const buyNFT = async (id, addressCollection, price, isAvax = true) => {
 	let success;
@@ -21,9 +23,16 @@ export const buyNFT = async (id, addressCollection, price, isAvax = true) => {
 			(res) => (success = res.status === 1)
 		);
 	} else {
-		await buyItem(addressCollection, id, price.usd, { value: "0" }).then(
-			(res) => (success = res.status === 1)
-		);
+		await allowance(
+			process.env.REACT_APP_MARKETPLACE_ADDRESS,
+			Big(parsePrice(price.usd)).multiply(1e6).toBigInt().toString()
+		).then(async (res) => {
+			if (res.status === 1) {
+				await buyItem(addressCollection, id, price.usd, { value: "0" }).then(
+					(res) => (success = res.status === 1)
+				);
+			}
+		});
 	}
 
 	return success;
@@ -59,8 +68,6 @@ export const mintNFT = async (data, metadata) => {
 			: data.collection;
 
 	let nftId = await getTotalToken(generative).then((res) => res);
-
-	console.log(nftId);
 
 	const res1 = await safeMint(
 		userAddress,
@@ -154,76 +161,28 @@ export const getPromptById = async (id, collection) => {
 	return prompt;
 };
 
-export const editPrices = async (ids, price) => {
+export const editPrices = async (ids, price, promptPrice) => {
 	let success;
-	await updateTokenPrices(ids, price).then(
-		(res) => (success = res.status === 1)
-	);
-	return success;
-};
 
-export const editPromptPrices = async (ids, promptPrice) => {
-	let success;
-	await updatePromptPrices(ids, promptPrice).then(
-		(res) => (success = res.status === 1)
-	);
-	return success;
-};
-
-export const transferToAddress = async (ids, to, isRootStock, isWithdraw) => {
-	let success = true;
-	if (isRootStock) {
-		if (isWithdraw) {
-			await withdrawNFTs(ids, to).catch(() => {
-				success = false;
-			});
-		} else {
-			await transferNFTs(ids, to).catch(() => {
-				success = false;
-			});
+	if (price === "0") {
+		for (let i = 0; i < ids.length; i++) {
+			await cancelListing(ids[i].address, ids[i].id).then(
+				(res) => (success = res.status === 1)
+			);
 		}
 	} else {
-		const access_token = await getAccessToken();
-
-		await Promise.all(
-			ids?.map(async (id) => {
-				await axios
-					.post(
-						`${process.env.REACT_APP_BTC_ENDPOINT}/transferOrd`,
-						{
-							ordId: id,
-							address: to,
-						},
-						{
-							headers: {},
-						}
-					)
-					.catch(() => {
-						success = false;
-					});
-
-				if (success) {
-					await axios
-						.put(
-							`${process.env.REACT_APP_API_ENDPOINT}/ordinals`,
-							{
-								nftId: id,
-								owner: to,
-							},
-							{
-								headers: {
-									"Content-Type": "application/json",
-									Authorization: `Bearer ${access_token}`,
-								},
-							}
-						)
-						.catch(() => {
-							success = false;
-						});
-				}
-			})
-		);
+		for (let i = 0; i < ids.length; i++) {
+			await updateListing(ids[i].address, ids[i].id, price, promptPrice).then(
+				(res) => (success = res.status === 1)
+			);
+		}
 	}
+	return success;
+};
+
+export const transferToAddress = async (ids, to, isWithdraw) => {
+	let success = true;
+
 	return success;
 };
 

@@ -17,7 +17,7 @@ export const getPosts = async (id) => {
 			posts = res.data;
 		})
 		.catch((error) => {
-			posts = [];
+			console.log(error);
 		});
 
 	return posts;

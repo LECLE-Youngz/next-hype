@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { getPlans, subscriber } from "../helpers/user";
+import { parsePrice } from "../libs/blockchain";
 
 const Subscribe = ({ user, setSubscribePopup }) => {
 	const [onSummit, setOnSummit] = useState(false);
@@ -8,7 +10,8 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			setSubscription([1, 3, 30]);
+			const res = await getPlans(user.id);
+			setSubscription(res);
 		};
 
 		fetchData();
@@ -17,7 +20,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 	const summit = async () => {
 		setOnSummit(true);
 
-		const res = true;
+		const res = subscriber(user.id, choice, subscription[choice]);
 
 		setOnSuccess(res);
 		setOnSummit(false);
@@ -70,7 +73,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 								<div className="grid gap-1">
 									<p className="text-2xl text-gray-900 font-semibold">weekly</p>
 									<p className="col-span-2 text-lg text-gray-500 font-semibold">
-										{subscription[0]} avax
+										{parsePrice(subscription[0])} avax
 									</p>
 									<hr className="w-11/12 border-gray-300 my-4 mx-auto" />
 								</div>
@@ -91,7 +94,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 										monthly
 									</p>
 									<p className="col-span-2 text-lg text-gray-500 font-semibold">
-										{subscription[1]} avax
+										{parsePrice(subscription[1])} avax
 									</p>
 								</div>
 								<hr className="w-11/12 border-gray-300 my-4 mx-auto" />
@@ -112,7 +115,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 										half-yearly
 									</p>
 									<p className="col-span-2 text-lg text-gray-500 font-semibold">
-										{subscription[2]} avax
+										{parsePrice(subscription[2])} avax
 									</p>
 								</div>
 								<hr className="w-11/12 border-gray-300 my-4 mx-auto" />

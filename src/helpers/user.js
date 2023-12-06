@@ -2,6 +2,9 @@ import axios from "axios";
 import Web3 from "web3";
 import { get } from "lodash";
 import { getInfoUser, storeInfoUser } from "../storage/local";
+import { deployPremiumToken } from "../scripts/premiumFactory";
+import { ethers } from "ethers";
+import { getSubscriptionPlan, subscribe } from "../scripts/premium";
 
 export const getGoogleToken = async (payload) => {
 	try {
@@ -24,6 +27,11 @@ export const getGoogleToken = async (payload) => {
 
 export const getAccessToken = async () => {
 	const data = getInfoUser();
+
+	if (!data) {
+		return null;
+	}
+
 	const tokens = data.tokens;
 
 	if (tokens.expiry_date < Date.now()) {
@@ -101,4 +109,49 @@ export const checkAddress = async (address, isRootStock) => {
 
 		return true;
 	}
+};
+
+export const turnOnCreatorMode = async (plans) => {
+	let success = false;
+
+	await deployPremiumToken(plans).then((res) => {
+		success = res.status === 1;
+	});
+
+	return success;
+};
+
+export const subscriber = async (user, plan, amount) => {
+	let success = false;
+
+	const address = await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/premium/user/${user}`)
+		.then((res) => res.data);
+
+	await subscribe(plan, address, { value: amount }).then((res) => {
+		console.log(res);
+		success = res.status === 1;
+	});
+
+	return success;
+};
+
+export const getPlans = async (user) => {
+	const plans = [];
+
+	const address = await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/premium/user/${user}`)
+		.then((res) => res.data);
+
+	await getSubscriptionPlan(0, address).then((res) => {
+		plans.push(res);
+	});
+	await getSubscriptionPlan(1, address).then((res) => {
+		plans.push(res);
+	});
+	await getSubscriptionPlan(2, address).then((res) => {
+		plans.push(res);
+	});
+
+	return plans;
 };

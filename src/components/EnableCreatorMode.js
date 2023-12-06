@@ -1,25 +1,28 @@
 import { useState } from "react";
-import { createCollection } from "../helpers/nft";
+import { turnOnCreatorMode } from "../helpers/user";
+import { parseAmount } from "../libs/blockchain";
 
-const CreateCollectionPopup = ({ setCreateCollectionPopup }) => {
+function EnableCreatorMode({ setEnableCreatorModePopup }) {
 	const [onSummit, setOnSummit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
 
 	const summit = async () => {
 		setOnSummit(true);
 
-		const res = await createCollection(
-			collectionParams.name,
-			collectionParams.symbol
-		);
+		const res = await turnOnCreatorMode([
+			parseAmount(plans.monthly),
+			parseAmount(plans.halfYearly),
+			parseAmount(plans.weekly),
+		]);
 
 		setOnSuccess(res);
 		setOnSummit(false);
 	};
 
-	const [collectionParams, setCollectionParams] = useState({
-		name: "",
-		symbol: "",
+	const [plans, setPlans] = useState({
+		weekly: 0,
+		monthly: 0,
+		halfYearly: 0,
 	});
 
 	const inputClass = {
@@ -28,43 +31,68 @@ const CreateCollectionPopup = ({ setCreateCollectionPopup }) => {
 	};
 
 	const valid = () =>
-		collectionParams.name !== "" && collectionParams.symbol !== "";
+		plans.weekly !== 0 && plans.monthly !== 0 && plans.halfYearly !== 0;
 
 	return (
 		<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
 			<div className="flex items-center justify-center text-gray-500 md:w-8/12 lg:w-6/12 xl:w-4/12">
 				<div className="bg-white shadow-xl w-full px-16 py-5">
 					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900">
-						# Create collection
+						# Enable creator mode
 					</h3>
 					<div class="container mx-auto">
-						<div className="grid space-y-5">
-							<input
-								type="text"
-								placeholder="## name"
-								className={`${
-									inputClass[collectionParams.name === ""]
-								}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`}
-								onChange={(e) =>
-									setCollectionParams({
-										...collectionParams,
-										name: e.target.value,
-									})
-								}
-							/>
-							<input
-								type="text"
-								placeholder="## symbol"
-								className={`${
-									inputClass[collectionParams.symbol === ""]
-								}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`}
-								onChange={(e) =>
-									setCollectionParams({
-										...collectionParams,
-										symbol: e.target.value,
-									})
-								}
-							/>
+						<p className="font-semibold ml-10 my-10">
+							Set-up your plans to subscribers
+						</p>
+						<div className="grid space-y-5 mx-10">
+							<div className="flex items-center justify-center">
+								<input
+									type="text"
+									placeholder="## weekly"
+									className={`${
+										inputClass[plans.weekly === ""]
+									}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`}
+									onChange={(e) =>
+										setPlans({
+											...plans,
+											weekly: e.target.value,
+										})
+									}
+								/>
+								<p className="text-lg mx-6">AVAX</p>
+							</div>
+							<div className="flex items-center justify-center">
+								<input
+									type="text"
+									placeholder="## monthly"
+									className={`${
+										inputClass[plans.monthly === ""]
+									}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`}
+									onChange={(e) =>
+										setPlans({
+											...plans,
+											monthly: e.target.value,
+										})
+									}
+								/>
+								<p className="text-lg mx-6">AVAX</p>
+							</div>
+							<div className="flex items-center justify-center">
+								<input
+									type="text"
+									placeholder="## half-yearly"
+									className={`${
+										inputClass[plans.halfYearly === ""]
+									}  w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center`}
+									onChange={(e) =>
+										setPlans({
+											...plans,
+											halfYearly: e.target.value,
+										})
+									}
+								/>
+								<p className="text-lg mx-6">AVAX</p>
+							</div>
 						</div>
 						<div className="flex">
 							<button
@@ -79,7 +107,7 @@ const CreateCollectionPopup = ({ setCreateCollectionPopup }) => {
 								<div className="relative flex items-center space-x-4 justify-center">
 									<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
 										{!onSummit && !onSuccess ? (
-											<p>{onSuccess === null ? "Create" : "Failed!"}</p>
+											<p>{onSuccess === null ? "Summit" : "Failed!"}</p>
 										) : !onSuccess ? (
 											<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
 										) : (
@@ -110,10 +138,10 @@ const CreateCollectionPopup = ({ setCreateCollectionPopup }) => {
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"
-				onClick={() => !onSummit && setCreateCollectionPopup(false)}
+				onClick={() => !onSummit && setEnableCreatorModePopup(false)}
 			></div>
 		</div>
 	);
-};
+}
 
-export default CreateCollectionPopup;
+export default EnableCreatorMode;

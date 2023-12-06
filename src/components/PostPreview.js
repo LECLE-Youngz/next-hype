@@ -59,7 +59,7 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 			</div>
 		);
 	}
-
+	console.log(post);
 	return (
 		<div className="group grid border w-[31rem] h-56 relative group">
 			{subscribePopup && (
@@ -75,7 +75,7 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 				<div className="bg-white absolute inset-0 group-hover:bg-gray-900 p-[1.5px]"></div>
 			)}
 
-			{post.exclusiveContent && (
+			{post.exclusiveContent && !post.text && (
 				<div className="hidden group-hover:flex absolute inset-0 flex-col justify-center items-center text-white text-xl text-light">
 					This post is exclusive content
 					<div
@@ -89,7 +89,7 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 
 			<div
 				className={`absolute inset-0 bg-white m-[1.5px] ${
-					post.exclusiveContent ? "group-hover:hidden" : ""
+					post.exclusiveContent && !post.text ? "group-hover:hidden" : ""
 				}`}
 			>
 				<div className="mx-4 mt-4 container">
@@ -119,7 +119,7 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 				</div>
 				<div
 					className={`flex space-x-4 p-4 ${
-						post.exclusiveContent ? "pointer-events-none" : ""
+						post.exclusiveContent && !post.text ? "pointer-events-none" : ""
 					}`}
 				>
 					{post.nft ? (

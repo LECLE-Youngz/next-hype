@@ -7,7 +7,6 @@ import {
 	BiComment,
 	BiBookmark,
 	BiSolidUpvote,
-	BiSolidComment,
 	BiSolidBookmark,
 } from "react-icons/bi";
 import { useEffect, useState } from "react";
@@ -297,16 +296,16 @@ const Post = ({ postId }) => {
 										<div className=" bg-gray-100 p-3">
 											<div className="flex justify-between items-center">
 												<Link
-													to={"/profile/" + comment.postOwnerComment.id}
+													to={"/profile/" + comment.ownerComment.id}
 													className="flex items-center space-x-3"
 												>
 													<img
-														src={comment.postOwnerComment.picture}
+														src={comment.ownerComment.picture}
 														className="h-8"
 														alt="profile"
 													/>
 													<span className="font-light group-hover:text-gray-500 text-gray-900">
-														{comment.postOwnerComment.name}
+														{comment.ownerComment.name}
 													</span>
 												</Link>
 												<p className="text-gray-600 text-sm">
@@ -377,16 +376,16 @@ const Post = ({ postId }) => {
 														className="flex justify-between items-center"
 													>
 														<Link
-															to={"/profile/" + reply.postOwnerComment.id}
+															to={"/profile/" + reply.ownerComment.id}
 															className="flex items-center space-x-3"
 														>
 															<img
-																src={reply.postOwnerComment.picture}
+																src={reply.ownerComment.picture}
 																className="h-6"
 																alt="profile"
 															/>
 															<span className="font-light group-hover:text-gray-500 text-gray-900">
-																{reply.postOwnerComment.name}
+																{reply.ownerComment.name}
 															</span>
 														</Link>
 														<p className="text-gray-600 text-xs">

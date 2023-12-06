@@ -5,10 +5,13 @@ const generativeFactoryABI = require("./GenerativeNFTFactory.sol/GenerativeNFTFa
 const generativeABI = require("./GenerativeNFT.sol/GenerativeNFT.json");
 const premiumFactoryABI = require("./PremiumFactory.sol/PremiumFactory.json");
 const premiumABI = require("./PremiumNFT.sol/PremiumNFT.json");
+const usdABI = require("./USD.json");
 
 const { getInfoUser } = require("../storage/local");
 
-const provider = new JsonRpcProvider(process.env.REACT_APP_FUJI_RPC);
+const provider = new JsonRpcProvider(
+	"https://api.avax-test.network/ext/bc/C/rpc"
+);
 
 export const marketplace = async () => {
 	const privateKey = getInfoUser().key.privKey;
@@ -58,7 +61,7 @@ export const premiumFactory = async () => {
 	const privateKey = getInfoUser().key.privKey;
 	const signer = new ethers.Wallet(privateKey, provider);
 	const contract = new ethers.Contract(
-		process.env.REACT_APP_PREMIUM_FACTORY_ADDRESS,
+		process.env.REACT_APP_PREMIUMFACTORY_ADDRESS,
 		premiumFactoryABI.abi,
 		signer
 	);
@@ -67,38 +70,32 @@ export const premiumFactory = async () => {
 };
 
 export const premium = async (address) => {
-	const contract = new ethers.Contract(address, premiumABI.abi, provider);
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(address, premiumABI.abi, signer);
 
 	return contract;
 };
 
-export const getBalance = async (address) => {
-	const res = await provider.getBalance(address);
-	return ethers.formatEther(res);
+export const usd = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+
+	const proxyContract = new ethers.Contract(
+		process.env.REACT_APP_USD_ADDRESS,
+		usdABI,
+		signer
+	);
+
+	return proxyContract;
 };
 
-export const getAllNFTs = async () => {};
+export const getBalance = async (address) => {
+	const avax = await provider.getBalance(address);
+	const usdc = await usd().then(async (res) => await res.balanceOf(address));
 
-export const getMyNFTs = async () => {};
-
-export const getNFTsFromAddress = async (address) => {};
-
-export const getMyPrompts = async () => {};
-
-export const createToken = async (tokenURI, price, promptPrice) => {};
-
-export const updatePromptPrices = async (ids, newPromptPrice) => {};
-
-export const updateTokenPrices = async (ids, newPrice) => {};
-
-export const transferNFTs = async (ids, to) => {};
-
-export const withdrawNFTs = async (ids, to) => {};
-
-export const buyPrompt = async (id, promptPrice) => {};
-
-export const executeSale = async (id, price) => {};
-
-export const bridgeNFT = async (image) => {};
-
-export const burnBridgedToken = async (id) => {};
+	return {
+		avax: ethers.formatEther(avax),
+		usdc: ethers.formatUnits(usdc, 6),
+	};
+};

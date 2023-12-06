@@ -3,7 +3,7 @@ import NFT from "../components/NFT";
 import { MdOutlineLanguage } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
-import { emailToWallet, getUsers } from "../helpers/user";
+import { emailToWallet, getUsers, turnOnCreatorMode } from "../helpers/user";
 import { getPosts, getPostsByUser, toggleFollowUser } from "../helpers/social";
 import PostPreview from "../components/PostPreview";
 import { getInfoUser } from "../storage/local";
@@ -11,6 +11,7 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { GoDash } from "react-icons/go";
 import Subscribe from "../components/Subscribe";
 import ListUser from "../components/ListUser";
+import EnableCreatorMode from "../components/EnableCreatorMode";
 
 function Profile({ userId, userInfo }) {
 	const regionNames = new Intl.DisplayNames(["en"], {
@@ -26,9 +27,9 @@ function Profile({ userId, userInfo }) {
 	const [wallet, setWallet] = useState(false);
 	const [account, setAccount] = useState(null);
 	const [followUpdating, setFollowUpdating] = useState(false);
-	const [subscribeUpdating, setSubscribeUpdating] = useState(false);
 	const [subscribePopup, setSubscribePopup] = useState(false);
 	const [userListPopup, setUserListPopup] = useState([false]);
+	const [enableCreatorModePopup, setEnableCreatorModePopup] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -60,7 +61,7 @@ function Profile({ userId, userInfo }) {
 		};
 
 		fetchData();
-	}, [followUpdating, subscribeUpdating]);
+	}, [followUpdating, subscribePopup]);
 
 	const toggleFollow = async () => {
 		setFollowUpdating(true);
@@ -82,6 +83,11 @@ function Profile({ userId, userInfo }) {
 		<div className="flex flex-col justify-between">
 			{subscribePopup && (
 				<Subscribe user={user} setSubscribePopup={setSubscribePopup} />
+			)}
+			{enableCreatorModePopup && (
+				<EnableCreatorMode
+					setEnableCreatorModePopup={setEnableCreatorModePopup}
+				/>
 			)}
 			{userListPopup[0] && (
 				<ListUser
@@ -158,30 +164,34 @@ function Profile({ userId, userInfo }) {
 										)}
 									</div>
 									<div className="flex h-12 place-items-center">
-										<span
-											className="w-36 h-full grid border cursor-pointer text-base  hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
-											onClick={() =>
-												setUserListPopup([
-													true,
-													"Subscribers",
-													user.socialUser.subscribers,
-												])
-											}
-										>
-											<span className="self-center">
-												{user.socialUser.subscribers.length} subscribers
-											</span>
-										</span>
-										{user.socialUser.subscribers.includes(account.id) ? (
-											<GoDash
-												onClick={() => setSubscribePopup(true)}
-												className="h-full w-12 py-3 border cursor-pointer text-base self-center hover:border-gray-900 hover:text-gray-100 bg-gray-300 hover:bg-gray-900 text-gray-900 border-gray-300"
-											/>
-										) : (
-											<HiOutlinePlus
-												onClick={() => setSubscribePopup(true)}
-												className="h-full w-12 py-3 border cursor-pointer text-base self-center hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
-											/>
+										{user.socialUser.subscribers !== null && (
+											<>
+												<span
+													className="w-36 h-full grid border cursor-pointer text-base  hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
+													onClick={() =>
+														setUserListPopup([
+															true,
+															"Subscribers",
+															user.socialUser.subscribers,
+														])
+													}
+												>
+													<span className="self-center">
+														{user.socialUser.subscribers.length} subscribers
+													</span>
+												</span>
+												{user.socialUser.subscribers.includes(account.id) ? (
+													<GoDash
+														onClick={() => setSubscribePopup(true)}
+														className="h-full w-12 py-3 border cursor-pointer text-base self-center hover:border-gray-900 hover:text-gray-100 bg-gray-300 hover:bg-gray-900 text-gray-900 border-gray-300"
+													/>
+												) : (
+													<HiOutlinePlus
+														onClick={() => setSubscribePopup(true)}
+														className="h-full w-12 py-3 border cursor-pointer text-base self-center hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
+													/>
+												)}
+											</>
 										)}
 									</div>
 								</div>
@@ -204,7 +214,7 @@ function Profile({ userId, userInfo }) {
 										</span>
 									</div>
 									<div className="flex h-12 place-items-center">
-										{user.socialUser.subscribers.length !== 0 ? (
+										{user.socialUser.subscribers !== null ? (
 											<span
 												className="w-48 h-full grid border cursor-pointer text-base hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
 												onClick={() =>
@@ -220,10 +230,13 @@ function Profile({ userId, userInfo }) {
 												</span>
 											</span>
 										) : (
-											<div className="relative w-48 h-full">
+											<div
+												className="relative w-48 h-full"
+												onClick={() => setEnableCreatorModePopup(true)}
+											>
 												<div className="grad p-[1.5px] absolute inset-0"></div>
 												<div className="grid absolute m-[1.5px] inset-0 cursor-pointer text-base  bg-white hover:border-gray-900 hover:text-white items-center hover:grad text-gray-900">
-													<p className="self-center">Eneable creator</p>
+													<p className="self-center">Enable creator mode</p>
 												</div>
 											</div>
 										)}

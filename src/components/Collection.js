@@ -74,9 +74,12 @@ const Collection = ({ addressCollection }) => {
 						</div>
 						<div className="my-auto h-[8rem] grid">
 							<div className="mx-4 flex items-center justify-between self-center py-2">
-								<h3 className="text-xl grid">
+								<div className="text-xl flex w-full justify-between">
 									<p className="text-gray-900 truncate">{collection.name}</p>
-								</h3>
+									<p className="ml-auto text-gray-500 truncate">
+										({collection.symbol})
+									</p>
+								</div>
 							</div>
 							<hr className="border-gray-200 h-1" />
 							<div className="h-full pb-3 flex justify-between w-full">

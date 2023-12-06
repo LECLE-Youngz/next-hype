@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { mintNFT } from "../helpers/nft";
 import { parseAddress, parseAmount } from "../libs/blockchain";
-import { getUserCollection } from "../helpers/blockchain";
 import CollectionSelector from "./CollectionSelector";
 
 function Mint({ response, setMintPopup }) {
@@ -237,12 +236,14 @@ function Mint({ response, setMintPopup }) {
 							</button>
 						</div>
 					</div>
-					<div className="py-10 space-y-2 text-gray-600 text-center sm:-mb-8">
+					<div className="py-10 space-y-2 text-gray-600 sm:-mb-8">
 						<p className="text-xs">
-							Your charge is only for gas fee calculated by the Bitcoin network.
+							{"<!-- "}Your charge is only for gas fee calculated by the{" "}
+							<span className="font-semibold">LINK</span> network{" -->"}
 						</p>
 						<p className="text-xs">
-							We do not take any fees from your minting process.
+							{"<!-- "}We do not take any fees from your minting process
+							{" -->"}
 						</p>
 					</div>
 				</div>
