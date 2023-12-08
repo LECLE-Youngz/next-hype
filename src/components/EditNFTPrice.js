@@ -12,7 +12,7 @@ function EditNFTPrice({ nfts, setEditPricePopup }) {
 
 		const res = await editPrices(
 			nfts.map((nft) => {
-				return { id: nft.id, address: nft.addressCollection };
+				return { id: nft.id, address: nft.addressCollection, price: nft.price };
 			}),
 			price.price === null ? "0" : parseAmount(price.price),
 			price.promptPrice === null ? "0" : parseAmount(price.promptPrice)

@@ -15,6 +15,7 @@ const NFTDetail = ({
 	id,
 	owner,
 	price,
+	meta,
 	description,
 	promptPrice,
 	promptBuyer,
@@ -32,7 +33,7 @@ const NFTDetail = ({
 		const fetchData = async () => {
 			const user = await getInfoUser();
 			setAccount(user);
-			const data = await getPromptById(id, addressCollection);
+			const data = { meta } ?? (await getPromptById(id, addressCollection));
 			setData(data);
 			const linkedPosts = await getLinkedPosts(id, addressCollection);
 			setLinkedPosts(linkedPosts);
@@ -138,7 +139,8 @@ const NFTDetail = ({
 									backgroundClip: "cover",
 								}}
 							/>
-							{promptPrice.avax === "0" ||
+							{!promptPrice ||
+							promptPrice.avax === "0" ||
 							promptBuyer?.includes(account.key.ethAddress.toLowerCase()) ||
 							promptAllower?.includes(account.key.ethAddress.toLowerCase()) ? (
 								<div className="">

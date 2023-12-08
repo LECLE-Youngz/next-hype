@@ -3,7 +3,7 @@ import { getPosts, getPostsByTag, getTags } from "../helpers/social";
 import { Link, useNavigate } from "react-router-dom";
 import PostPreview from "../components/PostPreview";
 
-export default function Events({ chosenTag, updateEvents }) {
+export default function Events({ chosenTag }) {
 	const [search, setSearch] = useState("");
 	const [posts, setPosts] = useState(null);
 	const [tags, setTags] = useState(null);
@@ -27,7 +27,6 @@ export default function Events({ chosenTag, updateEvents }) {
 			} else {
 				const newPosts = await getPosts();
 				setPosts([...newPosts]);
-				updateEvents(newPosts, tags);
 			}
 			setUpdating(false);
 		};

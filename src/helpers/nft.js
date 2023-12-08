@@ -223,9 +223,19 @@ export const editPrices = async (ids, price, promptPrice) => {
 		}
 	} else {
 		for (let i = 0; i < ids.length; i++) {
-			await updateListing(ids[i].address, ids[i].id, price, promptPrice).then(
-				(res) => (success = res.status === 1)
-			);
+			if (ids[i].price === "0") {
+				await approve(ids[i].id, ids[i].address).then(async (res) => {
+					if (res.status === 1) {
+						await listItem(ids[i].address, ids[i].id, price, promptPrice).then(
+							(res) => (success = res.status === 1)
+						);
+					}
+				});
+			} else {
+				await updateListing(ids[i].address, ids[i].id, price, promptPrice).then(
+					(res) => (success = res.status === 1)
+				);
+			}
 		}
 	}
 	return success;
@@ -257,10 +267,17 @@ export const getNFTs = async (queryParams) => {
 };
 
 export const getExclusiveNFTs = async (userId) => {
+	const access_token = await getAccessToken();
+
 	let nfts;
 
 	await axios
-		.get(`${process.env.REACT_APP_API_ENDPOINT}/enfts/collection/${userId}`)
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/enfts/collection/${userId}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			},
+		})
 		.then((res) => {
 			nfts = res.data;
 		})

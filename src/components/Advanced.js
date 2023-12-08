@@ -33,7 +33,7 @@ function Advanced({ setAdvancedPopup }) {
 			<div className="flex items-center justify-center text-gray-500 md:w-11/12 lg:w-3/4 xl:w-2/5">
 				<div className="bg-white shadow-xl w-full px-10 py-5 relative">
 					<h3 className="self-center text-4xl mt-4 mb-5 text-gray-900">
-						# Advanced
+						# Wallet
 					</h3>
 					<div className="py-5 mx-10">
 						<div className="flex items-center flex-col gap-5">

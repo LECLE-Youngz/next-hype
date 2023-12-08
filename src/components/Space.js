@@ -25,7 +25,7 @@ const Space = ({ userId }) => {
 		fetchData();
 	}, [userId]);
 
-	if (user === null) {
+	if (user === null || nfts === null) {
 		return (
 			<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
 				<div className="h-full w-full flex items-center justify-center">

@@ -17,6 +17,7 @@ function NFT({
 	name,
 	id,
 	owner,
+	meta,
 	description,
 	price,
 	promptPrice,
@@ -53,6 +54,7 @@ function NFT({
 			{metaPopup[0] && (
 				<GenerationData
 					id={id}
+					data={{ meta } ?? null}
 					addressCollection={addressCollection}
 					setMetaPopup={setMetaPopup}
 				/>
@@ -87,6 +89,7 @@ function NFT({
 					owner={owner}
 					description={description}
 					price={price}
+					meta={meta}
 					promptPrice={promptPrice}
 					promptBuyer={promptBuyer}
 					promptAllower={promptAllower}
@@ -108,7 +111,7 @@ function NFT({
 								backgroundClip: "cover",
 							}}
 						/>
-						{promptPrice.avax === "0" ? (
+						{!promptPrice || promptPrice.avax === "0" ? (
 							<div
 								className="group absolute bg-green-500 bottom-0 right-0 gap-2 inline-flex items-center text-white px-3 h-12 text-2xl cursor-pointer"
 								onClick={() => setMetaPopup([true])}
