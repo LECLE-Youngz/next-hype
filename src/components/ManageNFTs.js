@@ -62,7 +62,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 				<div className="bg-white shadow-xl w-full px-16 py-5 relative">
 					<div className="flex justify-between">
 						<h3 className="self-center text-4xl text-gray-900">
-							# Manage collections
+							# Manage nfts
 						</h3>
 						<div className="flex space-x-4">
 							<button
@@ -171,7 +171,7 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 												</span>
 											</div>
 										</div>
-										{index !== nft.length - 1 && (
+										{index !== nfts.length - 1 && (
 											<hr className="border-gray-300 my-2" />
 										)}
 									</>

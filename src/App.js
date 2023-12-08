@@ -21,6 +21,8 @@ import CreatePost from "./components/CreatePost";
 import Post from "./components/Post";
 import Collections from "./views/Collections";
 import Events from "./views/Events";
+import Space from "./components/Space";
+import CreateEvent from "./components/CreateEvent";
 
 function App() {
 	const [users, setUsers] = useState([]);
@@ -78,10 +80,18 @@ function App() {
 					<Route path="/events" element={<Wrapper children={<Events />} />} />
 					<Route path="/profile" element={<Wrapper children={<Profile />} />} />
 					{users.map((userId) => (
-						<Route
-							path={`/profile/${userId}`}
-							element={<Wrapper children={<Profile userId={userId} />} />}
-						/>
+						<>
+							<Route
+								path={`/profile/${userId}`}
+								element={<Wrapper children={<Profile userId={userId} />} />}
+							/>
+							<Route
+								path={`/profile/${userId}/space`}
+								element={
+									<Wrapper children={<Space userId={userId} space={true} />} />
+								}
+							/>
+						</>
 					))}
 					<Route
 						path="/social"
@@ -112,6 +122,11 @@ function App() {
 						element={
 							<Wrapper children={<CreatePost updatePosts={updatePosts} />} />
 						}
+					/>
+					<Route path={`/event`} element={<Wrapper children={<Events />} />} />
+					<Route
+						path={`/event/create`}
+						element={<Wrapper children={<CreateEvent />} />}
 					/>
 					<Route path="/assets/*" />
 					<Route path="*" element={<Navigate to="/" />} />

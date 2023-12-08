@@ -61,6 +61,8 @@ export default function Generate() {
 		setResponse(null);
 		const res = await generateImage(generateParams);
 
+		console.log(res);
+
 		if (res.status === "processing") {
 			let fetch = await fetchImage(res.id);
 			while (fetch.status === "processing") {

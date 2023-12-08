@@ -1,4 +1,4 @@
-import { collection, generative } from ".";
+import { collection, exclusive, generative } from ".";
 
 export const getTotalToken = async (address) => {
 	if (address == null) {
@@ -12,10 +12,14 @@ export const getTotalToken = async (address) => {
 	}
 };
 
-export const safeMint = async (to, uri, address) => {
+export const safeMint = async (to, uri, address, e) => {
 	if (address == null) {
 		const contract = await collection();
 		const res = await contract.safeMint(uri).then((tx) => tx.wait());
+		return res;
+	} else if (e) {
+		const contract = await exclusive(address);
+		const res = await contract.safeMint(to, uri).then((tx) => tx.wait());
 		return res;
 	} else {
 		const contract = await generative(address);

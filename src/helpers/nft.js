@@ -15,7 +15,15 @@ import { allowance } from "../scripts/usd";
 import { parsePrice } from "../libs/blockchain";
 import { Big } from "bigdecimal.js";
 
-export const buyNFT = async (id, addressCollection, price, isAvax = true) => {
+export const buyNFT = async (
+	userId,
+	id,
+	addressCollection,
+	price,
+	isAvax = true
+) => {
+	const access_token = await getAccessToken();
+
 	let success;
 
 	if (isAvax) {
@@ -35,15 +43,37 @@ export const buyNFT = async (id, addressCollection, price, isAvax = true) => {
 		});
 	}
 
+	if (success) {
+		await axios
+			.post(
+				`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-nfts/${userId}`,
+				{
+					id,
+					addressCollection,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${access_token}`,
+					},
+				}
+			)
+			.catch((e) => {
+				success = false;
+			});
+	}
+
 	return success;
 };
 
 export const buyNFTPrompt = async (
+	userId,
 	id,
 	addressCollection,
 	promptPrice,
 	isAvax = true
 ) => {
+	const access_token = await getAccessToken();
 	let success;
 
 	if (isAvax) {
@@ -54,6 +84,26 @@ export const buyNFTPrompt = async (
 		await buyPrompt(addressCollection, id, promptPrice.usd, {
 			value: "0",
 		}).then((res) => (success = res.status === 1));
+	}
+
+	if (success) {
+		await axios
+			.post(
+				`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-prompt/${userId}`,
+				{
+					id,
+					addressCollection,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${access_token}`,
+					},
+				}
+			)
+			.catch((e) => {
+				success = false;
+			});
 	}
 
 	return success;
@@ -72,7 +122,8 @@ export const mintNFT = async (data, metadata) => {
 	const res1 = await safeMint(
 		userAddress,
 		`${process.env.REACT_APP_API_ENDPOINT}/nfts/${nftId}/collection/${data.collection}`,
-		generative
+		generative,
+		data.e
 	);
 	if (res1.status !== 1) return false;
 
@@ -201,6 +252,19 @@ export const getNFTs = async (queryParams) => {
 	//         nfts = nfts.filter(nft => nft[key] === queryParams[key])
 	//     }
 	// })
+
+	return nfts;
+};
+
+export const getExclusiveNFTs = async (userId) => {
+	let nfts;
+
+	await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/enfts/collection/${userId}`)
+		.then((res) => {
+			nfts = res.data;
+		})
+		.catch((error) => (nfts = []));
 
 	return nfts;
 };

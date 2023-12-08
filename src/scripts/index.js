@@ -5,6 +5,8 @@ const generativeFactoryABI = require("./GenerativeNFTFactory.sol/GenerativeNFTFa
 const generativeABI = require("./GenerativeNFT.sol/GenerativeNFT.json");
 const premiumFactoryABI = require("./PremiumFactory.sol/PremiumFactory.json");
 const premiumABI = require("./PremiumNFT.sol/PremiumNFT.json");
+const exclusiveFactoryABI = require("./ExclusiveNFTFactory.sol/ExclusiveNFTFactory.json");
+const exclusiveABI = require("./ExclusiveNFT.sol/ExclusiveNFT.json");
 const usdABI = require("./USD.json");
 
 const { getInfoUser } = require("../storage/local");
@@ -73,6 +75,26 @@ export const premium = async (address) => {
 	const privateKey = getInfoUser().key.privKey;
 	const signer = new ethers.Wallet(privateKey, provider);
 	const contract = new ethers.Contract(address, premiumABI.abi, signer);
+
+	return contract;
+};
+
+export const exclusiveFactory = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_EXCLUSIVEFACTORY_ADDRESS,
+		exclusiveFactoryABI.abi,
+		signer
+	);
+
+	return contract;
+};
+
+export const exclusive = async (address) => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(address, exclusiveABI.abi, signer);
 
 	return contract;
 };

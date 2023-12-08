@@ -2,16 +2,24 @@ import React, { useEffect, useState } from "react";
 import { getCollectionInfo, getUserCollections } from "../helpers/nft";
 import { parseAddress } from "../libs/blockchain";
 import CreateCollectionPopup from "./CreateCollectionPopup";
+import { getExclusiveAddress } from "../helpers/user";
 
 const ManageCollections = ({ setManageCollectionsPopup }) => {
 	const [createCollectionPopup, setCreateCollectionPopup] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [collections, setCollections] = useState(null);
+	const [exclusiveAddress, setExclusiveAddress] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			const res = await getUserCollections();
+
+			const exclusiveAddress = await getExclusiveAddress();
+
+			if (exclusiveAddress !== null) {
+				setExclusiveAddress(exclusiveAddress);
+			}
 
 			for (let i = 0; i < res.length; i++) {
 				const collection = await getCollectionInfo(res[i]);
@@ -23,7 +31,9 @@ const ManageCollections = ({ setManageCollectionsPopup }) => {
 			setCollections(res);
 			setLoading(false);
 		};
-		fetchData();
+		if (createCollectionPopup === false) {
+			fetchData();
+		}
 	}, [createCollectionPopup]);
 
 	if (loading || collections === null) {
@@ -59,7 +69,7 @@ const ManageCollections = ({ setManageCollectionsPopup }) => {
 					<div className="my-10 container mx-auto">
 						{collections === null ? (
 							<div className="self-center mx-auto animate-spin rounded-full h-16 w-16 border-b-2 border-gray-500"></div>
-						) : collections.length === 0 ? (
+						) : collections.length === 0 && exclusiveAddress === null ? (
 							<div className="text-center">
 								<p className="text-2xl mb-10 text-gray-500">
 									You don't own any collections yet.
@@ -89,28 +99,40 @@ const ManageCollections = ({ setManageCollectionsPopup }) => {
 										</span>
 									</span>
 								</div>
+								<div className="relative cursor-pointer h-16 mt-2 p-5 ">
+									<div className="grad p-[1.5px] h-full inset-0 absolute">
+										<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+											<div className="text-center w-[25%]">
+												<span className="">
+													{parseAddress(exclusiveAddress)}
+												</span>
+											</div>
+											<div className="text-center w-[25%]">
+												<span className="">Exclusive Token</span>
+											</div>
+											<div className="text-center w-[25%]">
+												<span className="">EXC</span>
+											</div>
+											<div className="text-center w-[25%]">
+												<span className="">_</span>
+											</div>
+										</div>
+									</div>
+								</div>
 								{collections.map((collection, index) => (
 									<>
 										<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2">
 											<div className="text-center w-[25%]">
-												<span className="text-sm text-gray-800">
-													{parseAddress(collection.address)}
-												</span>
+												{parseAddress(collection.address)}
 											</div>
 											<div className="text-center w-[25%]">
-												<span className="text-sm text-gray-600">
-													{collection.name}
-												</span>
+												{collection.name}
 											</div>
 											<div className="text-center w-[25%]">
-												<span className="text-gray-600 text-sm">
-													{collection.symbol}
-												</span>
+												{collection.symbol}
 											</div>
 											<div className="text-center w-[25%]">
-												<span className="text-gray-600 text-sm">
-													{collection.nft.length}
-												</span>
+												{collection.nft?.length ?? "_"}
 											</div>
 										</div>
 										{index !== collections.length - 1 && (

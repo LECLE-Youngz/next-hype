@@ -17,6 +17,7 @@ function Mint({ response, setMintPopup }) {
 				price: parseAmount(mintParams.price),
 				promptPrice: parseAmount(mintParams.promptPrice),
 				collection: mintParams.collection.address,
+				e: mintParams.collection.e,
 			},
 			response.meta
 		);

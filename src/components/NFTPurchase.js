@@ -18,7 +18,7 @@ function NFTPurchase({
 	const summit = async () => {
 		setOnSummit(true);
 
-		const res = await buyNFT(id, addressCollection, price, isAvax);
+		const res = await buyNFT(userId, id, addressCollection, price, isAvax);
 
 		setOnSuccess(res);
 		setOnSummit(false);

@@ -24,9 +24,13 @@ export default function Navbar() {
 					setBalance(res);
 				});
 			}
+			if (user === null && window.location.pathname !== "/") {
+				navigate("/");
+				setLoginPopup(true);
+			}
 		};
 		fetchData();
-	}, [loginPopup]);
+	}, [loginPopup, window.location.pathname]);
 
 	const logout = () => {
 		setAdvancedPopup(false);
@@ -83,11 +87,6 @@ export default function Navbar() {
 	};
 
 	const navigate = useNavigate();
-
-	if (googleData === null && window.location.pathname !== "/") {
-		navigate("/");
-		setLoginPopup(true);
-	}
 
 	return (
 		<>

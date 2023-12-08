@@ -5,6 +5,8 @@ import { getInfoUser, storeInfoUser } from "../storage/local";
 import { deployPremiumToken } from "../scripts/premiumFactory";
 import { ethers } from "ethers";
 import { getSubscriptionPlan, subscribe } from "../scripts/premium";
+import { deployExclusiveToken } from "../scripts/exclusiveFactory";
+import { setForwarderAddress } from "../scripts/exclusive";
 
 export const getGoogleToken = async (payload) => {
 	try {
@@ -90,23 +92,12 @@ export const emailToWallet = async (email) => {
 	return users;
 };
 
-export const checkAddress = async (address, isRootStock) => {
-	if (isRootStock) {
-		try {
-			await Web3.utils.toChecksumAddress(address);
-		} catch (e) {
-			return false;
-		} finally {
-			return true;
-		}
-	} else {
-		if (address.length !== 55) {
-			return false;
-		}
-		if (!address.startsWith("bcrt1p")) {
-			return false;
-		}
-
+export const checkAddress = async (address) => {
+	try {
+		await Web3.utils.toChecksumAddress(address);
+	} catch (e) {
+		return false;
+	} finally {
 		return true;
 	}
 };
@@ -114,7 +105,30 @@ export const checkAddress = async (address, isRootStock) => {
 export const turnOnCreatorMode = async (plans) => {
 	let success = false;
 
-	await deployPremiumToken(plans).then((res) => {
+	const exclusiveAddress = await deployPremiumToken(plans).then(
+		async (res1) => {
+			if (res1.status === 1) {
+				const address = await deployExclusiveToken(res1.logs[0].address).then(
+					(res2) => {
+						success = res2.status === 1;
+						return res2.logs[0].address;
+					}
+				);
+
+				return address;
+			}
+			success = false;
+			return 0;
+		}
+	);
+
+	return [success, exclusiveAddress];
+};
+
+export const forwardAddressRegister = async (forwarderAddress, address) => {
+	let success = false;
+
+	await setForwarderAddress(forwarderAddress, address).then((res) => {
 		success = res.status === 1;
 	});
 
@@ -129,11 +143,42 @@ export const subscriber = async (user, plan, amount) => {
 		.then((res) => res.data);
 
 	await subscribe(plan, address, { value: amount }).then((res) => {
-		console.log(res);
 		success = res.status === 1;
 	});
 
 	return success;
+};
+
+export const getSubscribing = async (user, listUserId) => {
+	let success = false;
+
+	const address = await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/subscribing/${user}`, {
+			params: {
+				listUserId: listUserId,
+			},
+		})
+		.then((res) => res.data);
+
+	await getSubscriptionPlan(0, address).then((res) => {
+		success = res.status === 1;
+	});
+
+	return success;
+};
+
+export const getExclusiveAddress = async () => {
+	let userId = getInfoUser().user.id;
+
+	const address = await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/exclusive/user/${userId}`)
+		.then((res) => res.data)
+		.catch((error) => {
+			console.log(error);
+			return null;
+		});
+
+	return address;
 };
 
 export const getPlans = async (user) => {

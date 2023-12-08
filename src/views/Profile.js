@@ -12,6 +12,7 @@ import { GoDash } from "react-icons/go";
 import Subscribe from "../components/Subscribe";
 import ListUser from "../components/ListUser";
 import EnableCreatorMode from "../components/EnableCreatorMode";
+import { RxEnter } from "react-icons/rx";
 
 function Profile({ userId, userInfo }) {
 	const regionNames = new Intl.DisplayNames(["en"], {
@@ -30,6 +31,7 @@ function Profile({ userId, userInfo }) {
 	const [subscribePopup, setSubscribePopup] = useState(false);
 	const [userListPopup, setUserListPopup] = useState([false]);
 	const [enableCreatorModePopup, setEnableCreatorModePopup] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -56,11 +58,14 @@ function Profile({ userId, userInfo }) {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			setLoading(true);
 			let user = await getUsers(userId);
 			setUser(user);
+			setLoading(false);
 		};
-
-		fetchData();
+		if (followUpdating || subscribePopup === false) {
+			fetchData();
+		}
 	}, [followUpdating, subscribePopup]);
 
 	const toggleFollow = async () => {
@@ -69,7 +74,7 @@ function Profile({ userId, userInfo }) {
 		setFollowUpdating(false);
 	};
 
-	if (user === null || posts === null) {
+	if (user === null || posts === null || loading) {
 		return (
 			<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
 				<div className="h-full w-full flex items-center justify-center">
@@ -163,32 +168,37 @@ function Profile({ userId, userInfo }) {
 											/>
 										)}
 									</div>
-									<div className="flex h-12 place-items-center">
+									<div className="flex h-12 place-items-center w-48 grad">
 										{user.socialUser.subscribers !== null && (
 											<>
-												<span
-													className="w-36 h-full grid border cursor-pointer text-base  hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
-													onClick={() =>
-														setUserListPopup([
-															true,
-															"Subscribers",
-															user.socialUser.subscribers,
-														])
-													}
-												>
-													<span className="self-center">
-														{user.socialUser.subscribers.length} subscribers
-													</span>
-												</span>
+												<div className="relative w-36 h-full">
+													<div className="p-[1.5px] absolute inset-0"></div>
+													<div
+														className="grid absolute m-[1.5px] inset-0 cursor-pointer text-base  bg-white hover:border-gray-900 hover:text-white items-center hover:bg-opacity-0 text-gray-900"
+														onClick={() =>
+															setUserListPopup([
+																true,
+																"Subscribers",
+																user.socialUser.subscribers,
+															])
+														}
+													>
+														<span className="self-center">
+															{user.socialUser.subscribers.length} subscribers
+														</span>
+													</div>
+												</div>
 												{user.socialUser.subscribers.includes(account.id) ? (
-													<GoDash
-														onClick={() => setSubscribePopup(true)}
-														className="h-full w-12 py-3 border cursor-pointer text-base self-center hover:border-gray-900 hover:text-gray-100 bg-gray-300 hover:bg-gray-900 text-gray-900 border-gray-300"
+													<RxEnter
+														onClick={() =>
+															navigate(`/profile/${user.id}/space`)
+														}
+														className="h-full w-12 py-3 cursor-pointer text-base self-center text-white hover:bg-white hover:bg-opacity-50"
 													/>
 												) : (
 													<HiOutlinePlus
 														onClick={() => setSubscribePopup(true)}
-														className="h-full w-12 py-3 border cursor-pointer text-base self-center hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
+														className="h-full w-12 py-3 cursor-pointer text-base self-center text-white hover:bg-white hover:bg-opacity-50"
 													/>
 												)}
 											</>
@@ -213,22 +223,31 @@ function Profile({ userId, userInfo }) {
 											</span>
 										</span>
 									</div>
-									<div className="flex h-12 place-items-center">
+									<div className="flex h-12 place-items-center w-48 grad">
 										{user.socialUser.subscribers !== null ? (
-											<span
-												className="w-48 h-full grid border cursor-pointer text-base hover:border-gray-900 hover:text-gray-100 hover:bg-gray-900 text-gray-900 border-gray-300"
-												onClick={() =>
-													setUserListPopup([
-														true,
-														"Subscribers",
-														user.socialUser.subscribers,
-													])
-												}
-											>
-												<span className="self-center">
-													{user.socialUser.subscribers.length} subscribers
-												</span>
-											</span>
+											<>
+												<div className="relative w-36 h-full">
+													<div className="p-[1.5px] absolute inset-0"></div>
+													<div
+														className="grid absolute m-[1.5px] inset-0 cursor-pointer text-base  bg-white hover:border-gray-900 hover:text-white items-center hover:bg-opacity-0 text-gray-900"
+														onClick={() =>
+															setUserListPopup([
+																true,
+																"Subscribers",
+																user.socialUser.subscribers,
+															])
+														}
+													>
+														<span className="self-center">
+															{user.socialUser.subscribers.length} subscribers
+														</span>
+													</div>
+												</div>
+												<RxEnter
+													onClick={() => navigate(`/profile/${user.id}/space`)}
+													className="h-full w-12 py-3 cursor-pointer text-base self-center text-white hover:bg-white hover:bg-opacity-50"
+												/>
+											</>
 										) : (
 											<div
 												className="relative w-48 h-full"
@@ -277,7 +296,7 @@ function Profile({ userId, userInfo }) {
 						<span className="font-medium text-xl text-gray-800">
 							{user.socialUser.numPromptPurchased}
 						</span>{" "}
-						prompts have been purchased by {user.name}.
+						prompts have been purchased by {user.name}
 					</div>
 				</div>
 			</div>

@@ -17,7 +17,13 @@ function DataPurchase({
 	const summit = async () => {
 		setOnSummit(true);
 
-		const res = await buyNFTPrompt(id, addressCollection, promptPrice, isAvax);
+		const res = await buyNFTPrompt(
+			userId,
+			id,
+			addressCollection,
+			promptPrice,
+			isAvax
+		);
 
 		setOnSuccess(res);
 		setOnSummit(false);

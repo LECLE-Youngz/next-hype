@@ -11,6 +11,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const res = await getPlans(user.id);
+			console.log(res);
 			setSubscription(res);
 		};
 
@@ -20,7 +21,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 	const summit = async () => {
 		setOnSummit(true);
 
-		const res = subscriber(user.id, choice, subscription[choice]);
+		const res = await subscriber(user.id, choice, subscription[choice]);
 
 		setOnSuccess(res);
 		setOnSummit(false);

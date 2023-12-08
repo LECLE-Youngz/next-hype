@@ -2,18 +2,24 @@ import React, { useEffect, useState } from "react";
 import { getCollectionInfo, getUserCollections } from "../helpers/nft";
 import { parseAddress } from "../libs/blockchain";
 import CreateCollectionPopup from "./CreateCollectionPopup";
+import { getExclusiveAddress } from "../helpers/user";
 
 const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 	const [createCollectionPopup, setCreateCollectionPopup] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [collections, setCollections] = useState(null);
+	const [exclusiveAddress, setExclusiveAddress] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
 			const res = await getUserCollections();
 
-			res.unshift(process.env.REACT_APP_COLLECTION_ADDRESS);
+			const exclusiveAddress = await getExclusiveAddress();
+
+			if (exclusiveAddress !== null) {
+				setExclusiveAddress(exclusiveAddress);
+			}
 
 			for (let i = 0; i < res.length; i++) {
 				const collection = await getCollectionInfo(res[i]);
@@ -23,7 +29,9 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 			setCollections(res);
 			setLoading(false);
 		};
-		fetchData();
+		if (createCollectionPopup === false) {
+			fetchData();
+		}
 	}, [createCollectionPopup]);
 
 	if (loading || collections === null) {
@@ -89,33 +97,56 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 										</span>
 									</span>
 								</div>
+								<div
+									className="relative cursor-pointer h-16 mt-2 p-5 "
+									onClick={() =>
+										setCollection({
+											address: exclusiveAddress,
+											name: "Exclusive Token",
+											symbol: "EXC",
+											nft: [],
+											e: true,
+										})
+									}
+								>
+									<div className="grad p-[1.5px] h-full inset-0 absolute">
+										<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+											<div className="text-center w-[25%]">
+												<span className="">
+													{parseAddress(exclusiveAddress)}
+												</span>
+											</div>
+											<div className="text-center w-[25%]">
+												<span className="">Exclusive Token</span>
+											</div>
+											<div className="text-center w-[25%]">
+												<span className="">EXC</span>
+											</div>
+											<div className="text-center w-[25%]">
+												<span className="">_</span>
+											</div>
+										</div>
+									</div>
+								</div>
 								{collections.map((collection, index) => (
 									<>
 										<div
 											className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
 											onClick={() => {
-												setCollection(collection);
+												setCollection(...collection, ...{ e: false });
 											}}
 										>
 											<div className="text-center w-[25%]">
-												<span className="text-sm text-gray-800">
-													{parseAddress(collection.address)}
-												</span>
+												{parseAddress(collection.address)}
 											</div>
 											<div className="text-center w-[25%]">
-												<span className="text-sm text-gray-600">
-													{collection.name}
-												</span>
+												{collection.name}
 											</div>
 											<div className="text-center w-[25%]">
-												<span className="text-gray-600 text-sm">
-													{collection.symbol}
-												</span>
+												{collection.symbol}
 											</div>
 											<div className="text-center w-[25%]">
-												<span className="text-gray-600 text-sm">
-													{collection.nft?.length ?? "_"}
-												</span>
+												{collection.nft?.length ?? "_"}
 											</div>
 										</div>
 										{index !== collections.length - 1 && (
