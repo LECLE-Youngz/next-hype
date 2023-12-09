@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { getPosts, getPostsByTag, getTags } from "../helpers/social";
 import { Link, useNavigate } from "react-router-dom";
 import PostPreview from "../components/PostPreview";
+import CreateEvent from "../components/CreateEvent";
 
 export default function Events({ chosenTag }) {
 	const [search, setSearch] = useState("");
 	const [posts, setPosts] = useState(null);
 	const [tags, setTags] = useState(null);
 	const [updating, setUpdating] = useState(false);
+	const [createEvent, setCreateEvent] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -47,13 +49,14 @@ export default function Events({ chosenTag }) {
 
 	return (
 		<div className="flex flex-col justify-between">
+			{createEvent && <CreateEvent setCreateEvent={setCreateEvent} />}
 			<div className="flex justify-between">
 				<h1 className="text-4xl text-gray-900">
 					# Ongoing <span className="twinkle-text">events</span>{" "}
 				</h1>
 				<button
 					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
-					onClick={() => navigate("/event/create")}
+					onClick={() => setCreateEvent(true)}
 				>
 					Create event
 				</button>

@@ -78,7 +78,7 @@ export default function Discover() {
 						</p>
 					</div>
 				) : (
-					nfts.map((nft) => <NFT {...nft} />)
+					[...nfts].reverse().map((nft) => <NFT {...nft} />)
 				)}
 			</div>
 		</div>

@@ -54,7 +54,7 @@ function NFT({
 			{metaPopup[0] && (
 				<GenerationData
 					id={id}
-					data={{ meta } ?? null}
+					data={meta ? { meta } : null}
 					addressCollection={addressCollection}
 					setMetaPopup={setMetaPopup}
 				/>

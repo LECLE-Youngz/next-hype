@@ -63,9 +63,9 @@ export default function Collections() {
 						</p>
 					</div>
 				) : (
-					collections.map((collection) => (
-						<Collection addressCollection={collection} />
-					))
+					[...collections]
+						.reverse()
+						.map((collection) => <Collection addressCollection={collection} />)
 				)}
 			</div>
 		</div>

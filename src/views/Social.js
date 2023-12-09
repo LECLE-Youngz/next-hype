@@ -78,7 +78,7 @@ export default function Social({ chosenTag, updatePosts }) {
 			</div>
 			<div className="grid grid-cols-4 mx-10 gap-10">
 				<div className="flex flex-wrap gap-3 h-min">
-					{tags.map((tag) => (
+					{[...tags].reverse().map((tag) => (
 						<Link
 							className={`${
 								chosenTag === tag.tag

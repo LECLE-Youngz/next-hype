@@ -332,7 +332,8 @@ function Profile({ userId, userInfo }) {
 							</p>
 						</div>
 					) : (
-						user.nfts
+						[...user.nfts]
+							.reverse()
 							.filter((nft) =>
 								nft.name.toLowerCase().includes(nftSearch.toLowerCase())
 							)
@@ -347,7 +348,7 @@ function Profile({ userId, userInfo }) {
 							</p>
 						</div>
 					) : (
-						posts.map((post) => <PostPreview postId={post} />)
+						[...posts].reverse().map((post) => <PostPreview postId={post} />)
 					)}
 				</div>
 			</div>

@@ -45,10 +45,10 @@ export const buyNFT = async (
 
 	if (success) {
 		await axios
-			.post(
-				`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-nfts/${userId}`,
+			.put(
+				`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-nft/${userId}`,
 				{
-					id,
+					nftId: id,
 					addressCollection,
 				},
 				{
@@ -88,10 +88,10 @@ export const buyNFTPrompt = async (
 
 	if (success) {
 		await axios
-			.post(
+			.put(
 				`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-prompt/${userId}`,
 				{
-					id,
+					nftId: id,
 					addressCollection,
 				},
 				{
@@ -150,6 +150,7 @@ export const mintNFT = async (data, metadata) => {
 				name: data.name,
 				description: data.description,
 				image: data.image,
+				eNft: data.e,
 				addressCollection: data.collection,
 				meta: metadata,
 			},
@@ -186,6 +187,27 @@ export const getPrompts = async () => {
 		});
 
 	return prompts;
+};
+
+export const getNFTsByOwner = async () => {
+	const access_token = await getAccessToken();
+	let nfts;
+
+	await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/owner`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			},
+		})
+		.then((res) => {
+			nfts = res.data;
+		})
+		.catch((error) => {
+			nfts = [];
+		});
+
+	return nfts;
 };
 
 export const getPromptById = async (id, collection) => {

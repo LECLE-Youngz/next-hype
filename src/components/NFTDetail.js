@@ -33,7 +33,7 @@ const NFTDetail = ({
 		const fetchData = async () => {
 			const user = await getInfoUser();
 			setAccount(user);
-			const data = { meta } ?? (await getPromptById(id, addressCollection));
+			const data = meta ? { meta } : await getPromptById(id, addressCollection);
 			setData(data);
 			const linkedPosts = await getLinkedPosts(id, addressCollection);
 			setLinkedPosts(linkedPosts);

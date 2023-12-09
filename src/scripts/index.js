@@ -7,6 +7,11 @@ const premiumFactoryABI = require("./PremiumFactory.sol/PremiumFactory.json");
 const premiumABI = require("./PremiumNFT.sol/PremiumNFT.json");
 const exclusiveFactoryABI = require("./ExclusiveNFTFactory.sol/ExclusiveNFTFactory.json");
 const exclusiveABI = require("./ExclusiveNFT.sol/ExclusiveNFT.json");
+const luckyNFTABI = require("./LuckyNFT.sol/LuckyNFT.json");
+const luckyNFTFactoryABI = require("./LuckyNFTFactory.sol/LuckyNFTFactory.json");
+const mysteryBoxABI = require("./MysteryBox.sol/MysteryBox.json");
+const mysteryDropEventABI = require("./MysteryDropEvent.sol/MysteryDropEvent.json");
+const mysteryEventFactoryABI = require("./MysteryEventFactory.sol/MysteryEventFactory.json");
 const usdABI = require("./USD.json");
 
 const { getInfoUser } = require("../storage/local");
@@ -95,6 +100,62 @@ export const exclusive = async (address) => {
 	const privateKey = getInfoUser().key.privKey;
 	const signer = new ethers.Wallet(privateKey, provider);
 	const contract = new ethers.Contract(address, exclusiveABI.abi, signer);
+
+	return contract;
+};
+
+export const luckyFactory = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_LUCKYFACTORY_ADDRESS,
+		luckyNFTFactoryABI.abi,
+		signer
+	);
+
+	return contract;
+};
+
+export const luckyNFT = async (address) => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(address, luckyNFTABI.abi, signer);
+
+	return contract;
+};
+
+export const mysteryBox = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_MYSTERYBOX_ADDRESS,
+		mysteryBoxABI.abi,
+		signer
+	);
+
+	return contract;
+};
+
+export const mysteryEventFactory = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_MYSTERYEVENTFACTORY_ADDRESS,
+		mysteryEventFactoryABI.abi,
+		signer
+	);
+
+	return contract;
+};
+
+export const mysteryEvent = async (address) => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		address,
+		mysteryDropEventABI.abi,
+		signer
+	);
 
 	return contract;
 };

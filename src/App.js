@@ -22,7 +22,9 @@ import Post from "./components/Post";
 import Collections from "./views/Collections";
 import Events from "./views/Events";
 import Space from "./components/Space";
-import CreateEvent from "./components/CreateEvent";
+import CreateEventFollow from "./components/CreateEventFollow";
+import CreateEventSubscribe from "./components/CreateEventSubscribe";
+import CreateEventPurchase from "./components/CreateEventPurchase";
 
 function App() {
 	const [users, setUsers] = useState([]);
@@ -125,8 +127,16 @@ function App() {
 					/>
 					<Route path={`/event`} element={<Wrapper children={<Events />} />} />
 					<Route
-						path={`/event/create`}
-						element={<Wrapper children={<CreateEvent />} />}
+						path={`/event/follow`}
+						element={<Wrapper children={<CreateEventFollow />} />}
+					/>
+					<Route
+						path={`/event/subscribe`}
+						element={<Wrapper children={<CreateEventSubscribe />} />}
+					/>
+					<Route
+						path={`/event/purchase`}
+						element={<Wrapper children={<CreateEventPurchase />} />}
 					/>
 					<Route path="/assets/*" />
 					<Route path="*" element={<Navigate to="/" />} />

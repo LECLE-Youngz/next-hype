@@ -3,6 +3,7 @@ import Transfer from "./Transfer";
 import { getUsers } from "../helpers/user";
 import { parsePrice } from "../libs/blockchain";
 import EditNFTPrice from "./EditNFTPrice";
+import { getNFTsByOwner } from "../helpers/nft";
 
 function ManageNFTs({ userId, setManageNFTsPopup }) {
 	const [nfts, setNFTs] = useState(null);
@@ -13,8 +14,8 @@ function ManageNFTs({ userId, setManageNFTsPopup }) {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const user = await getUsers(userId);
-			setNFTs(user.nfts);
+			const nfts = await getNFTsByOwner();
+			setNFTs(nfts);
 		};
 
 		fetchData();

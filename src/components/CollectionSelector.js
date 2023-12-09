@@ -133,7 +133,7 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 										<div
 											className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
 											onClick={() => {
-												setCollection(...collection, ...{ e: false });
+												setCollection({ ...collection, ...{ e: false } });
 											}}
 										>
 											<div className="text-center w-[25%]">
