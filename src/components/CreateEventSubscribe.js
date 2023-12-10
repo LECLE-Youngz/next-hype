@@ -6,8 +6,7 @@ import { createSubscribingEvent } from "../helpers/social";
 const CreateEventSubscribe = () => {
 	const navigate = useNavigate();
 	const [params, setParams] = useState({
-		maxSupply: 0,
-		require: 0,
+		baseURI: "",
 		subscriptionId: 0,
 	});
 	const [creating, setCreating] = useState(false);
@@ -25,14 +24,11 @@ const CreateEventSubscribe = () => {
 	};
 
 	useEffect(() => {
-		if (params.maxSupply === 0) {
-			setParams({ ...params, maxSupply: "" });
-		}
-		if (params.require === 0) {
-			setParams({ ...params, require: "" });
-		}
 		if (params.subscriptionId === 0) {
 			setParams({ ...params, subscriptionId: "" });
+		}
+		if (params.baseURI === "") {
+			setParams({ ...params, baseURI: "" });
 		}
 	}, [params]);
 
@@ -58,11 +54,10 @@ const CreateEventSubscribe = () => {
 
 			<div className="grid place-items-center mt-10">
 				<div className="grid gap-5 w-1/3 my-auto self-center">
-
-					<div className="">
+				<div className="">
 						<div className="text-xs self-center mb-2">
-							{"<!-- "}address of nft Lucky required to unlock the{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
+							{"<!-- "}baseURI contains the default image of this {" "}
+							<span className="font-semibold">lucky NFT</span>.{" -->"}
 						</div>
 
 						<input
@@ -71,22 +66,21 @@ const CreateEventSubscribe = () => {
 							}
 							className={`${inputClass[params.require === ""]
 								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-							type="string"
-							placeholder="### address _premiumNFT"
+							type="number"
+							placeholder="### require"
 							defaultValue={params.description}
 						/>
 					</div>
-
 					<div className="">
 						<div className="text-xs self-center mb-2">
 							{"<!-- "}navigate to{" "}
 							<a
-								href="https://functions.chain.link/"
+								href="https://vrf.chain.link/fuji/new"
 								target="_blank"
 								rel="noreferrer"
 								className="text-blue-700 hover:text-blue-800 hover:underline"
 							>
-								chainlink functions
+								chainlink VRF
 							</a>
 							, then follow the instructions to obtain the{" "}
 							<span className="font-semibold">subscription id</span>

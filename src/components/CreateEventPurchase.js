@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createSubscribingEvent } from "../helpers/social";
+import { createPurchasingEvent } from "../helpers/social";
 
 const CreateEventPurchase = () => {
 	const navigate = useNavigate();
@@ -13,7 +13,7 @@ const CreateEventPurchase = () => {
 
 	const summit = async () => {
 		setCreating(true);
-		const res = await createSubscribingEvent(params);
+		const res = await createPurchasingEvent(params);
 		setCreating(false);
 		navigate("/event");
 	};

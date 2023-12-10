@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getAccessToken, getPremiumAddress } from "./user";
 import { deployMysteryEvent } from "../scripts/mysteryEventFactory";
+import { deployLuckyToken } from "../scripts/luckyEventFactory";
 
 export const getPosts = async (id) => {
 	let posts;
@@ -223,7 +224,7 @@ export const createPost = async (
 	return res.data.id;
 };
 
-export const createSubscribingEvent = async ({
+export const createPurchasingEvent = async ({
 	maxSupply,
 	require,
 	subscriptionId,
@@ -249,6 +250,30 @@ export const createSubscribingEvent = async ({
 		require,
 		maxSupply,
 		`https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
+		subscriptionId
+	).then((res) => (success = res.status === 1));
+
+	return success;
+};
+
+// uint64 subscriptionId,
+// string memory baseURI,
+// address _premiumNFT
+export const createSubscribingEvent = async ({
+	baseURI,
+	subscriptionId
+}) => {
+	let success = false;
+	const premiumAddress = await getPremiumAddress();
+	console.log(
+		premiumAddress,
+		baseURI,
+		subscriptionId
+	);
+
+	await deployLuckyToken(
+		premiumAddress,
+		baseURI,
 		subscriptionId
 	).then((res) => (success = res.status === 1));
 
