@@ -175,7 +175,7 @@ function EnableCreatorMode({ setEnableCreatorModePopup }) {
 										</div>
 										<div className="grid h-12">
 											<div className="text-xs self-center">
-												{"<!-- "}Copy the{" "}
+												{"<!-- "}copy the{" "}
 												<span className="font-semibold">above address</span> and
 												paste it to{" "}
 												<a
@@ -188,7 +188,7 @@ function EnableCreatorMode({ setEnableCreatorModePopup }) {
 												</a>
 												, then follow the instructions to obtain the{" "}
 												<span className="font-semibold">forwarder address</span>
-												.{" -->"}
+												{" -->"}
 											</div>
 										</div>
 

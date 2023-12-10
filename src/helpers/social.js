@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getAccessToken } from "./user";
+import { getAccessToken, getPremiumAddress } from "./user";
+import { deployMysteryEvent } from "../scripts/mysteryEventFactory";
 
 export const getPosts = async (id) => {
 	let posts;
@@ -221,4 +222,36 @@ export const createPost = async (
 	);
 
 	return res.data.id;
+};
+
+export const createSubscribingEvent = async ({
+	maxSupply,
+	require,
+	subscriptionId,
+}) => {
+	let success = false;
+	const premiumAddress = await getPremiumAddress();
+	console.log(
+		"Mystery Event",
+		"MYS",
+		"https://ipfs.io/ipfs/QmYuKY45Aq87LeL1R5dhb1hqHLp6ZFbJaCP8jxqKM1MX6y/babe_ruth_1.json",
+		premiumAddress,
+		require,
+		maxSupply,
+		`$https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
+		subscriptionId
+	);
+
+	await deployMysteryEvent(
+		"Mystery Event",
+		"MYS",
+		"https://ipfs.io/ipfs/QmYuKY45Aq87LeL1R5dhb1hqHLp6ZFbJaCP8jxqKM1MX6y/babe_ruth_1.json",
+		premiumAddress,
+		require,
+		maxSupply,
+		`https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
+		subscriptionId
+	).then((res) => (success = res.status === 1));
+
+	return success;
 };
