@@ -256,9 +256,6 @@ export const createPurchasingEvent = async ({
 	return success;
 };
 
-// uint64 subscriptionId,
-// string memory baseURI,
-// address _premiumNFT
 export const createSubscribingEvent = async ({
 	baseURI,
 	subscriptionId
@@ -266,15 +263,16 @@ export const createSubscribingEvent = async ({
 	let success = false;
 	const premiumAddress = await getPremiumAddress();
 	console.log(
-		premiumAddress,
+		subscriptionId,
 		baseURI,
-		subscriptionId
+		premiumAddress
 	);
+	console.log(premiumAddress, baseURI);
 
 	await deployLuckyToken(
-		premiumAddress,
+		subscriptionId,
 		baseURI,
-		subscriptionId
+		premiumAddress
 	).then((res) => (success = res.status === 1));
 
 	return success;
