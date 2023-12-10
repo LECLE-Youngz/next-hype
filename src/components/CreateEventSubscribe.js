@@ -13,7 +13,10 @@ const CreateEventSubscribe = () => {
 
 	const summit = async () => {
 		setCreating(true);
-		const res = await createSubscribingEvent(params);
+		const res = await createSubscribingEvent({
+			baseURI: params.baseURI,
+			subscriptionId: params.subscriptionId
+		});
 		setCreating(false);
 		navigate("/event");
 	};
@@ -62,12 +65,12 @@ const CreateEventSubscribe = () => {
 
 						<input
 							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
+								setParams({ ...params, baseURI: e.target.value })
 							}
-							className={`${inputClass[params.require === ""]
+							className={`${inputClass[params.baseURI === ""]
 								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-							type="number"
-							placeholder="### require"
+							type="string"
+							placeholder="### baseURI"
 							defaultValue={params.description}
 						/>
 					</div>

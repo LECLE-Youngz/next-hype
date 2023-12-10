@@ -11,6 +11,7 @@ const CreateEventPurchase = () => {
 	});
 	const [creating, setCreating] = useState(false);
 
+	// TODO: 
 	const summit = async () => {
 		setCreating(true);
 		const res = await createPurchasingEvent(params);
