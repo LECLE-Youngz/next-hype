@@ -13,7 +13,7 @@ import ManageCollections from "./ManageCollections";
 export default function Navbar() {
 	let [loginPopup, setLoginPopup] = useState(false);
 	let [googleData, setGoogleData] = useState(null);
-	let [balance, setBalance] = useState({ avax: 0, usdc: 0 });
+	let [balance, setBalance] = useState({ avax: 0, usdc: 0, wnet: 0 });
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -179,8 +179,8 @@ export default function Navbar() {
 						</div>
 						<div className="flex right-0 w-[30%] absolute">
 							{typeof googleData === "object" &&
-							googleData !== null &&
-							Object.keys(googleData).length !== 0 ? (
+								googleData !== null &&
+								Object.keys(googleData).length !== 0 ? (
 								<div className="group relative inline-block ml-auto lg:flex-row">
 									<Link
 										to={"/profile/" + googleData.user.id}
@@ -216,6 +216,16 @@ export default function Navbar() {
 												/>
 												<span className="font-bold text-gray-600 text-sm py-2">
 													{parseFloat(balance.usdc).toFixed(4)} USDC
+												</span>
+											</li>
+											<li className="flex select-none px-4 items-center">
+												<img
+													src={logo}
+													className="h-6 w-6 rounded-full mr-2"
+													alt="profile"
+												/>
+												<span className="font-bold text-gray-600 text-sm py-2">
+													{parseFloat(balance.wnet).toFixed(4)} wNET
 												</span>
 											</li>
 											<div className="h-[1px] bg-gray-400 my-2"></div>

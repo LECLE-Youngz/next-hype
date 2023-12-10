@@ -173,12 +173,29 @@ export const usd = async () => {
 	return proxyContract;
 };
 
+export const vNet = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+
+	const proxyContract = new ethers.Contract(
+		process.env.REACT_APP_VNET_ADDRESS,
+		usdABI,
+		// TODO: change to vNet ABI
+		signer
+	);
+
+	return proxyContract;
+};
+
 export const getBalance = async (address) => {
 	const avax = await provider.getBalance(address);
 	const usdc = await usd().then(async (res) => await res.balanceOf(address));
 
+	const wNet = await vNet().then(async (res) => await res.balanceOf(address));
+
 	return {
 		avax: ethers.formatEther(avax),
 		usdc: ethers.formatUnits(usdc, 6),
+		wNet: ethers.formatUnits(wNet, 8)
 	};
 };
