@@ -139,8 +139,7 @@ export const createComment = async (postId, commentId, text) => {
 	}
 
 	await axios.post(
-		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${
-			commentId ?? ""
+		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ""
 		}`,
 		data,
 		{
@@ -255,3 +254,8 @@ export const createSubscribingEvent = async ({
 
 	return success;
 };
+
+
+export const createNftDrop = async ({ }) => {
+	// TODO: createNftDrop
+}
