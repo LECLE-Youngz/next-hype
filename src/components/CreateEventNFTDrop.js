@@ -10,10 +10,12 @@ const CreateEventNFTDrop = () => {
 		subscriptionId: 0,
 	});
 	const [creating, setCreating] = useState(false);
+	const [success, setSuccess] = useState(false);
 
-	const summit = async () => {
+	const submit = async () => {
 		setCreating(true);
 		const res = await createNftDrop(params);
+		setSuccess(res);
 		setCreating(false);
 		navigate("/event");
 	};
@@ -43,10 +45,18 @@ const CreateEventNFTDrop = () => {
 				</h1>
 				<button
 					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
-					onClick={summit}
+					onClick={submit}
+					disabled={creating}
 				>
-					Summit
+					{creating ? (
+						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
+					) : success ? (
+						"Success ✓"
+					) : (
+						"Failed"
+					)}
 				</button>
+
 			</div>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
 				<p className="border-b truncate w-full border-gray-900 text-2xl font-extralight">

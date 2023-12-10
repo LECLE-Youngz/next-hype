@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPurchasingEvent } from "../helpers/social";
+import { createSubscribingEvent } from "../helpers/social";
 
 const CreateEventPurchase = () => {
 	const navigate = useNavigate();
@@ -10,11 +10,13 @@ const CreateEventPurchase = () => {
 		subscriptionId: 0,
 	});
 	const [creating, setCreating] = useState(false);
+	const [success, setSuccess] = useState(false);
 
-	// TODO: 
-	const summit = async () => {
+	const submit = async () => {
 		setCreating(true);
-		const res = await createPurchasingEvent(params);
+
+		const res = await createSubscribingEvent(params);
+		setSuccess(res);
 		setCreating(false);
 		navigate("/event");
 	};
@@ -44,9 +46,16 @@ const CreateEventPurchase = () => {
 				</h1>
 				<button
 					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
-					onClick={summit}
+					onClick={submit}
+					disabled={creating}
 				>
-					Summit
+					{creating ? (
+						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
+					) : success ? (
+						"Success ✓"
+					) : (
+						"Failed"
+					)}
 				</button>
 			</div>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">

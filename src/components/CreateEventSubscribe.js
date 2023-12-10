@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createSubscribingEvent } from "../helpers/social";
+import { set } from "lodash";
 
 const CreateEventSubscribe = () => {
 	const navigate = useNavigate();
@@ -10,15 +11,26 @@ const CreateEventSubscribe = () => {
 		subscriptionId: 0,
 	});
 	const [creating, setCreating] = useState(false);
+	const [success, setSuccess] = useState(false);
 
-	const summit = async () => {
+	const submit = async () => {
 		setCreating(true);
-		const res = await createSubscribingEvent({
-			baseURI: params.baseURI,
-			subscriptionId: params.subscriptionId
-		});
-		setCreating(false);
-		navigate("/event");
+		let res = false;
+		try {
+			res = await createSubscribingEvent({
+				baseURI: params.baseURI,
+				subscriptionId: params.subscriptionId
+			});
+			setSuccess(res);
+			setCreating(false);
+			navigate("/event");
+		} catch (error) {
+			res = false;
+			setSuccess(res);
+			setCreating(false);
+
+		}
+
 	};
 
 	const inputClass = {
@@ -42,12 +54,23 @@ const CreateEventSubscribe = () => {
 				<h1 className="text-4xl text-gray-900">
 					# Ongoing <span className="twinkle-text">events</span>{" "}
 				</h1>
-				<button
-					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
-					onClick={summit}
-				>
-					Summit
-				</button>
+				<div>
+					<button
+						className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
+						onClick={submit}
+						disabled={creating}
+					>
+						{creating ? (
+							<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
+						) : success ? (
+							"Success ✓"
+						) : (
+							"Failed"
+						)}
+					</button>
+
+
+				</div>
 			</div>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
 				<p className="border-b truncate w-full border-gray-900 text-2xl font-extralight">
@@ -57,7 +80,7 @@ const CreateEventSubscribe = () => {
 
 			<div className="grid place-items-center mt-10">
 				<div className="grid gap-5 w-1/3 my-auto self-center">
-				<div className="">
+					<div className="">
 						<div className="text-xs self-center mb-2">
 							{"<!-- "}baseURI contains the default image of this {" "}
 							<span className="font-semibold">lucky NFT</span>.{" -->"}
