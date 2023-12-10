@@ -174,7 +174,7 @@ export const usd = async () => {
 	return proxyContract;
 };
 
-export const wNet = async () => {
+export const wNET = async () => {
 	const privateKey = getInfoUser().key.privKey;
 	const signer = new ethers.Wallet(privateKey, provider);
 	console.log(process.env.REACT_APP_WNET_ADDRESS);
@@ -191,11 +191,11 @@ export const wNet = async () => {
 export const getBalance = async (address) => {
 	const avax = await provider.getBalance(address);
 	const usdc = await usd().then(async (res) => await res.balanceOf(address));
-	const wNet = await wNet().then(async (res) => await res.balanceOf(address));
+	const wnet = await wNET().then(async (res) => await res.balanceOf(address));
 
 	return {
 		avax: ethers.formatEther(avax),
 		usdc: ethers.formatUnits(usdc, 6),
-		wNet: ethers.formatUnits(wNet, 18)
+		wnet: ethers.formatUnits(wnet, 18)
 	};
 };
