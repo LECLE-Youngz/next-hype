@@ -25,6 +25,7 @@ import Space from "./components/Space";
 import CreateEventFollow from "./components/CreateEventFollow";
 import CreateEventSubscribe from "./components/CreateEventSubscribe";
 import CreateEventPurchase from "./components/CreateEventPurchase";
+import CreateEventNFTDrop from "./components/CreateEventNFTDrop";
 
 function App() {
 	const [users, setUsers] = useState([]);
@@ -137,6 +138,10 @@ function App() {
 					<Route
 						path={`/event/purchase`}
 						element={<Wrapper children={<CreateEventPurchase />} />}
+					/>
+					<Route
+						path={`/event/nft-drop`}
+						element={<Wrapper children={<CreateEventNFTDrop />} />}
 					/>
 					<Route path="/assets/*" />
 					<Route path="*" element={<Navigate to="/" />} />

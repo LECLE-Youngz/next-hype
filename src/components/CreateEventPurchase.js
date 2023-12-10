@@ -67,9 +67,8 @@ const CreateEventPurchase = () => {
 							onChange={(e) =>
 								setParams({ ...params, maxSupply: e.target.value })
 							}
-							className={`${
-								inputClass[params.maxSupply === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.maxSupply === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### max supply"
 							defaultValue={params.header}
@@ -86,9 +85,8 @@ const CreateEventPurchase = () => {
 							onChange={(e) =>
 								setParams({ ...params, require: e.target.value })
 							}
-							className={`${
-								inputClass[params.require === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.require === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### require"
 							defaultValue={params.description}
@@ -115,9 +113,8 @@ const CreateEventPurchase = () => {
 							onChange={(e) =>
 								setParams({ ...params, subscriptionId: e.target.value })
 							}
-							className={`${
-								inputClass[params.subscriptionId === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.subscriptionId === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### subscription id"
 							defaultValue={params.description}
