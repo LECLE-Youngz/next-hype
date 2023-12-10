@@ -4,12 +4,12 @@ import { parseAddress, parseAmount } from "../libs/blockchain";
 import CollectionSelector from "./CollectionSelector";
 
 function Mint({ response, setMintPopup }) {
-	const [onSummit, setOnSummit] = useState(false);
+	const [onSubmit, setOnSubmit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
 	const [chooseCollectionPopup, setChooseCollectionPopup] = useState(false);
 
-	const summit = async () => {
-		setOnSummit(true);
+	const submit = async () => {
+		setOnSubmit(true);
 
 		const res = await mintNFT(
 			{
@@ -23,7 +23,7 @@ function Mint({ response, setMintPopup }) {
 		);
 
 		setOnSuccess(res);
-		setOnSummit(false);
+		setOnSubmit(false);
 	};
 
 	const setCollection = (collection) => {
@@ -210,16 +210,16 @@ function Mint({ response, setMintPopup }) {
 						<div className="flex">
 							<button
 								className={`${
-									onSummit || onSuccess
+									onSubmit || onSuccess
 										? "border-gray-500 cursor-default"
 										: "hover:border-gray-500"
 								} group h-12 w-40 mt-10 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`}
-								onClick={() => summit()}
+								onClick={() => submit()}
 								disabled={!valid() || onSuccess}
 							>
 								<div className="relative flex items-center space-x-4 justify-center">
 									<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
-										{!onSummit && !onSuccess ? (
+										{!onSubmit && !onSuccess ? (
 											<p>{onSuccess === null ? "Mint" : "Failed!"}</p>
 										) : !onSuccess ? (
 											<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
@@ -251,7 +251,7 @@ function Mint({ response, setMintPopup }) {
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"
-				onClick={() => !onSummit && setMintPopup(false)}
+				onClick={() => !onSubmit && setMintPopup(false)}
 			></div>
 		</div>
 	);

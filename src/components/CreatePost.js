@@ -116,7 +116,7 @@ const CreatePost = ({ updatePosts }) => {
 					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
 					onClick={post}
 				>
-					Summit
+					Submit
 				</button>
 			</div>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">

@@ -38,6 +38,16 @@ const CreateEventPurchase = () => {
 		}
 	}, [params]);
 
+	if (creating) {
+		return (
+			<div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
+				<div className="h-full w-full flex items-center justify-center">
+					<div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex flex-col justify-between">
 			<div className="flex justify-between">
@@ -47,15 +57,8 @@ const CreateEventPurchase = () => {
 				<button
 					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
 					onClick={submit}
-					disabled={creating}
 				>
-					{creating ? (
-						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
-					) : success ? (
-						"Success ✓"
-					) : (
-						"Failed"
-					)}
+					Submit
 				</button>
 			</div>
 			<div className="flex justify-between gap-1 mx-10 mt-10 mb-8">
@@ -77,8 +80,9 @@ const CreateEventPurchase = () => {
 							onChange={(e) =>
 								setParams({ ...params, maxSupply: e.target.value })
 							}
-							className={`${inputClass[params.maxSupply === ""]
-								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${
+								inputClass[params.maxSupply === ""]
+							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### max supply"
 							defaultValue={params.header}
@@ -95,8 +99,9 @@ const CreateEventPurchase = () => {
 							onChange={(e) =>
 								setParams({ ...params, require: e.target.value })
 							}
-							className={`${inputClass[params.require === ""]
-								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${
+								inputClass[params.require === ""]
+							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### require"
 							defaultValue={params.description}
@@ -123,8 +128,9 @@ const CreateEventPurchase = () => {
 							onChange={(e) =>
 								setParams({ ...params, subscriptionId: e.target.value })
 							}
-							className={`${inputClass[params.subscriptionId === ""]
-								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${
+								inputClass[params.subscriptionId === ""]
+							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### subscription id"
 							defaultValue={params.description}

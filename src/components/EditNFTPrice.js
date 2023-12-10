@@ -3,12 +3,12 @@ import { editPrices } from "../helpers/nft";
 import { parseAmount } from "../libs/blockchain";
 
 function EditNFTPrice({ nfts, setEditPricePopup }) {
-	const [onSummit, setOnSummit] = useState(false);
+	const [onSubmit, setOnSubmit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
 	const [price, setPrice] = useState({ price: 0, promptPrice: 0 });
 
-	const summit = async () => {
-		setOnSummit(true);
+	const submit = async () => {
+		setOnSubmit(true);
 
 		const res = await editPrices(
 			nfts.map((nft) => {
@@ -19,7 +19,7 @@ function EditNFTPrice({ nfts, setEditPricePopup }) {
 		);
 
 		setOnSuccess(res);
-		setOnSummit(false);
+		setOnSubmit(false);
 	};
 
 	useEffect(() => {
@@ -138,17 +138,17 @@ function EditNFTPrice({ nfts, setEditPricePopup }) {
 						<div className="flex">
 							<button
 								className={`${
-									onSummit || onSuccess
+									onSubmit || onSuccess
 										? "border-gray-500 cursor-default"
 										: "hover:border-gray-500"
 								} group h-12 w-40 mt-10 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`}
-								onClick={() => summit()}
+								onClick={() => submit()}
 								disabled={!valid() || onSuccess}
 							>
 								<div className="relative flex items-center space-x-4 justify-center">
 									<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
-										{!onSummit && !onSuccess ? (
-											<p>{onSuccess === null ? "Summit" : "Failed!"}</p>
+										{!onSubmit && !onSuccess ? (
+											<p>{onSuccess === null ? "Submit" : "Failed!"}</p>
 										) : !onSuccess ? (
 											<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
 										) : (
@@ -179,7 +179,7 @@ function EditNFTPrice({ nfts, setEditPricePopup }) {
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"
-				onClick={() => !onSummit && setEditPricePopup(false)}
+				onClick={() => !onSubmit && setEditPricePopup(false)}
 			></div>
 		</div>
 	);

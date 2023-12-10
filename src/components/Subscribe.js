@@ -3,7 +3,7 @@ import { getPlans, subscriber } from "../helpers/user";
 import { parsePrice } from "../libs/blockchain";
 
 const Subscribe = ({ user, setSubscribePopup }) => {
-	const [onSummit, setOnSummit] = useState(false);
+	const [onSubmit, setOnSubmit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
 	const [choice, setChoice] = useState(0);
 	const [subscription, setSubscription] = useState(null);
@@ -18,13 +18,13 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 		fetchData();
 	}, []);
 
-	const summit = async () => {
-		setOnSummit(true);
+	const submit = async () => {
+		setOnSubmit(true);
 
 		const res = await subscriber(user.id, choice, subscription[choice]);
 
 		setOnSuccess(res);
-		setOnSummit(false);
+		setOnSubmit(false);
 	};
 
 	const inputClass = {
@@ -129,11 +129,11 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 						<div className="container mx-auto grid gap-2 mt-10 w-1/2">
 							<button
 								className="border py-4 px-8 border-gray-900 text-gray-900 hover:grad hover:border-transparent hover:text-white duration-300 disabled:pointer-events-none disabled:grad disabled:border-transparent"
-								onClick={() => summit()}
-								disabled={onSummit || onSuccess}
+								onClick={() => submit()}
+								disabled={onSubmit || onSuccess}
 							>
 								<div className="relative flex items-center space-x-4 justify-center text-lg">
-									{!onSummit && !onSuccess ? (
+									{!onSubmit && !onSuccess ? (
 										<p className="block w-max">
 											{onSuccess === null ? "Purchase" : "Failed!"}
 										</p>
@@ -169,7 +169,7 @@ const Subscribe = ({ user, setSubscribePopup }) => {
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"
-				onClick={() => !onSummit && setSubscribePopup(false)}
+				onClick={() => !onSubmit && setSubscribePopup(false)}
 			></div>
 		</div>
 	);

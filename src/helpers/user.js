@@ -69,6 +69,7 @@ export const getUsers = async (id) => {
 		.get(`${process.env.REACT_APP_API_ENDPOINT}/users/${id ?? ""}`)
 		.then((res) => {
 			users = res.data;
+			console.log(res);
 		})
 		.catch((error) => {
 			users = [];

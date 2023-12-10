@@ -314,7 +314,9 @@ export const getLinkedPosts = async (id, collection) => {
 			`${process.env.REACT_APP_API_ENDPOINT}/nfts/post/${id}/collection/${collection}`
 		)
 		.then((res) => (res = res.data))
-		.catch((error) => (posts = []));
+		.catch((error) => {
+			console.log(error);
+		});
 
 	return posts;
 };
@@ -327,7 +329,6 @@ export const getCollections = async (address) => {
 		.then((res) => (res = res.data))
 		.catch((error) => {
 			console.log(error);
-			collections = [];
 		});
 
 	return collections;

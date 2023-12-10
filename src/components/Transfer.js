@@ -3,15 +3,15 @@ import { transferToAddress } from "../helpers/nft";
 import { checkAddress, emailToWallet } from "../helpers/user";
 
 function Transfer({ nfts, setTransferPopup }) {
-	const [onSummit, setOnSummit] = useState(false);
+	const [onSubmit, setOnSubmit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
 	const [email, setEmail] = useState("");
 	const [userWallet, setUserWallet] = useState(null);
 	const [isToUser, setIsToUser] = useState(true);
 	const [isValid, setIsValid] = useState(false);
 
-	const summit = async () => {
-		setOnSummit(true);
+	const submit = async () => {
+		setOnSubmit(true);
 
 		const res = await transferToAddress(
 			nfts.map((nft) => nft.nftId),
@@ -19,7 +19,7 @@ function Transfer({ nfts, setTransferPopup }) {
 		);
 
 		setOnSuccess(res);
-		setOnSummit(false);
+		setOnSubmit(false);
 	};
 
 	useEffect(() => {
@@ -94,17 +94,17 @@ function Transfer({ nfts, setTransferPopup }) {
 						<div className="flex">
 							<button
 								className={`${
-									onSummit || onSuccess
+									onSubmit || onSuccess
 										? "border-gray-500 cursor-default"
 										: "hover:border-gray-500"
 								} group h-12 w-40 mt-10 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`}
-								onClick={() => summit()}
+								onClick={() => submit()}
 								disabled={!isValid || onSuccess}
 							>
 								<div className="relative flex items-center space-x-4 justify-center">
 									<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
-										{!onSummit && !onSuccess ? (
-											<p>{onSuccess === null ? "Summit" : "Failed!"}</p>
+										{!onSubmit && !onSuccess ? (
+											<p>{onSuccess === null ? "Submit" : "Failed!"}</p>
 										) : !onSuccess ? (
 											<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
 										) : (
@@ -135,7 +135,7 @@ function Transfer({ nfts, setTransferPopup }) {
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"
-				onClick={() => !onSummit && setTransferPopup(false)}
+				onClick={() => !onSubmit && setTransferPopup(false)}
 			></div>
 		</div>
 	);

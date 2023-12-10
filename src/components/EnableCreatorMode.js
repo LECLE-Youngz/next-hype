@@ -3,16 +3,16 @@ import { forwardAddressRegister, turnOnCreatorMode } from "../helpers/user";
 import { parseAddress, parseAmount } from "../libs/blockchain";
 
 function EnableCreatorMode({ setEnableCreatorModePopup }) {
-	const [onSummitFirst, setOnSummitFirst] = useState(false);
+	const [onSubmitFirst, setOnSubmitFirst] = useState(false);
 	const [onSuccessFirst, setOnSuccessFirst] = useState(null);
-	const [onSummitSecond, setOnSummitSecond] = useState(false);
+	const [onSubmitSecond, setOnSubmitSecond] = useState(false);
 	const [onSuccessSecond, setOnSuccessSecond] = useState(null);
 	const [address, setAddress] = useState("");
 	const [automaticAddress, setAutomaticAddress] = useState("");
 	const [copy, setCopy] = useState("click to copy");
 
-	const summitFirst = async () => {
-		setOnSummitFirst(true);
+	const submitFirst = async () => {
+		setOnSubmitFirst(true);
 
 		const res = await turnOnCreatorMode([
 			parseAmount(plans.weekly),
@@ -22,16 +22,16 @@ function EnableCreatorMode({ setEnableCreatorModePopup }) {
 
 		setOnSuccessFirst(res[0]);
 		setAddress(res[1]);
-		setOnSummitFirst(false);
+		setOnSubmitFirst(false);
 	};
 
-	const summitSecond = async () => {
-		setOnSummitSecond(true);
+	const submitSecond = async () => {
+		setOnSubmitSecond(true);
 
 		const res = await forwardAddressRegister(automaticAddress, address);
 
 		setOnSuccessSecond(res);
-		setOnSummitSecond(false);
+		setOnSubmitSecond(false);
 	};
 
 	const [plans, setPlans] = useState({
@@ -132,16 +132,16 @@ function EnableCreatorMode({ setEnableCreatorModePopup }) {
 								<div className="flex">
 									<button
 										className={`${
-											onSummitFirst || onSuccessFirst
+											onSubmitFirst || onSuccessFirst
 												? "border-gray-500 cursor-default"
 												: "hover:border-gray-500"
 										} group h-12 w-40 mt-5 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`}
-										onClick={() => summitFirst()}
-										disabled={!validFirst() || onSuccessFirst || onSummitFirst}
+										onClick={() => submitFirst()}
+										disabled={!validFirst() || onSuccessFirst || onSubmitFirst}
 									>
 										<div className="relative flex items-center space-x-4 justify-center">
 											<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
-												{!onSummitFirst && !onSuccessFirst ? (
+												{!onSubmitFirst && !onSuccessFirst ? (
 													<p>
 														{onSuccessFirst === null ? "Deploy" : "Failed!"}
 													</p>
@@ -205,18 +205,18 @@ function EnableCreatorMode({ setEnableCreatorModePopup }) {
 										<div className="flex">
 											<button
 												className={`${
-													onSummitSecond || onSuccessSecond
+													onSubmitSecond || onSuccessSecond
 														? "border-gray-500 cursor-default"
 														: "hover:border-gray-500"
 												} group h-12 w-40 mt-5 mx-auto border border-gray-900 hover:bg-gray-900 transition duration-300 disabled:cursor-default disabled:pointer-events-none`}
-												onClick={() => summitSecond()}
+												onClick={() => submitSecond()}
 												disabled={
-													!validSecond() || onSuccessSecond || onSummitSecond
+													!validSecond() || onSuccessSecond || onSubmitSecond
 												}
 											>
 												<div className="relative flex items-center space-x-4 justify-center">
 													<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
-														{!onSummitSecond && !onSuccessSecond ? (
+														{!onSubmitSecond && !onSuccessSecond ? (
 															<p>
 																{onSuccessSecond === null
 																	? "Complete"
@@ -263,7 +263,7 @@ function EnableCreatorMode({ setEnableCreatorModePopup }) {
 			<div
 				className="h-screen w-screen absolute -z-10"
 				onClick={() =>
-					!onSummitFirst && !onSummitSecond && setEnableCreatorModePopup(false)
+					!onSubmitFirst && !onSubmitSecond && setEnableCreatorModePopup(false)
 				}
 			></div>
 		</div>

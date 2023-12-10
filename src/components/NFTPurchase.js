@@ -12,16 +12,16 @@ function NFTPurchase({
 	isAvax = true,
 	setNFTPurchasePopup,
 }) {
-	const [onSummit, setOnSummit] = useState(false);
+	const [onSubmit, setOnSubmit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
 
-	const summit = async () => {
-		setOnSummit(true);
+	const submit = async () => {
+		setOnSubmit(true);
 
 		const res = await buyNFT(userId, id, addressCollection, price, isAvax);
 
 		setOnSuccess(res);
-		setOnSummit(false);
+		setOnSubmit(false);
 	};
 
 	return (
@@ -64,11 +64,11 @@ function NFTPurchase({
 						<div className="container mx-auto grid gap-2 mt-10 w-1/2">
 							<button
 								className="group border py-4 px-8 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white transition-colors ease-in-out duration-500 disabled:pointer-events-none"
-								onClick={() => summit()}
-								disabled={onSummit || onSuccess}
+								onClick={() => submit()}
+								disabled={onSubmit || onSuccess}
 							>
 								<div className="relative flex items-center space-x-4 justify-center">
-									{!onSummit && !onSuccess ? (
+									{!onSubmit && !onSuccess ? (
 										<p className="block w-max text-gray-900 text-lg transition duration-300 group-hover:text-gray-100">
 											{onSuccess === null ? "Purchase" : "Failed!"}
 										</p>
@@ -103,7 +103,7 @@ function NFTPurchase({
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"
-				onClick={() => !onSummit && setNFTPurchasePopup(false)}
+				onClick={() => !onSubmit && setNFTPurchasePopup(false)}
 			></div>
 		</div>
 	);

@@ -334,7 +334,7 @@ export default function Generate() {
 							<div className="relative flex items-center space-x-4 justify-center">
 								<span className="block text-gray-900 text-sm transition duration-300 group-hover:text-gray-200 sm:text-base">
 									{!onGenerate ? (
-										"Summit"
+										"Submit"
 									) : (
 										<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
 									)}

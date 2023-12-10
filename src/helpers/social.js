@@ -140,7 +140,8 @@ export const createComment = async (postId, commentId, text) => {
 	}
 
 	await axios.post(
-		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ""
+		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${
+			commentId ?? ""
 		}`,
 		data,
 		{
@@ -231,16 +232,6 @@ export const createPurchasingEvent = async ({
 }) => {
 	let success = false;
 	const premiumAddress = await getPremiumAddress();
-	console.log(
-		"Mystery Event",
-		"MYS",
-		"https://ipfs.io/ipfs/QmYuKY45Aq87LeL1R5dhb1hqHLp6ZFbJaCP8jxqKM1MX6y/babe_ruth_1.json",
-		premiumAddress,
-		require,
-		maxSupply,
-		`$https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
-		subscriptionId
-	);
 
 	await deployMysteryEvent(
 		"Mystery Event",
@@ -256,29 +247,16 @@ export const createPurchasingEvent = async ({
 	return success;
 };
 
-export const createSubscribingEvent = async ({
-	baseURI,
-	subscriptionId
-}) => {
+export const createSubscribingEvent = async ({ baseURI, subscriptionId }) => {
 	let success = false;
 	const premiumAddress = await getPremiumAddress();
-	console.log(
-		subscriptionId,
-		baseURI,
-		premiumAddress
+	await deployLuckyToken(subscriptionId, baseURI, premiumAddress).then(
+		(res) => (success = res.status === 1)
 	);
-	console.log(premiumAddress, baseURI);
-
-	await deployLuckyToken(
-		subscriptionId,
-		baseURI,
-		premiumAddress
-	).then((res) => (success = res.status === 1));
 
 	return success;
 };
 
-
-export const createNftDrop = async ({ }) => {
+export const createNftDrop = async ({}) => {
 	// TODO: createNftDrop
-}
+};
