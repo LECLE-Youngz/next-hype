@@ -13,6 +13,7 @@ const mysteryBoxABI = require("./MysteryBox.sol/MysteryBox.json");
 const mysteryDropEventABI = require("./MysteryDropEvent.sol/MysteryDropEvent.json");
 const mysteryEventFactoryABI = require("./MysteryEventFactory.sol/MysteryEventFactory.json");
 const usdABI = require("./USD.json");
+const wNetABI = require("./wNET.json");
 
 const { getInfoUser } = require("../storage/local");
 
@@ -173,29 +174,28 @@ export const usd = async () => {
 	return proxyContract;
 };
 
-export const vNet = async () => {
+export const wNet = async () => {
 	const privateKey = getInfoUser().key.privKey;
 	const signer = new ethers.Wallet(privateKey, provider);
+	console.log(process.env.REACT_APP_WNET_ADDRESS);
 
-	const proxyContract = new ethers.Contract(
-		process.env.REACT_APP_VNET_ADDRESS,
-		usdABI,
-		// TODO: change to vNet ABI
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_WNET_ADDRESS,
+		wNetABI,
 		signer
 	);
 
-	return proxyContract;
+	return contract;
 };
 
 export const getBalance = async (address) => {
 	const avax = await provider.getBalance(address);
 	const usdc = await usd().then(async (res) => await res.balanceOf(address));
-
-	const wNet = await vNet().then(async (res) => await res.balanceOf(address));
+	const wNet = await wNet().then(async (res) => await res.balanceOf(address));
 
 	return {
 		avax: ethers.formatEther(avax),
 		usdc: ethers.formatUnits(usdc, 6),
-		wNet: ethers.formatUnits(wNet, 8)
+		wNet: ethers.formatUnits(wNet, 18)
 	};
 };
