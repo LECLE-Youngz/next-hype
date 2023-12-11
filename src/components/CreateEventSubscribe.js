@@ -20,6 +20,15 @@ const CreateEventSubscribe = () => {
 		});
 		setSuccess(res);
 		setCreating(false);
+	};
+
+	const submitTreasury = async () => {
+		setCreating(true);
+		let res = await createSubscribingEvent({
+			subscriptionId: params.subscriptionId,
+		});
+		setSuccess(res);
+		setCreating(false);
 		navigate("/event");
 	};
 
@@ -85,14 +94,68 @@ const CreateEventSubscribe = () => {
 							onChange={(e) =>
 								setParams({ ...params, subscriptionId: e.target.value })
 							}
-							className={`${
-								inputClass[params.subscriptionId === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.subscriptionId === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### subscription id"
 							defaultValue={params.description}
 						/>
 					</div>
+				</div>
+
+				<h2 class="text-4xl font-bold mt-10 text-black-700 mb-2">Set up Lucky Treasury</h2>
+
+
+				{/* New Form */}
+				<div className="grid gap-5 w-1/3 my-auto self-center mt-4">
+					<div className="">
+					    <div className="text-xs self-center mb-2">
+							{"<!-- "}Address of the {" "}
+							<span className="font-semibold">LuckyNFT </span>
+							you just created
+							{" -->"}
+						</div>
+						<input
+							onChange={(e) => console.log(e.target.value)}
+							className="w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center"
+							type="text"
+							placeholder="### LuckyNFT Address"
+						/>
+					</div>
+					<div className="">
+					    <div className="text-xs self-center mb-2">
+							{"<!-- "}How many {" "}
+							<span className="font-semibold">Lucky Point </span>
+							for subscriber in order to receive the NEXTHYPE token
+							{" -->"}
+						</div>
+						<input
+							onChange={(e) => console.log(e.target.value)}
+							className="w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center"
+							type="number"
+							placeholder="Lucky point"
+						/>
+					</div>
+					<div className="">
+					    <div className="text-xs self-center mb-2">
+							{"<!-- "}The amount reward for each {" "}
+							<span className="font-semibold"> winning user </span>
+							{" -->"}
+						</div>
+						<input
+							onChange={(e) => console.log(e.target.value)}
+							className="w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center"
+							type="number"
+							placeholder="NEXTHYPE Token reward amount"
+						/>
+					</div>
+
+					<button
+					className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
+					onClick={submit}
+				>
+					Create Treasury
+				</button>
 				</div>
 			</div>
 		</div>

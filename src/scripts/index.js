@@ -12,6 +12,7 @@ const luckyNFTFactoryABI = require("./LuckyNFTFactory.sol/LuckyNFTFactory.json")
 const mysteryBoxABI = require("./MysteryBox.sol/MysteryBox.json");
 const mysteryDropEventABI = require("./MysteryDropEvent.sol/MysteryDropEvent.json");
 const mysteryEventFactoryABI = require("./MysteryEventFactory.sol/MysteryEventFactory.json");
+const treasuryABI = require("./TreasuryFactory.sol/TreasuryFactory.json");
 const usdABI = require("./USD.json");
 const wNetABI = require("./wNET.json");
 
@@ -155,6 +156,19 @@ export const mysteryEvent = async (address) => {
 	const contract = new ethers.Contract(
 		address,
 		mysteryDropEventABI.abi,
+		signer
+	);
+
+	return contract;
+};
+
+
+export const treasuryFactory = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_TREASURYFACTORY_ADDRESS,
+		treasuryABI.abi,
 		signer
 	);
 

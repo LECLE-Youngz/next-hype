@@ -4,6 +4,7 @@ import { deployMysteryEvent } from "../scripts/mysteryEventFactory";
 import { deployLuckyToken } from "../scripts/luckyEventFactory";
 import { getInfoUser } from "../storage/local";
 import { drawLottery } from "../scripts/luckyNFT";
+import { deployLuckyTreasury } from "../scripts/treasuryFactory";
 
 export const getPosts = async (id) => {
 	let posts;
@@ -312,7 +313,29 @@ export const createDropEvent = async ({ subscriptionId }) => {
 		}
 	});
 
-	return success;
+	return { success };
+};
+
+
+export const createTreasury = async ({ luckyNFT, luckyPoint, rewardAmount }) => {
+	// TODO: get luckyNFT dc khong
+	const userId = getInfoUser().user.id;
+
+	let success = false;
+	const premiumAddress = await getPremiumAddress(userId);
+
+	await deployLuckyTreasury(
+		luckyNFT,
+		process.env.REACT_APP_WNET_ADDRESS,
+		luckyPoint,
+		rewardAmount
+	).then(async (res) => {
+		if (res.status === 1) {
+			const address = res.logs[0].address;
+		}
+	});
+
+	return { success };
 };
 
 export const getEvents = async () => {
