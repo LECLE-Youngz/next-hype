@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getCollectionInfo, getUserCollections } from "../helpers/nft";
+import {
+	getCollectionInfo,
+	getNumMysteryNFTs,
+	getUserCollections,
+} from "../helpers/nft";
 import { parseAddress } from "../libs/blockchain";
 import CreateCollectionPopup from "./CreateCollectionPopup";
 import { getExclusiveAddress } from "../helpers/user";
@@ -9,6 +13,9 @@ const ManageCollections = ({ setManageCollectionsPopup }) => {
 	const [loading, setLoading] = useState(true);
 	const [collections, setCollections] = useState(null);
 	const [exclusiveAddress, setExclusiveAddress] = useState(null);
+	const [mystery, setMystery] = useState(null);
+	const [lucky, setLucky] = useState(null);
+	const [drop, setDrop] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -19,6 +26,12 @@ const ManageCollections = ({ setManageCollectionsPopup }) => {
 
 			if (exclusiveAddress !== null) {
 				setExclusiveAddress(exclusiveAddress);
+				const mystery = await getNumMysteryNFTs();
+				setMystery(mystery);
+				const lucky = await getNumMysteryNFTs();
+				setLucky(lucky);
+				const drop = await getNumMysteryNFTs();
+				setDrop(drop);
 			}
 
 			for (let i = 0; i < res.length; i++) {
@@ -99,26 +112,84 @@ const ManageCollections = ({ setManageCollectionsPopup }) => {
 										</span>
 									</span>
 								</div>
-								<div className="relative cursor-pointer h-16 mt-2 p-5 ">
-									<div className="grad p-[1.5px] h-full inset-0 absolute">
-										<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
-											<div className="text-center w-[25%]">
-												<span className="">
-													{parseAddress(exclusiveAddress)}
-												</span>
-											</div>
-											<div className="text-center w-[25%]">
-												<span className="">Exclusive Token</span>
-											</div>
-											<div className="text-center w-[25%]">
-												<span className="">EXC</span>
-											</div>
-											<div className="text-center w-[25%]">
-												<span className="">_</span>
+								{exclusiveAddress && (
+									<>
+										<div className="relative cursor-pointer h-16 mt-2 p-5 ">
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">
+															{parseAddress(exclusiveAddress)}
+														</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Exclusive Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">EXC</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">_</span>
+													</div>
+												</div>
 											</div>
 										</div>
-									</div>
-								</div>
+										<div className="relative cursor-pointer h-16 mt-2 p-5 ">
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">{mystery.address ?? "_"}</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Mystery Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">MYS</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">{mystery.count ?? "_"}</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div className="relative cursor-pointer h-16 mt-2 p-5 ">
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">{lucky.address ?? "_"}</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Lucky Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">LCK</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">{lucky.count ?? "_"}</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div className="relative cursor-pointer h-16 mt-2 p-5 ">
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">{drop.address ?? "_"}</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Drop Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">DRP</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">{drop.count ?? "_"}</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</>
+								)}
 								{collections.map((collection, index) => (
 									<>
 										<div className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2">

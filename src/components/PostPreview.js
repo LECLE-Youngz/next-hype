@@ -4,7 +4,6 @@ import {
 	BiComment,
 	BiBookmark,
 	BiSolidUpvote,
-	BiSolidComment,
 	BiSolidBookmark,
 } from "react-icons/bi";
 import { getInfoUser } from "../storage/local";
@@ -33,12 +32,13 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 	}, []);
 
 	useEffect(() => {
+		if (post && !subscribePopup) return;
 		const fetchData = async () => {
 			const post = await getPosts(postId);
 			setPost(post);
 		};
 		fetchData();
-	}, [likeUpdating, bookmarkUpdating]);
+	}, [likeUpdating, bookmarkUpdating, subscribePopup]);
 
 	const toggleLike = async () => {
 		setLikeUpdating(true);
@@ -59,7 +59,7 @@ function PostPreview({ postId, setManageBookmarksPopup }) {
 			</div>
 		);
 	}
-	console.log(post);
+
 	return (
 		<div className="group grid border w-[31rem] h-56 relative group">
 			{subscribePopup && (

@@ -89,7 +89,10 @@ const Post = ({ postId }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const post = await getPosts(postId);
-			const data = await getPromptById(post.nft.id, post.nft.addressCollection);
+			const data = await getPromptById(
+				post.nft.nftId,
+				post.nft.addressCollection
+			);
 			setPost(post);
 			setData(data);
 			setReplies(Array(post.listComment.length).fill(null));
@@ -178,6 +181,7 @@ const Post = ({ postId }) => {
 				<div className="flex flex-col ">
 					<NFTPreview
 						{...post.nft}
+						id={post.nft.nftId}
 						owner={post.postOwner}
 						className="block group mx-auto relative w-fit cursor-pointer"
 					/>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { mintNFT } from "../helpers/nft";
 import { parseAddress, parseAmount } from "../libs/blockchain";
 import CollectionSelector from "./CollectionSelector";
+import { getInfoUser } from "../storage/local";
 
 function Mint({ response, setMintPopup }) {
 	const [onSubmit, setOnSubmit] = useState(false);
@@ -11,13 +12,18 @@ function Mint({ response, setMintPopup }) {
 	const submit = async () => {
 		setOnSubmit(true);
 
+		const userId = getInfoUser().user.id;
+
 		const res = await mintNFT(
 			{
 				...mintParams,
 				price: parseAmount(mintParams.price),
 				promptPrice: parseAmount(mintParams.promptPrice),
-				collection: mintParams.collection.address,
-				e: mintParams.collection.e,
+				collection:
+					mintParams.collection.address === "_"
+						? userId
+						: mintParams.collection.address,
+				type: mintParams.collection?.type ?? "normal",
 			},
 			response.meta
 		);
@@ -54,6 +60,21 @@ function Mint({ response, setMintPopup }) {
 			setMintParams({ ...mintParams, promptPrice: 0 });
 		}
 	}, [mintParams.price]);
+
+	useEffect(() => {
+		if (!mintParams.collection?.type) return;
+		if (
+			mintParams.collection.type === "lucky" ||
+			mintParams.collection.type === "mystery" ||
+			mintParams.collection.type === "drop"
+		) {
+			if (mintParams.promptPrice === 0 && mintParams.price === 0) return;
+			setMintParams({ ...mintParams, promptPrice: 0, price: 0 });
+		} else if (mintParams.collection.type === "exclusive") {
+			if (mintParams.promptPrice === 0) return;
+			setMintParams({ ...mintParams, promptPrice: 0 });
+		}
+	}, [mintParams]);
 
 	const inputClass = {
 		false: "bg-white border-gray-900 text-gray-900",
@@ -117,7 +138,9 @@ function Mint({ response, setMintPopup }) {
 											{mintParams.collection.name}
 										</span>
 										<span className="text-gray-400">
-											{parseAddress(mintParams.collection.address)}
+											{mintParams.collection.address === "_"
+												? "_"
+												: parseAddress(mintParams.collection.address)}
 										</span>
 									</>
 								)}

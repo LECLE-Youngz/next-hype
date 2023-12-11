@@ -1,4 +1,4 @@
-import { mysteryEventFactory } from ".";
+import { mysteryBoxFactory } from ".";
 
 export const deployMysteryBox = async (
 	name,

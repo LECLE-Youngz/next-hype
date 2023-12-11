@@ -2,6 +2,8 @@ import axios from "axios";
 import { getAccessToken, getPremiumAddress } from "./user";
 import { deployMysteryEvent } from "../scripts/mysteryEventFactory";
 import { deployLuckyToken } from "../scripts/luckyEventFactory";
+import { getInfoUser } from "../storage/local";
+import { drawLottery } from "../scripts/luckyNFT";
 
 export const getPosts = async (id) => {
 	let posts;
@@ -225,38 +227,130 @@ export const createPost = async (
 	return res.data.id;
 };
 
+export const updateCollection = (address, type) => {
+	const access_token = getAccessToken();
+
+	return axios.put(
+		`${process.env.REACT_APP_API_ENDPOINT}/nfts/collection/${address}/type/${type}`,
+		{},
+		{
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			},
+		}
+	);
+};
+
 export const createPurchasingEvent = async ({
 	maxSupply,
 	require,
 	subscriptionId,
+	unrevealUri,
 }) => {
 	let success = false;
-	const premiumAddress = await getPremiumAddress();
+	const userId = getInfoUser().user.id;
+	const premiumAddress = await getPremiumAddress(userId);
 
 	await deployMysteryEvent(
 		"Mystery Event",
 		"MYS",
-		"https://ipfs.io/ipfs/QmYuKY45Aq87LeL1R5dhb1hqHLp6ZFbJaCP8jxqKM1MX6y/babe_ruth_1.json",
+		unrevealUri,
 		premiumAddress,
 		require,
 		maxSupply,
 		`https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
 		subscriptionId
-	).then((res) => (success = res.status === 1));
+	).then(async (res) => {
+		if (res.status === 1) {
+			const address = res.logs[0].address;
+			await updateCollection(address, "mystery")
+				.then((success = true))
+				.catch();
+		}
+	});
 
 	return success;
 };
 
-export const createSubscribingEvent = async ({ baseURI, subscriptionId }) => {
+export const createSubscribingEvent = async ({ subscriptionId }) => {
+	const userId = getInfoUser().user.id;
+
 	let success = false;
-	const premiumAddress = await getPremiumAddress();
-	await deployLuckyToken(subscriptionId, baseURI, premiumAddress).then(
+	const premiumAddress = await getPremiumAddress(userId);
+
+	await deployLuckyToken(
+		subscriptionId,
+		`https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
+		premiumAddress
+	).then(async (res) => {
+		if (res.status === 1) {
+			const address = res.logs[0].address;
+			await updateCollection(address, "lucky")
+				.then((success = true))
+				.catch();
+		}
+	});
+
+	return success;
+};
+
+export const createDropEvent = async ({ subscriptionId }) => {
+	const userId = getInfoUser().user.id;
+
+	let success = false;
+	const premiumAddress = await getPremiumAddress(userId);
+
+	await deployLuckyToken(
+		subscriptionId,
+		`https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
+		premiumAddress
+	).then(async (res) => {
+		if (res.status === 1) {
+			const address = res.logs[0].address;
+			await updateCollection(address, "drop")
+				.then((success = true))
+				.catch();
+		}
+	});
+
+	return success;
+};
+
+export const getEvents = async () => {
+	const access_token = await getAccessToken();
+
+	let events;
+
+	await axios
+		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/event`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${access_token}`,
+			},
+		})
+		.then((res) => {
+			events = res.data;
+		})
+		.catch((error) => {
+			events = [];
+		});
+
+	return events;
+};
+
+export const claimLucky = async (addressCollection) => {
+	const userAddress = getInfoUser().key.ethAddress;
+
+	let success = false;
+
+	await drawLottery(userAddress, addressCollection).then(
 		(res) => (success = res.status === 1)
 	);
 
 	return success;
 };
 
-export const createNftDrop = async ({}) => {
+export const createNftDrop = async () => {
 	// TODO: createNftDrop
 };

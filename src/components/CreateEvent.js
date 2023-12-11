@@ -10,54 +10,31 @@ const CreateEvent = ({ setCreateEvent }) => {
 				<div className="bg-white shadow-xl w-full px-16 py-5 relative">
 					<div className="flex justify-between">
 						<h3 className="mt-5 self-center text-4xl text-gray-900">
-							# Select task
+							# Select event
 						</h3>
 					</div>
 					<div className="mt-10 mx-10 flex justify-between">
-						<button
+						{/* <button
 							className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
-							onClick={() => navigate("/event/follow")}
+							onClick={() => navigate("/event/drop")}
 						>
-							Follow task
-						</button>
+							NFT drop
+						</button> */}
 						<button
 							className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
 							onClick={() => navigate("/event/subscribe")}
 						>
-							Subscribe task
+							Lucky event
 						</button>
 						<button
 							className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
 							onClick={() => navigate("/event/purchase")}
 						>
-							Purchase task
+							Mystery event
 						</button>
 					</div>
-
-					<div className="flex justify-between">
-						<h3 className="mt-5 self-center text-4xl text-gray-900">
-							# Select Event
-						</h3>
-					</div>
-					<div className="mt-10 mx-10 flex justify-between">
-						<button
-							className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
-							onClick={() => navigate("/event/nft-drop")}
-						>
-							NFT Drop
-						</button>
-					</div>
-					<div className="py-10 space-y-2 text-gray-600 sm:-mb-8">
-						<p className="text-xs">
-							{"<!-- "}Actions to your owned NFTs is accessed from here.{" -->"}
-						</p>
-						<p className="text-xs">
-							{"<!-- "}Any action will all need to send a transaction to the
-							blockchain.{" -->"}
-						</p>
-					</div>
+					<div className="pt-10"></div>
 				</div>
-
 			</div>
 			<div
 				className="h-screen w-screen absolute -z-10"

@@ -59,7 +59,7 @@ export const buyNFT = async (
 				}
 			)
 			.catch((e) => {
-				success = false;
+				// success = false;
 			});
 	}
 
@@ -102,7 +102,7 @@ export const buyNFTPrompt = async (
 				}
 			)
 			.catch((e) => {
-				success = false;
+				// success = false;
 			});
 	}
 
@@ -112,35 +112,53 @@ export const buyNFTPrompt = async (
 export const mintNFT = async (data, metadata) => {
 	let access_token = await getAccessToken();
 	let userAddress = getInfoUser().key.ethAddress;
+
+	const notMint = ["lucky", "mystery", "drop"];
 	let generative =
 		data.collection === process.env.REACT_APP_COLLECTION_ADDRESS
 			? null
 			: data.collection;
 
-	let nftId = await getTotalToken(generative).then((res) => res);
+	let nftId;
 
-	const res1 = await safeMint(
-		userAddress,
-		`${process.env.REACT_APP_API_ENDPOINT}/nfts/${nftId}/collection/${data.collection}`,
-		generative,
-		data.e
-	);
-	if (res1.status !== 1) return false;
+	if (!notMint.includes(data.type)) {
+		nftId = await getTotalToken(generative).then((res) => res);
 
-	if (data.price !== "0") {
-		const res2 = await approve(nftId, generative);
-		if (res2.status !== 1) return false;
-
-		const res3 = await listItem(
-			data.collection,
-			nftId,
-			data.price,
-			data.promptPrice
+		const res1 = await safeMint(
+			userAddress,
+			`${process.env.REACT_APP_API_ENDPOINT}/nfts/collection/${data.collection}/nft/${nftId}`,
+			generative,
+			data.e
 		);
-		if (res3.status !== 1) return false;
+		if (res1.status !== 1) return false;
+
+		if (data.price !== "0") {
+			const res2 = await approve(nftId, generative);
+			if (res2.status !== 1) return false;
+
+			const res3 = await listItem(
+				data.collection,
+				nftId,
+				data.price,
+				data.promptPrice
+			);
+			if (res3.status !== 1) return false;
+		}
+	} else {
+		nftId = 100000;
 	}
 
 	let success = true;
+
+	console.log({
+		id: Number(nftId),
+		name: data.name,
+		description: data.description,
+		image: data.image,
+		type: data.type,
+		addressCollection: data.collection,
+		meta: metadata,
+	});
 
 	await axios
 		.post(
@@ -150,7 +168,7 @@ export const mintNFT = async (data, metadata) => {
 				name: data.name,
 				description: data.description,
 				image: data.image,
-				eNft: data.e,
+				type: data.type,
 				addressCollection: data.collection,
 				meta: metadata,
 			},
@@ -204,6 +222,7 @@ export const getNFTsByOwner = async () => {
 			nfts = res.data;
 		})
 		.catch((error) => {
+			console.log(error);
 			nfts = [];
 		});
 
@@ -389,4 +408,64 @@ export const createCollection = async (name, symbol) => {
 	);
 
 	return success;
+};
+
+export const getNumMysteryNFTs = async () => {
+	let count;
+
+	const userId = getInfoUser().user.id;
+
+	await axios
+		.get(
+			`${process.env.REACT_APP_API_ENDPOINT}/nfts/count/user/${userId}/type/mystery`
+		)
+		.then((res) => {
+			count = res.data;
+		})
+		.catch((error) => {
+			count = {
+				address: null,
+				count: 0,
+			};
+		});
+
+	return count;
+};
+
+export const getNumLuckyNFTs = async () => {
+	let count;
+
+	const userId = getInfoUser().user.id;
+
+	await axios
+		.get(
+			`${process.env.REACT_APP_API_ENDPOINT}/nfts/count/user/${userId}/type/lucky`
+		)
+		.then((res) => {
+			count = res.data;
+		})
+		.catch((error) => {
+			count = 0;
+		});
+
+	return count;
+};
+
+export const getNumDropNFTs = async () => {
+	let count;
+
+	const userId = getInfoUser().user.id;
+
+	await axios
+		.get(
+			`${process.env.REACT_APP_API_ENDPOINT}/nfts/count/user/${userId}/type/drop`
+		)
+		.then((res) => {
+			count = res.data;
+		})
+		.catch((error) => {
+			count = 0;
+		});
+
+	return count;
 };

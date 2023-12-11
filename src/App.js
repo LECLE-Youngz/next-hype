@@ -140,7 +140,7 @@ function App() {
 						element={<Wrapper children={<CreateEventPurchase />} />}
 					/>
 					<Route
-						path={`/event/nft-drop`}
+						path={`/event/drop`}
 						element={<Wrapper children={<CreateEventNFTDrop />} />}
 					/>
 					<Route path="/assets/*" />

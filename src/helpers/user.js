@@ -69,7 +69,6 @@ export const getUsers = async (id) => {
 		.get(`${process.env.REACT_APP_API_ENDPOINT}/users/${id ?? ""}`)
 		.then((res) => {
 			users = res.data;
-			console.log(res);
 		})
 		.catch((error) => {
 			users = [];
@@ -139,9 +138,7 @@ export const forwardAddressRegister = async (forwarderAddress, address) => {
 export const subscriber = async (user, plan, amount) => {
 	let success = false;
 
-	const address = await axios
-		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/premium/user/${user}`)
-		.then((res) => res.data);
+	const address = await getPremiumAddress(user);
 
 	await subscribe(plan, address, { value: amount }).then((res) => {
 		success = res.status === 1;
@@ -168,9 +165,7 @@ export const getSubscribing = async (user, listUserId) => {
 	return success;
 };
 
-export const getPremiumAddress = async () => {
-	let userId = getInfoUser().user.id;
-
+export const getPremiumAddress = async (userId) => {
 	const address = await axios
 		.get(`${process.env.REACT_APP_API_ENDPOINT}/nfts/premium/user/${userId}`)
 		.then((res) => res.data)
@@ -197,7 +192,7 @@ export const getExclusiveAddress = async () => {
 export const getPlans = async (user) => {
 	const plans = [];
 
-	const address = await getPremiumAddress();
+	const address = await getPremiumAddress(user);
 
 	await getSubscriptionPlan(0, address).then((res) => {
 		plans.push(res);

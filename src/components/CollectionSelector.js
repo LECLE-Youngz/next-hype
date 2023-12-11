@@ -97,37 +97,129 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 										</span>
 									</span>
 								</div>
-								<div
-									className="relative cursor-pointer h-16 mt-2 p-5 "
-									onClick={() =>
-										setCollection({
-											address: exclusiveAddress,
-											name: "Exclusive Token",
-											symbol: "EXC",
-											nft: [],
-											e: true,
-										})
-									}
-								>
-									<div className="grad p-[1.5px] h-full inset-0 absolute">
-										<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
-											<div className="text-center w-[25%]">
-												<span className="">
-													{parseAddress(exclusiveAddress)}
-												</span>
-											</div>
-											<div className="text-center w-[25%]">
-												<span className="">Exclusive Token</span>
-											</div>
-											<div className="text-center w-[25%]">
-												<span className="">EXC</span>
-											</div>
-											<div className="text-center w-[25%]">
-												<span className="">_</span>
+								{exclusiveAddress && (
+									<>
+										<div
+											className="relative cursor-pointer h-16 mt-2 p-5 "
+											onClick={() =>
+												setCollection({
+													address: exclusiveAddress,
+													name: "Exclusive Token",
+													symbol: "EXC",
+													nft: [],
+													type: "exclusive",
+												})
+											}
+										>
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">
+															{parseAddress(exclusiveAddress)}
+														</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Exclusive Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">EXC</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">_</span>
+													</div>
+												</div>
 											</div>
 										</div>
-									</div>
-								</div>
+										<div
+											className="relative cursor-pointer h-16 mt-2 p-5 "
+											onClick={() =>
+												setCollection({
+													address: "_",
+													name: "Mystery Token",
+													symbol: "MYS",
+													nft: [],
+													type: "mystery",
+												})
+											}
+										>
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">{"_"}</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Mystery Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">MYS</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">_</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div
+											className="relative cursor-pointer h-16 mt-2 p-5 "
+											onClick={() =>
+												setCollection({
+													address: "_",
+													name: "Lucky Token",
+													symbol: "LCK",
+													nft: [],
+													type: "lucky",
+												})
+											}
+										>
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">{"_"}</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Lucky Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">LCK</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">_</span>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div
+											className="relative cursor-pointer h-16 mt-2 p-5 "
+											onClick={() =>
+												setCollection({
+													address: "_",
+													name: "Drop Token",
+													symbol: "DRP",
+													nft: [],
+													type: "drop",
+												})
+											}
+										>
+											<div className="grad p-[1.5px] h-full inset-0 absolute">
+												<div className="bg-white  h-full flex items-center hover:text-white hover:grad p-5">
+													<div className="text-center w-[25%]">
+														<span className="">{"_"}</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">Drop Token</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">DRP</span>
+													</div>
+													<div className="text-center w-[25%]">
+														<span className="">_</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</>
+								)}
+
 								{collections.map((collection, index) => (
 									<>
 										<div
