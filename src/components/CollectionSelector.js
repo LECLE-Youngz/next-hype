@@ -221,7 +221,7 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 								)}
 
 								<div
-									className="place-items-center cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
+									className="place-content-center cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
 									onClick={() =>
 										setCollection({
 											address: process.env.REACT_APP_COLLECTION_ADDRESS,
@@ -249,7 +249,7 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 								{collections.map((collection, index) => (
 									<>
 										<div
-											className="cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
+											className="cursor-pointer w-full mx-auto h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
 											onClick={() => {
 												setCollection({ ...collection, ...{ e: false } });
 											}}
