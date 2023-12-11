@@ -5,6 +5,8 @@ import { deployLuckyToken } from "../scripts/luckyEventFactory";
 import { getInfoUser } from "../storage/local";
 import { drawLottery } from "../scripts/luckyNFT";
 import { deployLuckyTreasury } from "../scripts/treasuryFactory";
+import { deployMysteryBox } from "../scripts/mysteryBoxFactory";
+import { mysteryBox } from "../scripts";
 
 export const getPosts = async (id) => {
 	let posts;
@@ -294,35 +296,11 @@ export const createSubscribingEvent = async ({ subscriptionId }) => {
 	return success;
 };
 
-export const createDropEvent = async ({ subscriptionId }) => {
-	const userId = getInfoUser().user.id;
-
-	let success = false;
-	const premiumAddress = await getPremiumAddress(userId);
-
-	await deployLuckyToken(
-		subscriptionId,
-		`https://metadata-storage.azurewebsites.net/api/v1/nfts/collection/${premiumAddress}/nft/`,
-		premiumAddress
-	).then(async (res) => {
-		if (res.status === 1) {
-			const address = res.logs[0].address;
-			await updateCollection(address, "drop")
-				.then((success = true))
-				.catch();
-		}
-	});
-
-	return { success };
-};
-
-
 export const createTreasury = async ({ luckyNFT, luckyPoint, rewardAmount }) => {
 	// TODO: get luckyNFT dc khong
 	const userId = getInfoUser().user.id;
 
 	let success = false;
-	const premiumAddress = await getPremiumAddress(userId);
 
 	await deployLuckyTreasury(
 		luckyNFT,
@@ -337,6 +315,41 @@ export const createTreasury = async ({ luckyNFT, luckyPoint, rewardAmount }) => 
 
 	return { success };
 };
+
+
+export const createNftDrop = async (
+	unrevealedURI,
+	maxSupply,
+	maxMintPerUser,
+	fee,
+	whitelistRoot,
+	vrfSubscriptionId) => {
+	const userId = getInfoUser().user.id;
+
+	let success = false;
+
+	await deployMysteryBox(
+		"Mystery Drop",
+		"DRP",
+		unrevealedURI,
+		maxSupply,
+		maxMintPerUser,
+		fee,
+		whitelistRoot,
+		vrfSubscriptionId
+	).then(async (res) => {
+		if (res.status === 1) {
+			const address = res.logs[0].address;
+			console.log("mysteryBox: ",address)
+			await updateCollection(address, "drop")
+			.then((success = true))
+			.catch();
+		}
+	});
+
+	return success;
+};
+
 
 export const getEvents = async () => {
 	const access_token = await getAccessToken();
@@ -370,8 +383,4 @@ export const claimLucky = async (addressCollection) => {
 	);
 
 	return success;
-};
-
-export const createNftDrop = async () => {
-	// TODO: createNftDrop
 };

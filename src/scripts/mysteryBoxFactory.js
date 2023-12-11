@@ -4,11 +4,11 @@ export const deployMysteryBox = async (
 	name,
 	symbol,
 	unrevealedURI,
-	premiumNFT,
-	_nftPurchasedRequired,
 	maxSupply,
-	baseURI,
-	clSubscriptionId
+	maxMintPerUser,
+	fee,
+	whitelistRoot,
+	vrfSubscriptionId
 ) => {
 	const contract = await mysteryBoxFactory();
 	const res = await contract
@@ -16,11 +16,11 @@ export const deployMysteryBox = async (
 			name,
 			symbol,
 			unrevealedURI,
-			premiumNFT,
-			_nftPurchasedRequired,
 			maxSupply,
-			baseURI,
-			clSubscriptionId
+			maxMintPerUser,
+			fee,
+			whitelistRoot,
+			vrfSubscriptionId
 		)
 		.then((tx) => tx.wait());
 

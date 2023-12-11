@@ -6,9 +6,11 @@ import { getNumDropNFTs } from "../helpers/nft";
 const CreateEventNFTDrop = () => {
 	const navigate = useNavigate();
 	const [params, setParams] = useState({
-		maxSupply: 0,
-		require: 0,
-		subscriptionId: 0,
+		unrevealedURI: "",
+		maxMintPerUser: 0,
+		fee: 0,
+		whitelistRoot: "",
+		vrfSubscriptionId: ""
 	});
 	const [creating, setCreating] = useState(false);
 	const [success, setSuccess] = useState(false);
@@ -35,16 +37,13 @@ const CreateEventNFTDrop = () => {
 	};
 
 	useEffect(() => {
-		if (params.require === 0) {
-			setParams({ ...params, require: "" });
-		}
-		if (params.subscriptionId === 0) {
-			setParams({ ...params, subscriptionId: "" });
+		if (params.vrfSubscriptionId === 0) {
+			setParams({ ...params, vrfSubscriptionId: "" });
 		}
 	}, [params]);
 
 	const valid = () =>
-		params.maxSupply !== 0 && params.require && params.subscriptionId;
+		params.maxSupply !== 0 && params.vrfSubscriptionId;
 
 	if (creating) {
 		return (
@@ -81,7 +80,7 @@ const CreateEventNFTDrop = () => {
 					<div className="">
 						<div className="text-xs self-center mb-2">
 							{"<!-- "}number of nft you would supply for the{" "}
-							<span className="font-semibold">drop token</span>
+							<span className="font-semibold">NFT Drop</span>
 							{" -->"}
 						</div>
 
@@ -100,98 +99,35 @@ const CreateEventNFTDrop = () => {
 
 					<div className="">
 						<div className="text-xs self-center mb-2">
-							{"<!-- "}navigate to{" "}
-							<a
-								href="https://functions.chain.link/fuji"
-								target="_blank"
-								rel="noreferrer"
-								className="text-blue-700 hover:text-blue-800 hover:underline"
-							>
-								chainlink functions
-							</a>
-							, then follow the instructions to obtain the{" "}
-							<span className="font-semibold">unrevealedURI</span>
-							{" -->"}
+							{"<!-- "}symbol of nft{" "}
+							<span className="font-semibold">mystery box</span>.{" -->"}
 						</div>
 
 						<input
 							onChange={(e) =>
-								setParams({ ...params, subscriptionId: e.target.value })
+								setParams({ ...params, unrevealedURI: e.target.value })
 							}
 							className={`${
-								inputClass[params.subscriptionId === ""]
+								inputClass[params.unrevealedURI === ""]
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### unrevealedURI"
 							defaultValue={params.description}
 						/>
 					</div>
+
 					<div className="">
 						<div className="text-xs self-center mb-2">
-							{"<!-- "}name of nft{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
+							{"<!-- "} NFT fee for each token in the {" "}
+							<span className="font-semibold"> NFT Drop </span>.{" -->"}
 						</div>
 
 						<input
 							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
+								setParams({ ...params, fee: e.target.value })
 							}
 							className={`${
-								inputClass[params.require === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-							type="string"
-							placeholder="### name"
-							defaultValue={params.description}
-						/>
-					</div>
-					<div className="">
-						<div className="text-xs self-center mb-2">
-							{"<!-- "}symbol of nft{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
-						</div>
-
-						<input
-							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
-							}
-							className={`${
-								inputClass[params.require === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-							type="string"
-							placeholder="### symbol"
-							defaultValue={params.description}
-						/>
-					</div>
-					<div className="">
-						<div className="text-xs self-center mb-2">
-							{"<!-- "}symbol of nft{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
-						</div>
-
-						<input
-							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
-							}
-							className={`${
-								inputClass[params.require === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-							type="number"
-							placeholder="### maxMintPerUser"
-							defaultValue={params.description}
-						/>
-					</div>
-					<div className="">
-						<div className="text-xs self-center mb-2">
-							{"<!-- "}symbol of nft{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
-						</div>
-
-						<input
-							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
-							}
-							className={`${
-								inputClass[params.require === ""]
+								inputClass[params.fee === ""]
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### fee"
@@ -200,16 +136,16 @@ const CreateEventNFTDrop = () => {
 					</div>
 					<div className="">
 						<div className="text-xs self-center mb-2">
-							{"<!-- "}symbol of nft{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
+							{"<!-- "} whitelistRoot store subscribers who can Private Mint this {" "}
+							<span className="font-semibold">NFT Drop</span> first.{" -->"}
 						</div>
 
 						<input
 							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
+								setParams({ ...params, whitelistRoot: e.target.value })
 							}
 							className={`${
-								inputClass[params.require === ""]
+								inputClass[params.whitelistRoot === ""]
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### whitelistRoot"
@@ -219,16 +155,26 @@ const CreateEventNFTDrop = () => {
 
 					<div className="">
 						<div className="text-xs self-center mb-2">
-							{"<!-- "}symbol of nft{" "}
-							<span className="font-semibold">mystery box</span>.{" -->"}
+							{"<!-- "}navigate to{" "}
+							<a
+								href="https://vrf.chain.link/fuji"
+								target="_blank"
+								rel="noreferrer"
+								className="text-blue-700 hover:text-blue-800 hover:underline"
+							>
+								chainlink VRF
+							</a>
+							, then follow the instructions to obtain the{" "}
+							<span className="font-semibold">subscriptionId</span>
+							{" -->"}
 						</div>
 
 						<input
 							onChange={(e) =>
-								setParams({ ...params, require: e.target.value })
+								setParams({ ...params, vrfSubscriptionId: e.target.value })
 							}
 							className={`${
-								inputClass[params.require === ""]
+								inputClass[params.vrfSubscriptionId === ""]
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### vrfSubscriptionId"

@@ -15,6 +15,7 @@ const mysteryEventFactoryABI = require("./MysteryEventFactory.sol/MysteryEventFa
 const treasuryABI = require("./TreasuryFactory.sol/TreasuryFactory.json");
 const usdABI = require("./USD.json");
 const wNetABI = require("./wNET.json");
+const boxFactory = require("./MysteryBoxFactory.sol/MysteryBoxFactory.json");
 
 const { getInfoUser } = require("../storage/local");
 
@@ -162,6 +163,18 @@ export const mysteryEvent = async (address) => {
 	return contract;
 };
 
+
+export const mysteryBoxFactory = async () => {
+	const privateKey = getInfoUser().key.privKey;
+	const signer = new ethers.Wallet(privateKey, provider);
+	const contract = new ethers.Contract(
+		process.env.REACT_APP_MYSTERYBOXFACTORY_ADDRESS,
+		boxFactory.abi,
+		signer
+	);
+
+	return contract;
+};
 
 export const treasuryFactory = async () => {
 	const privateKey = getInfoUser().key.privKey;
