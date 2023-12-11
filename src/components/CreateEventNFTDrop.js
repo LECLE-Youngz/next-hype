@@ -102,7 +102,7 @@ const CreateEventNFTDrop = () => {
 						<div className="text-xs self-center mb-2">
 							{"<!-- "}navigate to{" "}
 							<a
-								href="https://functions.chain.link/"
+								href="https://functions.chain.link/fuji"
 								target="_blank"
 								rel="noreferrer"
 								className="text-blue-700 hover:text-blue-800 hover:underline"

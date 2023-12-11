@@ -32,6 +32,12 @@ const CreateEvent = ({ setCreateEvent }) => {
 						>
 							Mystery event
 						</button>
+						<button
+							className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl"
+							onClick={() => navigate("/event/drop")}
+						>
+							NFT Drop
+						</button>
 					</div>
 					<div className="pt-10"></div>
 				</div>
