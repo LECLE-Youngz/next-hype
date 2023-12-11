@@ -220,6 +220,32 @@ const ManageCollections = ({ setCollection, setChooseCollectionPopup }) => {
 									</>
 								)}
 
+								<div
+									className="place-items-center cursor-pointer h-16 hover:bg-gray-200 bg-white flex p-5 items-center mt-2"
+									onClick={() =>
+										setCollection({
+											address: process.env.REACT_APP_COLLECTION_ADDRESS,
+											name: "NEXTHYPE",
+											symbol: "NET",
+											nft: [],
+											type: "normal",
+										})
+									}
+								>
+									<span className="">
+										{parseAddress(process.env.REACT_APP_COLLECTION_ADDRESS)}
+									</span>
+									<div className="text-center w-[25%]">
+										<span className="">NEXTHYPE</span>
+									</div>
+									<div className="text-center w-[25%]">
+										<span className="">NET</span>
+									</div>
+									<div className="text-center w-[25%]">
+										<span className="">_</span>
+									</div>
+								</div>
+
 								{collections.map((collection, index) => (
 									<>
 										<div
