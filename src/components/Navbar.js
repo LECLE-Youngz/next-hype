@@ -165,6 +165,12 @@ export default function Navbar() {
 								Events
 							</Link>
 							<Link
+								to="/drop"
+								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
+							>
+								Drop
+							</Link>
+							<Link
 								to="/social"
 								className="text-lg hover:text-gray-500 transition-colors ease-in-out duration-200 py-2 text-black"
 							>

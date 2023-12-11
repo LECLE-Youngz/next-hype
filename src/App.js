@@ -26,6 +26,7 @@ import CreateEventFollow from "./components/CreateEventFollow";
 import CreateEventSubscribe from "./components/CreateEventSubscribe";
 import CreateEventPurchase from "./components/CreateEventPurchase";
 import CreateEventNFTDrop from "./components/CreateEventNFTDrop";
+import DropNft from "./views/DropNft";
 
 function App() {
 	const [users, setUsers] = useState([]);
@@ -81,6 +82,11 @@ function App() {
 						element={<Wrapper children={<Collections />} />}
 					/>
 					<Route path="/events" element={<Wrapper children={<Events />} />} />
+					<Route
+						path={"/drop"}
+						element={<Wrapper children={<DropNft />}
+						/>}
+					/>
 					<Route path="/profile" element={<Wrapper children={<Profile />} />} />
 					{users.map((userId) => (
 						<>
@@ -143,6 +149,7 @@ function App() {
 						path={`/event/drop`}
 						element={<Wrapper children={<CreateEventNFTDrop />} />}
 					/>
+
 					<Route path="/assets/*" />
 					<Route path="*" element={<Navigate to="/" />} />
 				</Routes>
