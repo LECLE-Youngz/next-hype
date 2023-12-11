@@ -142,8 +142,7 @@ export const createComment = async (postId, commentId, text) => {
 	}
 
 	await axios.post(
-		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${
-			commentId ?? ""
+		`${process.env.REACT_APP_API_ENDPOINT}/socials/post/${postId}/comment/${commentId ?? ""
 		}`,
 		data,
 		{
@@ -227,9 +226,8 @@ export const createPost = async (
 	return res.data.id;
 };
 
-export const updateCollection = (address, type) => {
-	const access_token = getAccessToken();
-
+export const updateCollection = async (address, type) => {
+	const access_token = await getAccessToken();
 	return axios.put(
 		`${process.env.REACT_APP_API_ENDPOINT}/nfts/collection/${address}/type/${type}`,
 		{},

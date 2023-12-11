@@ -3,6 +3,7 @@ import Subscribe from "./Subscribe";
 import { Link } from "react-router-dom";
 import { claimLucky } from "../helpers/social";
 import { parseAddress, parseAmount } from "../libs/blockchain";
+import { getInfoUser } from "../storage/local";
 
 const EventPreview = ({
 	tag,
@@ -57,6 +58,8 @@ const EventPreview = ({
 		}
 		setLoading(false);
 	};
+	const userInfo = getInfoUser();
+	console.log(userInfo);
 
 	return (
 		<div className="group flex justify-between border w-[31rem] relative group py-5">
@@ -75,15 +78,24 @@ const EventPreview = ({
 						<p className="text-sm mt-2 font-light">by {owner.name}</p>
 					</div>
 				</Link>
-				<div
-					className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-200 hover:cursor-pointer py-2 pr-4 hover:text-gray-800 w-full h-min flex justify-between"
-					onClick={() => copyText(addressCollection)}
-				>
-					<p className="text-lg mx-4">{parseAddress(addressCollection)}</p>
-					<span className="self-center pointer-events-none opacity-0 font-semibold transition-opacity group-hover:opacity-100">
-						{copy}
-					</span>
-				</div>
+				{
+					userInfo.user.id === owner.id ?
+						<div
+							className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-200 hover:cursor-pointer py-2 pr-4 hover:text-gray-800 w-full h-min flex justify-between"
+							onClick={() => copyText(addressCollection)}
+						>
+							<p className="text-lg mx-4">{parseAddress(addressCollection)}</p>
+							<span className="self-center pointer-events-none opacity-0 font-semibold transition-opacity group-hover:opacity-100">
+								{copy}
+							</span>
+						</div>
+						: <div
+							className="group relative border border-gray-200 hover:border-gray-300 col-span-3 hover:bg-gray-200 hover:cursor-pointer py-2 pr-4 hover:text-gray-800 w-full h-min flex justify-between"
+							onClick={() => copyText(addressCollection)}
+						>
+							<p className="text-lg mx-4">{parseAddress(addressCollection)}</p>
+						</div>
+				}
 			</div>
 			<div className="w-1/4 items-center place-items-center flex h-full border-l px-4 ml-4 border-gray-600">
 				{loading && !success ? (
