@@ -30,20 +30,7 @@ export const buyNFT = async (
 		await buyItem(addressCollection, id, "0", { value: price.avax }).then(
 			(res) => (success = res.status === 1)
 		);
-	} else {
-		await allowance(
-			process.env.REACT_APP_MARKETPLACE_ADDRESS,
-			Big(parsePrice(price.usd)).multiply(1e6).toBigInt().toString()
-		).then(async (res) => {
-			if (res.status === 1) {
-				await buyItem(addressCollection, id, price.usd, { value: "0" }).then(
-					(res) => (success = res.status === 1)
-				);
-			}
-		});
-	}
-
-	if (success) {
+		if (!success) return success;
 		await axios
 			.put(
 				`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-nft/${userId}`,
@@ -61,6 +48,35 @@ export const buyNFT = async (
 			.catch((e) => {
 				// success = false;
 			});
+	} else {
+		await allowance(
+			process.env.REACT_APP_MARKETPLACE_ADDRESS,
+			Big(parsePrice(price.usd)).multiply(1e6).toBigInt().toString()
+		).then(async (res) => {
+			if (res.status === 1) {
+				await buyItem(addressCollection, id, price.usd, { value: "0" }).then(
+					(res) => (success = res.status === 1)
+				);
+				if (!success) return success;
+				await axios
+					.put(
+						`${process.env.REACT_APP_API_ENDPOINT}/socials/increase-nft/${userId}`,
+						{
+							nftId: id,
+							addressCollection,
+						},
+						{
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${access_token}`,
+							},
+						}
+					)
+					.catch((e) => {
+						// success = false;
+					});
+			}
+		});
 	}
 
 	return success;
