@@ -264,7 +264,7 @@ export const createPurchasingEvent = async ({
 		if (res.status === 1) {
 			const address = res.logs[0].address;
 			await updateCollection(address, "mystery")
-				.then((success = true))
+				.then((success = address))
 				.catch();
 		}
 	});
@@ -284,9 +284,10 @@ export const createSubscribingEvent = async ({ subscriptionId }) => {
 		premiumAddress
 	).then(async (res) => {
 		if (res.status === 1) {
+
 			const address = res.logs[0].address;
 			await updateCollection(address, "lucky")
-				.then((success = true))
+				.then((success = address))
 				.catch();
 		}
 	});
