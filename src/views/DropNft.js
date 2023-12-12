@@ -6,11 +6,11 @@ import CreateEvent from "../components/CreateEvent";
 import { getEvents } from "../helpers/social";
 import EventPreview from "../components/EventPreview";
 import { Link } from "react-router-dom";
-// import { mysteryBoxABI } from 
+import { mysteryBoxABI } from "../scripts/MysteryBox.sol/MysteryBox.json";
 
 export default function DropNft() {
     const containerStyle = {
-        backgroundImage: 'url("https://source.unsplash.com/random/?nft")',
+        backgroundImage: 'url("https://source.unsplash.com/random/?blockchain")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         height: '65vh',
