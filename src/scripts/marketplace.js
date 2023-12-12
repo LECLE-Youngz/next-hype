@@ -10,7 +10,7 @@ export const listItem = async (collection, id, price, promptPrice) => {
 
 export const buyItem = async (addressCollection, id, amount, value) => {
 	const contract = await marketplace();
-	console.log(addressCollection, id, amount, value);
+	// TODO: FIX here
 	const res = await contract
 		.buyItem(addressCollection, id, amount, value)
 		.then((tx) => tx.wait());

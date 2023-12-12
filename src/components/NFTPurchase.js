@@ -14,7 +14,6 @@ function NFTPurchase({
 }) {
 	const [onSubmit, setOnSubmit] = useState(false);
 	const [onSuccess, setOnSuccess] = useState(null);
-
 	const submit = async () => {
 		setOnSubmit(true);
 
