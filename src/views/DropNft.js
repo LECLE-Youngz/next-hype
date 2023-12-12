@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { mysteryBoxABI } from "../scripts/MysteryBox.sol/MysteryBox.json";
 import { set } from "lodash";
 import { mysteryBox } from "../scripts";
+import { publicMint, privateMint } from "../scripts/mysteryBox"
 
 export default function DropNft() {
     const containerStyle = {
@@ -25,20 +26,18 @@ export default function DropNft() {
     const maxMint = "1";
 
     const [params, setParams] = useState({
-        numNFTs: 1,
-        dynamicText: "",
-        maxMint: 0
-    });
+		numNFTs: 1,
+		dynamicText: "",
+        maxMint: 0,
+        proof: ""
+	});
 
     const [creating, setCreating] = useState(false);
     const [success, setSuccess] = useState(false);
 
     const submitPublic = async () => {
         setCreating(true);
-        const contract = mysteryBox(process.env.REACT_APP_MYSTERYBOX_ADDRESS)
-        const res = await
-            contract.methods.submitPublic(params.numNFTs)
-                .send({ from: window.ethereum.selectedAddress, value: parseAmount(dynamicText) * params.numNFTs })
+        const res = await publicMint(maxMint);
         setCreating(false);
 
     }
@@ -46,30 +45,28 @@ export default function DropNft() {
     const submitPrivate = async () => {
         setCreating(true);
         const contract = mysteryBox(process.env.REACT_APP_MYSTERYBOX_ADDRESS)
-        const res = await
-            contract.methods.submitPrivate(params.numNFTs)
-                .send({ from: window.ethereum.selectedAddress, value: parseAmount(dynamicText) * params.numNFTs })
+        const res = await privateMint(maxMint, proof);
         setCreating(false);
 
 
     }
 
     useEffect(() => {
-        if (params.numNFTs === 0) {
-            setParams({ ...params, numNFTs: "" });
-        }
-        if (params.dynamicText === 0) {
-            setParams({ ...params, dynamicText: "" });
-        }
+		if (params.numNFTs === 0) {
+			setParams({ ...params, numNFTs: "" });
+		}
+		if (params.dynamicText === 0) {
+			setParams({ ...params, dynamicText: "" });
+		}
         if (params.maxMint === 0) {
-            setParams({ ...params, maxMint: "" });
-        }
-    }, [params]);
+			setParams({ ...params, maxMint: "" });
+		}
+	}, [params]);
 
-    const inputClass = {
-        false: "bg-white border-gray-900 text-gray-900",
-        true: "bg-gray-200 text-gray-900 border-gray-200",
-    };
+	const inputClass = {
+		false: "bg-white border-gray-900 text-gray-900",
+		true: "bg-gray-200 text-gray-900 border-gray-200",
+	};
 
     return (
         <div className="flex flex-col justify-between">
@@ -78,7 +75,7 @@ export default function DropNft() {
                     # Ongoing <span className="twinkle-text">Drop</span>{" "}
                 </h1>
             </div>
-            {creating
+{creating
                 ? <div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
                     <div className="h-full w-full flex items-center justify-center">
                         <div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
@@ -108,25 +105,25 @@ export default function DropNft() {
                         <p className="text-lg mt-1"> Max NFT/User: {maxMint}</p>
                     </div>
                     <div className="">
-                        <div className="text-xs self-center mb-2">
-                            {"<!-- "} number of nft you want to buy for this {" "}
-                            <span className="font-semibold">NFT Drop</span>.{" -->"}
-                        </div>
+						<div className="text-xs self-center mb-2">
+							{"<!-- "} number of nft you want to buy for this {" "}
+							<span className="font-semibold">NFT Drop</span>.{" -->"}
+						</div>
 
-                        <input
-                            onChange={(e) =>
-                                setParams({ ...params, numNFTs: e.target.value })
-                            }
-                            className={`${inputClass[params.numNFTs === ""]
-                                } w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
-                            type="number"
-                            placeholder="### NFT amount"
-                            defaultValue={params.numNFTs}
-                        />
-                    </div>
+						<input
+							onChange={(e) =>
+								setParams({ ...params, numNFTs: e.target.value })
+							}
+							className={`${inputClass[params.numNFTs === ""]
+							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							type="number"
+							placeholder="### NFT amount"
+							defaultValue={params.numNFTs}
+						/>
+					</div>
                     <div className="text-xs self-center mb-2">
                         {"<!-- "} Only whitelisted subscribers allowed to buy NFTs Drop while in {" "}
-                        <span className="font-semibold">private minting</span>
+                        <span className="font-semibold">private minting</span> 
                         {" -->"}
                     </div>
                     <button
