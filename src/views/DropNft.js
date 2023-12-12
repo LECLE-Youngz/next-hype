@@ -24,6 +24,7 @@ export default function DropNft() {
     };
     const dynamicText = "0.01";
     const maxMint = "1";
+    const proof = "";
 
     const [params, setParams] = useState({
 		numNFTs: 1,
