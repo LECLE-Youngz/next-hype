@@ -12,7 +12,7 @@ import { name, symbol } from "../scripts/generative";
 import { getAccessToken } from "./user";
 import { deployGenerativeToken } from "../scripts/generativeFactory";
 import { allowance } from "../scripts/usd";
-import { parsePrice } from "../libs/blockchain";
+import { parsePrice, parseAmount } from "../libs/blockchain";
 import { Big } from "bigdecimal.js";
 
 export const buyNFT = async (
@@ -49,12 +49,19 @@ export const buyNFT = async (
 				// success = false;
 			});
 	} else {
+		
 		await allowance(
 			process.env.REACT_APP_MARKETPLACE_ADDRESS,
-			Big(parsePrice(price.usd)).multiply(1e6).toBigInt().toString()
+			Big(price.usd).divide(1e6).toBigInt().toString()
 		).then(async (res) => {
+
+			console.log("USD: ", Big(price.usd).multiply(1e6).toBigInt().toString())
+			console.log("USD: ", Big(price.usd).divide(1e6).toBigInt().toString())
+			console.log("USD: ", Big(price.usd).toBigInt().toString()
+			)
+
 			if (res.status === 1) {
-				await buyItem(addressCollection, id, price.usd, { value: "0" }).then(
+				await buyItem(addressCollection, id, Big(price.usd).multiply(1e6).toBigInt().toString(), { value: "0" }).then(
 					(res) => (success = res.status === 1)
 				);
 				if (!success) return success;
