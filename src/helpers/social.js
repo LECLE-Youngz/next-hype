@@ -314,20 +314,22 @@ export const createTreasury = async ({ luckyNFT, luckyPoint, rewardAmount }) => 
 		}
 	});
 
-	return { success };
+	return success;
 };
 
 
-export const createNftDrop = async (
+export const createNftDrop = async ({
 	unrevealedURI,
 	maxSupply,
 	maxMintPerUser,
 	fee,
 	whitelistRoot,
-	vrfSubscriptionId) => {
-	const userId = getInfoUser().user.id;
+	vrfSubscriptionId}) => {
 
 	let success = false;
+	console.log("Fee: ", fee)
+	console.log("Fee: ", unrevealedURI)
+
 
 	await deployMysteryBox(
 		"Mystery Drop",
@@ -340,11 +342,12 @@ export const createNftDrop = async (
 		vrfSubscriptionId
 	).then(async (res) => {
 		if (res.status === 1) {
+			console.log("-------Address:");
 			const address = res.logs[0].address;
-			console.log("mysteryBox: ",address)
+			console.log("-------Address:", address);
 			await updateCollection(address, "drop")
-			.then((success = true))
-			.catch();
+				.then((success = address))
+				.catch();
 		}
 	});
 

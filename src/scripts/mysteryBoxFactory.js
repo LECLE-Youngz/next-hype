@@ -12,16 +12,7 @@ export const deployMysteryBox = async (
 ) => {
 	const contract = await mysteryBoxFactory();
 	const res = await contract
-		.deployMysteryBox(
-			name,
-			symbol,
-			unrevealedURI,
-			maxSupply,
-			maxMintPerUser,
-			fee,
-			whitelistRoot,
-			vrfSubscriptionId
-		)
+		.deployMysteryBox(name, symbol, unrevealedURI, maxSupply, maxMintPerUser, fee, whitelistRoot, vrfSubscriptionId)
 		.then((tx) => tx.wait());
 
 	return res;

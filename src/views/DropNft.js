@@ -6,6 +6,7 @@ import CreateEvent from "../components/CreateEvent";
 import { getEvents } from "../helpers/social";
 import EventPreview from "../components/EventPreview";
 import { Link } from "react-router-dom";
+// import { mysteryBoxABI } from 
 
 export default function DropNft() {
     const containerStyle = {
@@ -15,7 +16,7 @@ export default function DropNft() {
         height: '65vh', // Set height to 50% of the viewport height
         width: '60vw', // Set width to 75% of the viewport width
     };
-    const dynamicText = "Your Dynamic Text";
+    const dynamicText = "0.01";
     const maxMint = "1";
 
     const [params, setParams] = useState({

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createNftDrop } from "../helpers/social";
 import { getNumDropNFTs } from "../helpers/nft";
+import { parseAmount } from "../libs/blockchain";
+
 
 const CreateEventNFTDrop = () => {
 	const navigate = useNavigate();
@@ -36,6 +38,18 @@ const CreateEventNFTDrop = () => {
 	};
 
 	useEffect(() => {
+		if (params.unrevealedURI === 0) {
+			setParams({ ...params, unrevealedURI: "" });
+		}
+		if (params.maxMintPerUser === 0) {
+			setParams({ ...params, maxMintPerUser: 1 });
+		}
+		if (params.fee === 0) {
+			setParams({ ...params, fee: 0.1 });
+		}
+		if (params.whitelistRoot === 0) {
+			setParams({ ...params, whitelistRoot: "" });
+		}
 		if (params.vrfSubscriptionId === 0) {
 			setParams({ ...params, vrfSubscriptionId: "" });
 		}
@@ -97,7 +111,7 @@ const CreateEventNFTDrop = () => {
 
 					<div className="">
 						<div className="text-xs self-center mb-2">
-							{"<!-- "}symbol of nft{" "}
+							{"<!-- "}unrevealedURI of nft{" "}
 							<span className="font-semibold">mystery box</span>.{" -->"}
 						</div>
 
@@ -122,14 +136,32 @@ const CreateEventNFTDrop = () => {
 
 						<input
 							onChange={(e) =>
-								setParams({ ...params, fee: e.target.value })
+								setParams({ ...params, fee: parseAmount(e.target.value) })
 							}
 							className={`${
 								inputClass[params.fee === ""]
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### fee"
-							defaultValue={params.description}
+							defaultValue={params.fee}
+						/>
+					</div>
+					<div className="">
+						<div className="text-xs self-center mb-2">
+							{"<!-- "} Max NFT amount minted per user in this {" "}
+							<span className="font-semibold"> NFT Drop </span>.{" -->"}
+						</div>
+
+						<input
+							onChange={(e) =>
+								setParams({ ...params, maxMintPerUser: e.target.value })
+							}
+							className={`${
+								inputClass[params.fee === ""]
+							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							type="number"
+							placeholder="### maxMintPerUser"
+							defaultValue={params.maxMintPerUser}
 						/>
 					</div>
 					<div className="">
@@ -147,7 +179,7 @@ const CreateEventNFTDrop = () => {
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### whitelistRoot"
-							defaultValue={params.description}
+							defaultValue={params.whitelistRoot}
 						/>
 					</div>
 
@@ -176,7 +208,7 @@ const CreateEventNFTDrop = () => {
 							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### vrfSubscriptionId"
-							defaultValue={params.description}
+							defaultValue={params.vrfSubscriptionId}
 						/>
 					</div>
 				</div>
