@@ -324,7 +324,7 @@ export const createNftDrop = async ({
 	maxMintPerUser,
 	fee,
 	whitelistRoot,
-	vrfSubscriptionId}) => {
+	vrfSubscriptionId }) => {
 
 	let success = false;
 	console.log("Fee: ", fee)
@@ -388,3 +388,5 @@ export const claimLucky = async (addressCollection) => {
 
 	return success;
 };
+
+

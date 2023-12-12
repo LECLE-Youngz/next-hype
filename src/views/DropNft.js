@@ -7,6 +7,8 @@ import { getEvents } from "../helpers/social";
 import EventPreview from "../components/EventPreview";
 import { Link } from "react-router-dom";
 import { mysteryBoxABI } from "../scripts/MysteryBox.sol/MysteryBox.json";
+import { set } from "lodash";
+import { mysteryBox } from "../scripts";
 
 export default function DropNft() {
     const containerStyle = {
@@ -27,6 +29,30 @@ export default function DropNft() {
         dynamicText: "",
         maxMint: 0
     });
+
+    const [creating, setCreating] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    const submitPublic = async () => {
+        setCreating(true);
+        const contract = mysteryBox(process.env.REACT_APP_MYSTERYBOX_ADDRESS)
+        const res = await
+            contract.methods.submitPublic(params.numNFTs)
+                .send({ from: window.ethereum.selectedAddress, value: parseAmount(dynamicText) * params.numNFTs })
+        setCreating(false);
+
+    }
+
+    const submitPrivate = async () => {
+        setCreating(true);
+        const contract = mysteryBox(process.env.REACT_APP_MYSTERYBOX_ADDRESS)
+        const res = await
+            contract.methods.submitPrivate(params.numNFTs)
+                .send({ from: window.ethereum.selectedAddress, value: parseAmount(dynamicText) * params.numNFTs })
+        setCreating(false);
+
+
+    }
 
     useEffect(() => {
         if (params.numNFTs === 0) {
@@ -52,6 +78,13 @@ export default function DropNft() {
                     # Ongoing <span className="twinkle-text">Drop</span>{" "}
                 </h1>
             </div>
+            {creating
+                ? <div className="fixed top-0 right-0 z-30 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 select-none">
+                    <div className="h-full w-full flex items-center justify-center">
+                        <div className="animate-spin rounded-full self-center h-16 w-16 border-t-2 border-b-2 border-gray-300"></div>
+                    </div>
+                </div> : null
+            }
 
             <div className="container mx-auto mt-10 flex">
                 {/* Container with background image */}
@@ -98,7 +131,7 @@ export default function DropNft() {
                     </div>
                     <button
                         className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl mt-4 w-full"
-                        onClick={console.log("hi")}
+                        onClick={() => submitPrivate()}
                     >
                         Private Mint
                     </button>
@@ -109,7 +142,7 @@ export default function DropNft() {
                     </div>
                     <button
                         className="bg-white border border-gray-900 hover:bg-gray-900 inline-block text-gray-900 hover:text-gray-100 px-5 py-3 h-min self-center text-2xl mt-4 w-full"
-                        onClick={console.log("hi")}
+                        onClick={() => submitPublic()}
                     >
                         Public Mint
                     </button>

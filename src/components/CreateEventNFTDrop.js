@@ -70,6 +70,7 @@ const CreateEventNFTDrop = () => {
 
 	return (
 		<div className="flex flex-col justify-between">
+
 			<div className="flex justify-between">
 				<h1 className="text-4xl text-gray-900">
 					# Ongoing <span className="twinkle-text">events</span>{" "}
@@ -119,9 +120,8 @@ const CreateEventNFTDrop = () => {
 							onChange={(e) =>
 								setParams({ ...params, unrevealedURI: e.target.value })
 							}
-							className={`${
-								inputClass[params.unrevealedURI === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.unrevealedURI === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### unrevealedURI"
 							defaultValue={params.description}
@@ -138,9 +138,8 @@ const CreateEventNFTDrop = () => {
 							onChange={(e) =>
 								setParams({ ...params, fee: parseAmount(e.target.value) })
 							}
-							className={`${
-								inputClass[params.fee === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.fee === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### fee"
 							defaultValue={params.fee}
@@ -156,9 +155,8 @@ const CreateEventNFTDrop = () => {
 							onChange={(e) =>
 								setParams({ ...params, maxMintPerUser: e.target.value })
 							}
-							className={`${
-								inputClass[params.fee === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.fee === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="number"
 							placeholder="### maxMintPerUser"
 							defaultValue={params.maxMintPerUser}
@@ -174,9 +172,8 @@ const CreateEventNFTDrop = () => {
 							onChange={(e) =>
 								setParams({ ...params, whitelistRoot: e.target.value })
 							}
-							className={`${
-								inputClass[params.whitelistRoot === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.whitelistRoot === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### whitelistRoot"
 							defaultValue={params.whitelistRoot}
@@ -203,9 +200,8 @@ const CreateEventNFTDrop = () => {
 							onChange={(e) =>
 								setParams({ ...params, vrfSubscriptionId: e.target.value })
 							}
-							className={`${
-								inputClass[params.vrfSubscriptionId === ""]
-							} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
+							className={`${inputClass[params.vrfSubscriptionId === ""]
+								} w-full h-12 p-3 border cursor-text focus:outline-black flex items-center justify-center `}
 							type="string"
 							placeholder="### vrfSubscriptionId"
 							defaultValue={params.vrfSubscriptionId}
